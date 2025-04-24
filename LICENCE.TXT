@@ -1,0 +1,7 @@
+Copyright © 2025 BOGDAN YEREMIN
+
+This source code is provided for educational and non-commercial use only.
+You may view, fork, and learn from this code, but redistribution or commercial use
+is prohibited without explicit permission from the author.
+
+All rights reserved.
