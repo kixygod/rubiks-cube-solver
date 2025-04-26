@@ -7,15 +7,16 @@ app = Flask(__name__)
 CORS(app)
 
 
-@app.route('/solve', methods=['POST'])
+@app.route("/solve", methods=["POST"])
 def solve():
     data = request.get_json()
+    print(f"Received cube data: {data['cube']}")  # Логируем полученную строку
     try:
-        result = kociemba.solve(data['cube'])
-        return jsonify({'solution': result})
+        result = kociemba.solve(data["cube"])
+        return jsonify({"solution": result})
     except Exception as e:
-        print('[ERROR] ', str(e))
-        return jsonify({'error': str(e)}), 400
+        print("[ERROR] ", str(e))
+        return jsonify({"error": str(e)}), 400
 
 
 app.run(port=5000)

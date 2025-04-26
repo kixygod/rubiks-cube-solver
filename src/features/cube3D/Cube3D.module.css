@@ -1,0 +1,103 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  align-items: center;
+  padding: 20px;
+}
+
+.controls {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(3, 40px);
+  grid-template-rows: repeat(2, 40px);
+}
+
+.colorButton {
+  border: 2px solid black;
+  cursor: pointer;
+}
+
+.colorButton:hover {
+  border: 2px solid #fff;
+}
+
+.cubeWrapper {
+  padding: 64px;
+}
+
+.cube {
+  position: relative;
+  width: 156px;
+  height: 156px;
+  transform-style: preserve-3d;
+  transition: transform 0.5s ease-in-out;
+}
+
+.face {
+  position: absolute;
+  width: 156px;
+  height: 156px;
+  display: grid;
+  background: black;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+}
+
+.sticker {
+  width: 49px;
+  height: 49px;
+  margin: 1px;
+  border-radius: 4px;
+  border: 1px solid black;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  position: relative;
+}
+
+.colorIndicator {
+  position: absolute;
+  bottom: 10%;
+  right: 10%;
+  width: 20px;
+  height: 20px;
+  background-color: transparent;
+  border-top-left-radius: 100%;
+}
+
+
+.sticker:hover {
+  box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.6);
+}
+
+.up {
+  transform: rotateX(90deg) translateZ(78px);
+}
+.left {
+  transform: rotateY(-90deg) translateZ(78px);
+}
+.front {
+  transform: translateZ(78px);
+}
+.right {
+  transform: rotateY(90deg) translateZ(78px);
+}
+.back {
+  transform: rotateY(180deg) translateZ(78px);
+}
+.down {
+  transform: rotateX(-90deg) translateZ(78px);
+}
+
+.rotationButtons {
+  display: flex;
+  gap: 20px;
+}
+
+.actionsRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+}
