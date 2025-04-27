@@ -17,6 +17,7 @@ import {
   RotationButtons,
   SolutionDisplay,
 } from './ui';
+import { ScrambleDisplay } from './ui/ScrambleDisplay';
 
 import styles from './Cube3D.module.css';
 
@@ -25,6 +26,7 @@ export const Cube3D = () => {
   const [selectedColor, setSelectedColor] = useState<string>('#B90000');
   const [rotation, setRotation] = useState<Rotation>({ x: -22, y: -38, z: 0 });
   const [solution, setSolution] = useState<string | null>(null);
+  const [scramble, setScramble] = useState<string | null>(null);
   const [isSolved, setIsSolved] = useState<boolean>(true);
   const [hoveredStickerIndex, setHoveredStickerIndex] = useState<number | null>(
     null
@@ -50,8 +52,10 @@ export const Cube3D = () => {
   };
 
   const handleScramble = () => {
-    const newCube = applyScramble();
-    setCube(newCube);
+    const { cube: scrambledCube, scramble: scrambleMoves } = applyScramble();
+    setCube(scrambledCube);
+    setScramble(scrambleMoves.join(' '));
+    setSolution(null);
     setIsSolved(false);
   };
 
@@ -156,7 +160,13 @@ export const Cube3D = () => {
         onSolve={handleSolve}
         onMove={handleMove}
       />
-      <SolutionDisplay solution={solution} />
+      <div className={styles.displayContainer}>
+        <ScrambleDisplay scramble={scramble} />
+      </div>
+
+      <div className={styles.displayContainer}>
+        <SolutionDisplay solution={solution} />
+      </div>
     </div>
   );
 };

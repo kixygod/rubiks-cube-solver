@@ -9,7 +9,9 @@
     "paths": {
       "@entities/*": ["entities/*"],
       "@features/*": ["features/*"],
-      "@pages/*": ["pages/*"]
+      "@pages/*": ["pages/*"],
+      "@shared/*": ["shared/*"],
+      "@app/*": ["app/*"]
     },
     "moduleResolution": "bundler",
     "allowSyntheticDefaultImports": true,

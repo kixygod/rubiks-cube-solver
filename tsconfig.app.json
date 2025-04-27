@@ -10,7 +10,9 @@
     "paths": {
       "@entities/*": ["entities/*"],
       "@features/*": ["features/*"],
-      "@pages/*": ["pages/*"]
+      "@pages/*": ["pages/*"],
+      "@shared/*": ["shared/*"],
+      "@app/*": ["app/*"]
     },
 
     /* Bundler mode */

@@ -2,14 +2,14 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 import styles from '../Cube3D.module.css';
 
-interface SolutionDisplayProps {
-  solution: string | null;
+interface ScrambleDisplayProps {
+  scramble: string | null;
 }
 
-export const SolutionDisplay = ({ solution }: SolutionDisplayProps) => {
+export const ScrambleDisplay = ({ scramble }: ScrambleDisplayProps) => {
   return (
     <AnimatePresence>
-      {solution && (
+      {scramble && (
         <motion.div
           className={styles.solution}
           initial={{ opacity: 0, height: 0 }}
@@ -17,8 +17,8 @@ export const SolutionDisplay = ({ solution }: SolutionDisplayProps) => {
           exit={{ opacity: 0, height: 0 }}
           transition={{ duration: 0.4 }}
         >
-          <h2>Решение:</h2>
-          <p>{solution}</p>
+          <h2>Сгенерированный скрамбл:</h2>
+          <p>{scramble}</p>
         </motion.div>
       )}
     </AnimatePresence>

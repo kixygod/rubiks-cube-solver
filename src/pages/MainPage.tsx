@@ -1,11 +1,7 @@
-import { Cube3D } from "../features/cube3D/Cube3D";
+import { Cube3D } from '../features/cube3D/Cube3D';
 
 const MainPage: React.FC = () => {
-  return (
-    <div>
-      <Cube3D />
-    </div>
-  );
+  return <Cube3D />;
 };
 
 export default MainPage;

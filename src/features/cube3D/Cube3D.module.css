@@ -22,6 +22,32 @@
   border: 2px solid #fff;
 }
 
+.movesColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.movesRow {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}
+
+.moveButton {
+  aspect-ratio: 1 / 1;
+  min-width: 36px;
+  border: solid 1px gray;
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: #fff;
+  transition: all 0.2s ease;
+}
+
+.moveButton:hover {
+  background-color: gainsboro;
+}
+
 .cubeWrapper {
   padding: 64px;
 }
@@ -92,12 +118,74 @@
 
 .rotationButtons {
   display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
   gap: 20px;
+}
+
+.rotationButton {
+  aspect-ratio: 1 / 1;
+  min-width: 36px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: #fff;
 }
 
 .actionsRow {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   align-items: center;
+  justify-content: center;
   gap: 16px;
+}
+
+.actionButton {
+  padding: 8px;
+  border: solid 1px gray;
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: #fff;
+  transition: all 0.2s ease;
+}
+
+.actionButton:hover {
+  background-color: gainsboro;
+}
+
+@media screen and (max-width: 992px) {
+  .actionButton {
+    width: 256px;
+  }
+
+  .actionsRow {
+    flex-direction: column;
+  }
+}
+
+.solution {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  padding: 16px;
+  border-radius: 8px;
+  font-size: 1.7rem;
+  text-align: center;
+}
+
+.solutionContainer {
+  min-height: 100px;
+  transition: opacity 0.4s ease;
+  opacity: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.hidden {
+  opacity: 0;
 }

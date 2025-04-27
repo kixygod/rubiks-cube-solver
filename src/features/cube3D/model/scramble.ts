@@ -1,11 +1,11 @@
-import { initCube } from "../../../entities/cube/model";
-import { CubeState } from "../../../entities/cube/types";
+import { initCube } from '../../../entities/cube/model';
+import { CubeState } from '../../../entities/cube/types';
 
-import { applyMove } from "./applyMove";
+import { applyMove } from './applyMove';
 
 const getRandomMove = (): string => {
-  const moves = ["U", "D", "L", "R", "F", "B"];
-  const directions = ["", "'", "2"];
+  const moves = ['U', 'D', 'L', 'R', 'F', 'B'];
+  const directions = ['', "'", '2'];
   const randomMove = moves[Math.floor(Math.random() * moves.length)];
   const randomDirection =
     directions[Math.floor(Math.random() * directions.length)];
@@ -14,7 +14,7 @@ const getRandomMove = (): string => {
 
 export const generateScramble = (length = 15): string[] => {
   const scramble = [];
-  let previousMove = "";
+  let previousMove = '';
 
   for (let i = 0; i < length; i++) {
     let move = getRandomMove();
@@ -28,11 +28,11 @@ export const generateScramble = (length = 15): string[] => {
   return scramble;
 };
 
-export const applyScramble = (): CubeState => {
+export const applyScramble = (): { cube: CubeState; scramble: string[] } => {
   const scrambleMoves = generateScramble();
   let newCube = initCube();
   scrambleMoves.forEach((move) => {
     newCube = applyMove(newCube, move);
   });
-  return newCube;
+  return { cube: newCube, scramble: scrambleMoves };
 };
