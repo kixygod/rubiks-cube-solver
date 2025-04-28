@@ -13,11 +13,10 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-            ref: main
+            ref: CI
 
       - name: Deploy app
         run: |
-          ls -la
           docker-compose -f docker/docker-compose.yml down || true
           docker-compose -f docker/docker-compose.yml up --build -d
 
