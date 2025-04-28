@@ -163,6 +163,10 @@
   .actionsRow {
     flex-direction: column;
   }
+
+  .cubeWrapper {
+    padding-top: 256px;
+  }
 }
 
 .solution {
