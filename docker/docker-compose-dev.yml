@@ -1,0 +1,25 @@
+version: '3.8'
+services:
+  frontend:
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile.frontend
+    ports:
+      - '5002:80'
+    depends_on:
+      - backend
+    networks:
+      - rubiks-dev-network
+
+  backend:
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile.backend
+    ports:
+      - '5000:5000'
+    networks:
+      - rubiks-network
+
+networks:
+  rubiks-network:
+    driver: bridge

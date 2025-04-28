@@ -1,0 +1,26 @@
+name: rubik-dev
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  build-and-deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+            ref: dev
+
+      - name: Deploy app
+        run: |
+          docker-compose -f docker/docker-compose-dev.yml down || true
+          docker-compose -f docker/docker-compose-dev.yml up --build -d
+
+      - name: Clean up
+        run: |
+          docker image prune -f
+          find . -mindepth 1 -not -path "./.git*" -exec rm -rf {} +
