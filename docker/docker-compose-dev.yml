@@ -7,18 +7,6 @@ services:
       dockerfile: docker/Dockerfile.frontend
     ports:
       - '5002:80'
-    depends_on:
-      - backend-dev
-    networks:
-      - rubiks-dev-network
-
-  backend-dev:
-    container_name: rubik-dev-backend
-    build:
-      context: ../
-      dockerfile: docker/Dockerfile.backend
-    ports:
-      - '5000:5000'
     networks:
       - rubiks-dev-network
 
