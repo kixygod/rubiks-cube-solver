@@ -70,6 +70,8 @@ export const Cube3D = () => {
 
   const handleReset = () => {
     setCube(initCube());
+    setSolution(null);
+    setScramble(null);
     setIsSolved(true);
   };
 
