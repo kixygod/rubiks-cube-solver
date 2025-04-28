@@ -1,17 +1,19 @@
 version: '3.8'
 services:
-  frontend:
+  frontend-dev:
+    container_name: rubik-dev-frontend
     build:
       context: ../
       dockerfile: docker/Dockerfile.frontend
     ports:
       - '5002:80'
     depends_on:
-      - backend
+      - backend-dev
     networks:
       - rubiks-dev-network
 
-  backend:
+  backend-dev:
+    container_name: rubik-dev-backend
     build:
       context: ../
       dockerfile: docker/Dockerfile.backend
