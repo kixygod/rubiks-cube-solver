@@ -1,9 +1,9 @@
-import { LOCAL_STORAGE_KEY } from "../../../entities/cube/constants";
-import { CubeState } from "../../../entities/cube/types";
+import { LOCAL_STORAGE_KEY } from '../../../entities/cube/constants';
+import { CubeState } from '../../../entities/cube/types';
 
 export const saveScramble = (cube: CubeState): void => {
   localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(cube));
-  alert("Скрамбл сохранён!");
+  alert('Скрамбл сохранён!');
 };
 
 export const loadScramble = (): CubeState | null => {
@@ -13,10 +13,10 @@ export const loadScramble = (): CubeState | null => {
     if (Array.isArray(parsed) && parsed.length === 54) {
       return parsed;
     } else {
-      alert("Сохранённый скрамбл повреждён.");
+      alert('Сохранённый скрамбл повреждён.');
     }
   } else {
-    alert("Скрамбл не найден.");
+    alert('Скрамбл не найден.');
   }
   return null;
 };

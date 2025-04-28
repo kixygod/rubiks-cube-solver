@@ -83,6 +83,9 @@ export const Cube3D = () => {
     const loadedCube = loadScramble();
     if (loadedCube) {
       setCube(loadedCube);
+      setSolution(null);
+      // TODO: add new method for saving/loading scramble string
+      setScramble(null);
       setIsSolved(false);
     }
   };
