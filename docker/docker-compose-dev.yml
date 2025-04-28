@@ -18,8 +18,8 @@ services:
     ports:
       - '5000:5000'
     networks:
-      - rubiks-network
+      - rubiks-dev-network
 
 networks:
-  rubiks-network:
+  rubiks-dev-network:
     driver: bridge
