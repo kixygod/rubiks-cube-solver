@@ -27,7 +27,7 @@ export const sendScrambleToBackend = async (
   }
 
   try {
-    const response = await fetch('http://localhost:5000/solve', {
+    const response = await fetch('https://rubik-api.kixylab.ru/solve', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
