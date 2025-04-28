@@ -36,7 +36,7 @@
 
 .moveButton {
   aspect-ratio: 1 / 1;
-  min-width: 36px;
+  min-width: 120px;
   border: solid 1px gray;
   border-radius: 8px;
   cursor: pointer;
