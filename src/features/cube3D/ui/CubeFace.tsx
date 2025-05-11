@@ -9,7 +9,7 @@ interface CubeFaceProps {
   hoveredStickerIndex: number | null;
   onStickerClick: (index: number) => void;
   setHoveredStickerIndex: (index: number | null) => void;
-  hoveredMove: string | null;
+  hoveredMove?: string | null;
 }
 
 export const CubeFace = ({

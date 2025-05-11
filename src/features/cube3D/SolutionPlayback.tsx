@@ -88,6 +88,7 @@ const SolutionPlayback = () => {
             hoveredStickerIndex={null}
             onStickerClick={() => {}}
             setHoveredStickerIndex={() => {}}
+            hoveredMove={null}
           />
           <CubeFace
             start={9}
@@ -97,6 +98,7 @@ const SolutionPlayback = () => {
             hoveredStickerIndex={null}
             onStickerClick={() => {}}
             setHoveredStickerIndex={() => {}}
+            hoveredMove={null}
           />
           <CubeFace
             start={18}
@@ -106,6 +108,7 @@ const SolutionPlayback = () => {
             hoveredStickerIndex={null}
             onStickerClick={() => {}}
             setHoveredStickerIndex={() => {}}
+            hoveredMove={null}
           />
           <CubeFace
             start={27}
@@ -115,6 +118,7 @@ const SolutionPlayback = () => {
             hoveredStickerIndex={null}
             onStickerClick={() => {}}
             setHoveredStickerIndex={() => {}}
+            hoveredMove={null}
           />
           <CubeFace
             start={36}
@@ -124,6 +128,7 @@ const SolutionPlayback = () => {
             hoveredStickerIndex={null}
             onStickerClick={() => {}}
             setHoveredStickerIndex={() => {}}
+            hoveredMove={null}
           />
           <CubeFace
             start={45}
@@ -133,6 +138,7 @@ const SolutionPlayback = () => {
             hoveredStickerIndex={null}
             onStickerClick={() => {}}
             setHoveredStickerIndex={() => {}}
+            hoveredMove={null}
           />
         </div>
       </div>
