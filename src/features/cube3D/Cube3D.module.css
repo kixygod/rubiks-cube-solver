@@ -71,6 +71,16 @@
   grid-template-rows: repeat(3, 1fr);
 }
 
+.faceArrow {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  opacity: 0.8;
+  pointer-events: none; /* Prevent interference with clicks */
+  z-index: 20; /* Higher z-index for visibility */
+  transform-origin: center; /* Ensure scaling is centered */
+}
+
 .sticker {
   width: 49px;
   height: 49px;
