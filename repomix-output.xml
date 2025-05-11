@@ -1,0 +1,2188 @@
+This file is a merged representation of a subset of the codebase, containing files not matching ignore patterns, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+4. Repository files, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching these patterns are excluded: node_module/*
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+<additional_info>
+
+</additional_info>
+
+</file_summary>
+
+<directory_structure>
+.github/workflows/dev.yml
+.github/workflows/prod.yml
+.gitignore
+.prettierrc
+backend/solve_server.py
+docker/docker-compose-dev.yml
+docker/docker-compose.yml
+docker/Dockerfile.backend
+docker/Dockerfile.frontend
+docker/nginx.conf
+eslint.config.js
+index.html
+LICENCE.TXT
+package.json
+public/logo.svg
+public/vite.svg
+README.md
+src/App.module.css
+src/App.tsx
+src/entities/cube/constants.ts
+src/entities/cube/model.ts
+src/entities/cube/types.ts
+src/features/cube3D/Cube3D.module.css
+src/features/cube3D/Cube3D.tsx
+src/features/cube3D/model/applyMove.ts
+src/features/cube3D/model/index.ts
+src/features/cube3D/model/scramble.ts
+src/features/cube3D/model/solve.ts
+src/features/cube3D/model/storage.ts
+src/features/cube3D/SolutionPlayback.tsx
+src/features/cube3D/ui/ActionButtons.tsx
+src/features/cube3D/ui/ColorPicker.tsx
+src/features/cube3D/ui/CubeFace.tsx
+src/features/cube3D/ui/index.ts
+src/features/cube3D/ui/RotationButtons.tsx
+src/features/cube3D/ui/ScrambleDisplay.tsx
+src/features/cube3D/ui/SolutionDisplay.tsx
+src/main.tsx
+src/pages/MainPage.tsx
+src/shared/assets/icons/arrow-left.svg
+src/shared/assets/icons/arrow-right.svg
+src/shared/assets/icons/arrow-rotate.svg
+src/shared/assets/icons/index.ts
+src/shared/lib/validateCube.ts
+src/styles.css
+src/vite-env.d.ts
+tsconfig.app.json
+tsconfig.json
+tsconfig.node.json
+vite.config.ts
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="src/features/cube3D/SolutionPlayback.tsx">
+import { useState, useEffect } from 'react';
+
+import { CubeState, Rotation } from '@entities/cube/types';
+import { useLocation, useNavigate } from 'react-router-dom';
+
+import { applyMove } from './model';
+import { CubeFace, RotationButtons } from './ui';
+
+import styles from './Cube3D.module.css';
+
+const SolutionPlayback = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { initialCube, solution } = location.state || {};
+
+  const [cube, setCube] = useState<CubeState>(initialCube || []);
+  const [rotation, setRotation] = useState<Rotation>({ x: -22, y: -38, z: 0 });
+  const [moveIndex, setMoveIndex] = useState<number>(0);
+  const [solutionMoves, setSolutionMoves] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (solution) {
+      const moves = solution.trim().split(' ');
+      setSolutionMoves(moves);
+      setCube(initialCube);
+      setMoveIndex(0);
+    }
+  }, [solution, initialCube]);
+
+  const applyMovesUpToIndex = (index: number) => {
+    let currentCube = [...initialCube];
+    for (let i = 0; i <= index; i++) {
+      if (solutionMoves[i]) {
+        currentCube = applyMove(currentCube, solutionMoves[i]);
+      }
+    }
+    setCube(currentCube);
+  };
+
+  const handleSliderChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newIndex = Number(event.target.value);
+    setMoveIndex(newIndex);
+    applyMovesUpToIndex(newIndex);
+  };
+
+  const handleRotate = (axis: 'x' | 'y' | 'z', angle: number) => {
+    setRotation((prev) => ({
+      ...prev,
+      [axis]: prev[axis] + angle,
+    }));
+  };
+
+  const handleBack = () => {
+    navigate('/');
+  };
+
+  if (!initialCube || !solution) {
+    return (
+      <div className={styles.container}>
+        <h2>Ошибка: данные кубика или решения отсутствуют</h2>
+        <button className={styles.actionButton} onClick={handleBack}>
+          Вернуться
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className={styles.container}>
+      <h2>Воспроизведение решения</h2>
+      <div className={styles.cubeWrapper}>
+        <div
+          className={styles.cube}
+          style={{
+            transform: `rotateX(${rotation.x}deg) rotateY(${rotation.y}deg) rotateZ(${rotation.z}deg)`,
+          }}
+        >
+          <CubeFace
+            start={0}
+            faceClass="up"
+            cube={cube}
+            selectedColor=""
+            hoveredStickerIndex={null}
+            onStickerClick={() => {}}
+            setHoveredStickerIndex={() => {}}
+          />
+          <CubeFace
+            start={9}
+            faceClass="right"
+            cube={cube}
+            selectedColor=""
+            hoveredStickerIndex={null}
+            onStickerClick={() => {}}
+            setHoveredStickerIndex={() => {}}
+          />
+          <CubeFace
+            start={18}
+            faceClass="front"
+            cube={cube}
+            selectedColor=""
+            hoveredStickerIndex={null}
+            onStickerClick={() => {}}
+            setHoveredStickerIndex={() => {}}
+          />
+          <CubeFace
+            start={27}
+            faceClass="down"
+            cube={cube}
+            selectedColor=""
+            hoveredStickerIndex={null}
+            onStickerClick={() => {}}
+            setHoveredStickerIndex={() => {}}
+          />
+          <CubeFace
+            start={36}
+            faceClass="left"
+            cube={cube}
+            selectedColor=""
+            hoveredStickerIndex={null}
+            onStickerClick={() => {}}
+            setHoveredStickerIndex={() => {}}
+          />
+          <CubeFace
+            start={45}
+            faceClass="back"
+            cube={cube}
+            selectedColor=""
+            hoveredStickerIndex={null}
+            onStickerClick={() => {}}
+            setHoveredStickerIndex={() => {}}
+          />
+        </div>
+      </div>
+      <RotationButtons onRotate={handleRotate} />
+      <div className={styles.solution}>
+        <h3>
+          Шаг {moveIndex + 1} из {solutionMoves.length + 1}
+        </h3>
+        {/* <p>Текущий ход: {solutionMoves[moveIndex] ? 'Успех!' : '123'}</p> */}
+        <p>
+          {solutionMoves[moveIndex]
+            ? `Текущий ход: ${solutionMoves[moveIndex]}`
+            : 'Успех!'}
+        </p>
+        <input
+          type="range"
+          min="0"
+          max={solutionMoves.length}
+          value={moveIndex}
+          onChange={handleSliderChange}
+          className={styles.solutionSlider}
+        />
+        <div className={styles.solutionMoves}>
+          {solutionMoves.map((move, index) => (
+            <span
+              key={index}
+              className={`${styles.solutionMove} ${
+                index === moveIndex ? styles.activeMove : ''
+              }`}
+            >
+              {move}
+            </span>
+          ))}
+        </div>
+      </div>
+      <button className={styles.actionButton} onClick={handleBack}>
+        Вернуться
+      </button>
+    </div>
+  );
+};
+
+export default SolutionPlayback;
+</file>
+
+<file path=".github/workflows/dev.yml">
+name: rubik-dev
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  build-and-deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+            ref: dev
+
+      - name: Deploy app
+        run: |
+          docker-compose -f docker/docker-compose-dev.yml down || true
+          docker-compose -f docker/docker-compose-dev.yml up --build -d
+
+      - name: Clean up
+        run: |
+          docker image prune -f
+          find . -mindepth 1 -not -path "./.git*" -exec rm -rf {} +
+</file>
+
+<file path=".gitignore">
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+</file>
+
+<file path=".prettierrc">
+{
+  "semi": true,
+  "trailingComma": "es5",
+  "singleQuote": true,
+  "printWidth": 80
+}
+</file>
+
+<file path="docker/Dockerfile.backend">
+FROM python:3.9-slim
+WORKDIR /app
+COPY backend/ .
+RUN apt-get update && apt-get install -y \
+    wget \
+    gcc \
+    libc-dev \
+    && rm -rf /var/lib/apt/lists/* \
+    && pip install gunicorn flask flask_cors kociemba \
+    && rm -rf /root/.cache/pip \
+    && apt-get purge -y --auto-remove gcc libc-dev
+CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "solve_server:app"]
+EXPOSE 5000
+</file>
+
+<file path="docker/nginx.conf">
+worker_processes 1;
+
+   events {
+       worker_connections 1024;
+   }
+
+   http {
+       include       mime.types;
+       default_type  application/octet-stream;
+       sendfile        on;
+       keepalive_timeout  65;
+
+       server {
+           listen 80;
+           listen 443 ssl;
+           server_name rubik.kixylab.ru;
+
+           ssl_certificate /etc/letsencrypt/live/rubik.kixylab.ru/fullchain.pem;
+           ssl_certificate_key /etc/letsencrypt/live/rubik.kixylab.ru/privkey.pem;
+
+           root /usr/share/nginx/html;
+           index index.html;
+
+           location / {
+               try_files $uri $uri/ /index.html;
+           }
+
+           location /solve {
+               proxy_pass http://backend:5000/solve;
+               proxy_set_header Host $host;
+               proxy_set_header X-Real-IP $remote_addr;
+               proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+               proxy_set_header X-Forwarded-Proto $scheme;
+           }
+       }
+
+       server {
+           listen 80;
+           listen 443 ssl;
+           server_name rubik-api.kixylab.ru;
+
+           ssl_certificate /etc/letsencrypt/live/rubik-api.kixylab.ru/fullchain.pem;
+           ssl_certificate_key /etc/letsencrypt/live/rubik-api.kixylab.ru/privkey.pem;
+
+           location / {
+               proxy_pass http://backend:5000/;
+               proxy_set_header Host $host;
+               proxy_set_header X-Real-IP $remote_addr;
+               proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+               proxy_set_header X-Forwarded-Proto $scheme;
+           }
+       }
+   }
+</file>
+
+<file path="LICENCE.TXT">
+Copyright © 2025 BOGDAN YEREMIN
+
+This source code is provided for educational and non-commercial use only.
+You may view, fork, and learn from this code, but redistribution or commercial use
+is prohibited without explicit permission from the author.
+
+All rights reserved.
+</file>
+
+<file path="public/logo.svg">
+<svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="128" height="128" rx="64" fill="white"/>
+<path d="M107.845 39.861L65.3596 12.5743C64.5317 12.0426 63.4703 12.0426 62.6427 12.5743L20.1559 39.8499C19.4354 40.3125 18.9995 41.1104 19 41.9667L19.0103 87.2284C19.0108 88.1023 19.4643 88.9125 20.2087 89.3701L62.6854 115.453C63.0889 115.701 63.545 115.825 64.001 115.825C64.457 115.825 64.9133 115.701 65.3163 115.453L107.796 89.3804C108.54 88.9233 108.994 88.1126 108.994 87.2387L109 41.977C109 41.121 108.564 40.3235 107.845 39.861ZM64.0008 18.6182L79.5714 28.5809L64.0008 38.5431L48.4306 28.5809L64.0008 18.6182ZM24.795 85.3967V69.3227L40.0529 78.5863L40.0555 94.7706L24.795 85.3967ZM40.0555 71.9139L24.7948 62.5405V46.2649L40.0555 56.0297V71.9139ZM28.069 41.5476L42.9483 32.0274L57.8276 41.5476L42.9483 51.0678L28.069 41.5476ZM45.8399 56.0297L61.1011 46.2644V62.5405L45.8399 71.9139V56.0297ZM45.8475 82.0463L55.9909 88.5362L45.8475 94.7666V82.0463ZM61.1084 107.695L48.4801 99.9386L61.1084 92.1837V107.695ZM63.9985 86.8513L48.3926 77.1058L63.9985 67.4038L79.6044 77.1412L63.9985 86.8513ZM66.8934 107.695V92.1978L79.5121 99.9439L66.8934 107.695ZM82.1546 94.7782L72.001 88.5422L82.1546 82.0455V94.7782ZM82.1621 71.9257L66.9014 62.5518V46.2772L82.1621 56.042V71.9257ZM70.1754 41.5589L85.0547 32.0392L99.934 41.5589L85.0547 51.0792L70.1754 41.5589ZM103.208 85.4083L87.9471 94.7819V78.901L103.208 69.3521V85.4083ZM103.208 62.5518L87.9471 71.9257V56.0418L103.208 46.2764V62.5518Z" fill="black"/>
+</svg>
+</file>
+
+<file path="public/vite.svg">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--logos" width="31.88" height="32" preserveAspectRatio="xMidYMid meet" viewBox="0 0 256 257"><defs><linearGradient id="IconifyId1813088fe1fbc01fb466" x1="-.828%" x2="57.636%" y1="7.652%" y2="78.411%"><stop offset="0%" stop-color="#41D1FF"></stop><stop offset="100%" stop-color="#BD34FE"></stop></linearGradient><linearGradient id="IconifyId1813088fe1fbc01fb467" x1="43.376%" x2="50.316%" y1="2.242%" y2="89.03%"><stop offset="0%" stop-color="#FFEA83"></stop><stop offset="8.333%" stop-color="#FFDD35"></stop><stop offset="100%" stop-color="#FFA800"></stop></linearGradient></defs><path fill="url(#IconifyId1813088fe1fbc01fb466)" d="M255.153 37.938L134.897 252.976c-2.483 4.44-8.862 4.466-11.382.048L.875 37.958c-2.746-4.814 1.371-10.646 6.827-9.67l120.385 21.517a6.537 6.537 0 0 0 2.322-.004l117.867-21.483c5.438-.991 9.574 4.796 6.877 9.62Z"></path><path fill="url(#IconifyId1813088fe1fbc01fb467)" d="M185.432.063L96.44 17.501a3.268 3.268 0 0 0-2.634 3.014l-5.474 92.456a3.268 3.268 0 0 0 3.997 3.378l24.777-5.718c2.318-.535 4.413 1.507 3.936 3.838l-7.361 36.047c-.495 2.426 1.782 4.5 4.151 3.78l15.304-4.649c2.372-.72 4.652 1.36 4.15 3.788l-11.698 56.621c-.732 3.542 3.979 5.473 5.943 2.437l1.313-2.028l72.516-144.72c1.215-2.423-.88-5.186-3.54-4.672l-25.505 4.922c-2.396.462-4.435-1.77-3.759-4.114l16.646-57.705c.677-2.35-1.37-4.583-3.769-4.113Z"></path></svg>
+</file>
+
+<file path="README.md">
+# Rubiks Cube Assistant
+Diploma project
+</file>
+
+<file path="src/entities/cube/constants.ts">
+export const COLORS = [
+  "#FFFFFF",
+  "#0045AD",
+  "#B90000",
+  "#FFD500",
+  "#009B48",
+  "#FF5900",
+];
+
+export const CENTER_INDICES = [4, 13, 22, 31, 40, 49];
+
+export const LOCAL_STORAGE_KEY = "rubiks-cube-scramble";
+</file>
+
+<file path="src/entities/cube/model.ts">
+import { COLORS, CENTER_INDICES } from "./constants";
+import { CubeState } from "./types";
+
+export const initCube = (): CubeState => {
+  const newCube = new Array(54).fill("#000000");
+  for (let i = 0; i < 9; i++) newCube[i] = COLORS[0];
+  for (let i = 9; i < 18; i++) newCube[i] = COLORS[1];
+  for (let i = 18; i < 27; i++) newCube[i] = COLORS[2];
+  for (let i = 27; i < 36; i++) newCube[i] = COLORS[3];
+  for (let i = 36; i < 45; i++) newCube[i] = COLORS[4];
+  for (let i = 45; i < 54; i++) newCube[i] = COLORS[5];
+  return newCube;
+};
+
+export const isCubeSolved = (cube: CubeState): boolean => {
+  const faceRanges = [
+    { start: 0, end: 9, center: CENTER_INDICES[0] },
+    { start: 9, end: 18, center: CENTER_INDICES[1] },
+    { start: 18, end: 27, center: CENTER_INDICES[2] },
+    { start: 27, end: 36, center: CENTER_INDICES[3] },
+    { start: 36, end: 45, center: CENTER_INDICES[4] },
+    { start: 45, end: 54, center: CENTER_INDICES[5] },
+  ];
+
+  for (const { start, end, center } of faceRanges) {
+    const centerColor = cube[center];
+    for (let i = start; i < end; i++) {
+      if (cube[i] !== centerColor) {
+        return false;
+      }
+    }
+  }
+  return true;
+};
+</file>
+
+<file path="src/entities/cube/types.ts">
+export type CubeState = string[];
+
+export type Rotation = {
+  x: number;
+  y: number;
+  z: number;
+};
+</file>
+
+<file path="src/features/cube3D/model/applyMove.ts">
+import { CubeState } from "../../../entities/cube/types";
+
+export const applyMove = (cube: CubeState, move: string): CubeState => {
+  const newCube = [...cube];
+
+  const rotateFace = (faceStart: number, clockwise: boolean = true) => {
+    const temp = [
+      newCube[faceStart + 0],
+      newCube[faceStart + 1],
+      newCube[faceStart + 2],
+      newCube[faceStart + 3],
+      newCube[faceStart + 4],
+      newCube[faceStart + 5],
+      newCube[faceStart + 6],
+      newCube[faceStart + 7],
+      newCube[faceStart + 8],
+    ];
+    if (clockwise) {
+      newCube[faceStart + 0] = temp[6];
+      newCube[faceStart + 1] = temp[3];
+      newCube[faceStart + 2] = temp[0];
+      newCube[faceStart + 3] = temp[7];
+      newCube[faceStart + 4] = temp[4];
+      newCube[faceStart + 5] = temp[1];
+      newCube[faceStart + 6] = temp[8];
+      newCube[faceStart + 7] = temp[5];
+      newCube[faceStart + 8] = temp[2];
+    } else {
+      newCube[faceStart + 0] = temp[2];
+      newCube[faceStart + 1] = temp[5];
+      newCube[faceStart + 2] = temp[8];
+      newCube[faceStart + 3] = temp[1];
+      newCube[faceStart + 4] = temp[4];
+      newCube[faceStart + 5] = temp[7];
+      newCube[faceStart + 6] = temp[0];
+      newCube[faceStart + 7] = temp[3];
+      newCube[faceStart + 8] = temp[6];
+    }
+  };
+
+  let baseMove = move;
+  let isPrime = false;
+  let times = 1;
+
+  if (move.includes("'")) {
+    baseMove = move.replace("'", "");
+    isPrime = true;
+  } else if (move.includes("2")) {
+    baseMove = move.replace("2", "");
+    times = 2;
+  }
+
+  for (let i = 0; i < times; i++) {
+    switch (baseMove) {
+      case "U": {
+        rotateFace(0, !isPrime);
+        const temp = [newCube[18], newCube[19], newCube[20]];
+        if (!isPrime) {
+          newCube[18] = newCube[9];
+          newCube[19] = newCube[10];
+          newCube[20] = newCube[11];
+          newCube[9] = newCube[45];
+          newCube[10] = newCube[46];
+          newCube[11] = newCube[47];
+          newCube[45] = newCube[36];
+          newCube[46] = newCube[37];
+          newCube[47] = newCube[38];
+          newCube[36] = temp[0];
+          newCube[37] = temp[1];
+          newCube[38] = temp[2];
+        } else {
+          newCube[18] = newCube[36];
+          newCube[19] = newCube[37];
+          newCube[20] = newCube[38];
+          newCube[36] = newCube[45];
+          newCube[37] = newCube[46];
+          newCube[38] = newCube[47];
+          newCube[45] = newCube[9];
+          newCube[46] = newCube[10];
+          newCube[47] = newCube[11];
+          newCube[9] = temp[0];
+          newCube[10] = temp[1];
+          newCube[11] = temp[2];
+        }
+        break;
+      }
+      case "D": {
+        rotateFace(27, !isPrime);
+        const temp = [newCube[24], newCube[25], newCube[26]];
+        if (!isPrime) {
+          newCube[24] = newCube[42];
+          newCube[25] = newCube[43];
+          newCube[26] = newCube[44];
+          newCube[42] = newCube[51];
+          newCube[43] = newCube[52];
+          newCube[44] = newCube[53];
+          newCube[51] = newCube[15];
+          newCube[52] = newCube[16];
+          newCube[53] = newCube[17];
+          newCube[15] = temp[0];
+          newCube[16] = temp[1];
+          newCube[17] = temp[2];
+        } else {
+          newCube[24] = newCube[15];
+          newCube[25] = newCube[16];
+          newCube[26] = newCube[17];
+          newCube[15] = newCube[51];
+          newCube[16] = newCube[52];
+          newCube[17] = newCube[53];
+          newCube[51] = newCube[42];
+          newCube[52] = newCube[43];
+          newCube[53] = newCube[44];
+          newCube[42] = temp[0];
+          newCube[43] = temp[1];
+          newCube[44] = temp[2];
+        }
+        break;
+      }
+      case "L": {
+        rotateFace(36, !isPrime);
+        const temp = [newCube[0], newCube[3], newCube[6]];
+        if (!isPrime) {
+          newCube[0] = newCube[53];
+          newCube[3] = newCube[50];
+          newCube[6] = newCube[47];
+          newCube[47] = newCube[33];
+          newCube[50] = newCube[30];
+          newCube[53] = newCube[27];
+          newCube[27] = newCube[18];
+          newCube[30] = newCube[21];
+          newCube[33] = newCube[24];
+          newCube[18] = temp[0];
+          newCube[21] = temp[1];
+          newCube[24] = temp[2];
+        } else {
+          newCube[0] = newCube[18];
+          newCube[3] = newCube[21];
+          newCube[6] = newCube[24];
+          newCube[18] = newCube[27];
+          newCube[21] = newCube[30];
+          newCube[24] = newCube[33];
+          newCube[27] = newCube[53];
+          newCube[30] = newCube[50];
+          newCube[33] = newCube[47];
+          newCube[47] = temp[2];
+          newCube[50] = temp[1];
+          newCube[53] = temp[0];
+        }
+        break;
+      }
+      case "R": {
+        rotateFace(9, !isPrime);
+        const temp = [newCube[2], newCube[5], newCube[8]];
+        if (!isPrime) {
+          newCube[2] = newCube[20];
+          newCube[5] = newCube[23];
+          newCube[8] = newCube[26];
+          newCube[20] = newCube[29];
+          newCube[23] = newCube[32];
+          newCube[26] = newCube[35];
+          newCube[29] = newCube[51];
+          newCube[32] = newCube[48];
+          newCube[35] = newCube[45];
+          newCube[45] = temp[2];
+          newCube[48] = temp[1];
+          newCube[51] = temp[0];
+        } else {
+          newCube[2] = newCube[51];
+          newCube[5] = newCube[48];
+          newCube[8] = newCube[45];
+          newCube[45] = newCube[35];
+          newCube[48] = newCube[32];
+          newCube[51] = newCube[29];
+          newCube[29] = newCube[20];
+          newCube[32] = newCube[23];
+          newCube[35] = newCube[26];
+          newCube[20] = temp[0];
+          newCube[23] = temp[1];
+          newCube[26] = temp[2];
+        }
+        break;
+      }
+      case "F": {
+        rotateFace(18, !isPrime);
+        const temp = [newCube[6], newCube[7], newCube[8]];
+        if (!isPrime) {
+          newCube[6] = newCube[44];
+          newCube[7] = newCube[41];
+          newCube[8] = newCube[38];
+          newCube[38] = newCube[27];
+          newCube[41] = newCube[28];
+          newCube[44] = newCube[29];
+          newCube[27] = newCube[15];
+          newCube[28] = newCube[12];
+          newCube[29] = newCube[9];
+          newCube[9] = temp[0];
+          newCube[12] = temp[1];
+          newCube[15] = temp[2];
+        } else {
+          newCube[6] = newCube[9];
+          newCube[7] = newCube[12];
+          newCube[8] = newCube[15];
+          newCube[9] = newCube[29];
+          newCube[12] = newCube[28];
+          newCube[15] = newCube[27];
+          newCube[27] = newCube[38];
+          newCube[28] = newCube[41];
+          newCube[29] = newCube[44];
+          newCube[38] = temp[2];
+          newCube[41] = temp[1];
+          newCube[44] = temp[0];
+        }
+        break;
+      }
+      case "B": {
+        rotateFace(45, !isPrime);
+        const temp = [newCube[0], newCube[1], newCube[2]];
+        if (!isPrime) {
+          newCube[0] = newCube[11];
+          newCube[1] = newCube[14];
+          newCube[2] = newCube[17];
+          newCube[11] = newCube[35];
+          newCube[14] = newCube[34];
+          newCube[17] = newCube[33];
+          newCube[33] = newCube[36];
+          newCube[34] = newCube[39];
+          newCube[35] = newCube[42];
+          newCube[36] = temp[2];
+          newCube[39] = temp[1];
+          newCube[42] = temp[0];
+        } else {
+          newCube[0] = newCube[42];
+          newCube[1] = newCube[39];
+          newCube[2] = newCube[36];
+          newCube[36] = newCube[33];
+          newCube[39] = newCube[34];
+          newCube[42] = newCube[35];
+          newCube[33] = newCube[17];
+          newCube[34] = newCube[14];
+          newCube[35] = newCube[11];
+          newCube[11] = temp[0];
+          newCube[14] = temp[1];
+          newCube[17] = temp[2];
+        }
+        break;
+      }
+      default:
+        console.warn(`Unknown move: ${baseMove}`);
+        break;
+    }
+  }
+
+  return newCube;
+};
+</file>
+
+<file path="src/features/cube3D/model/index.ts">
+export * from './applyMove';
+export * from './scramble';
+export * from './storage';
+export * from './solve';
+</file>
+
+<file path="src/features/cube3D/ui/ColorPicker.tsx">
+import { COLORS } from "../../../entities/cube/constants";
+import styles from "../Cube3D.module.css";
+
+interface ColorPickerProps {
+  onColorSelect: (color: string) => void;
+}
+
+export const ColorPicker = ({ onColorSelect }: ColorPickerProps) => {
+  return (
+    <div className={styles.controls}>
+      {COLORS.map((color) => (
+        <button
+          key={color}
+          className={styles.colorButton}
+          style={{ backgroundColor: color }}
+          onClick={() => onColorSelect(color)}
+        />
+      ))}
+    </div>
+  );
+};
+</file>
+
+<file path="src/features/cube3D/ui/CubeFace.tsx">
+import { CENTER_INDICES } from '../../../entities/cube/constants';
+import styles from '../Cube3D.module.css';
+
+interface CubeFaceProps {
+  start: number;
+  faceClass: string;
+  cube: string[];
+  selectedColor: string;
+  hoveredStickerIndex: number | null;
+  onStickerClick: (index: number) => void;
+  setHoveredStickerIndex: (index: number | null) => void;
+}
+
+export const CubeFace = ({
+  start,
+  faceClass,
+  cube,
+  selectedColor,
+  hoveredStickerIndex,
+  onStickerClick,
+  setHoveredStickerIndex,
+}: CubeFaceProps) => {
+  return (
+    <div className={`${styles.face} ${styles[faceClass]}`}>
+      {cube.slice(start, start + 9).map((color, idx) => {
+        const index = start + idx;
+        return (
+          <div
+            key={index}
+            className={styles.sticker}
+            style={{ backgroundColor: color }}
+            onClick={() =>
+              !CENTER_INDICES.includes(index) && onStickerClick(index)
+            }
+            onMouseEnter={() => setHoveredStickerIndex(index)}
+            onMouseLeave={() => setHoveredStickerIndex(null)}
+          >
+            {hoveredStickerIndex === index && selectedColor && (
+              <div
+                className={styles.colorIndicator}
+                style={{ backgroundColor: selectedColor }}
+              />
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+</file>
+
+<file path="src/features/cube3D/ui/ScrambleDisplay.tsx">
+import { motion, AnimatePresence } from 'framer-motion';
+
+import styles from '../Cube3D.module.css';
+
+interface ScrambleDisplayProps {
+  scramble: string | null;
+}
+
+export const ScrambleDisplay = ({ scramble }: ScrambleDisplayProps) => {
+  return (
+    <AnimatePresence>
+      {scramble && (
+        <motion.div
+          className={styles.solution}
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: 'auto' }}
+          exit={{ opacity: 0, height: 0 }}
+          transition={{ duration: 0.4 }}
+        >
+          <h2>Сгенерированный скрамбл:</h2>
+          <p>{scramble}</p>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+};
+</file>
+
+<file path="src/shared/assets/icons/arrow-left.svg">
+<?xml version="1.0" encoding="utf-8"?><!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+<svg width="800px" height="800px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M5 12H19M5 12L11 6M5 12L11 18" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+</file>
+
+<file path="src/shared/assets/icons/arrow-right.svg">
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Uploaded to: SVG Repo, www.svgrepo.com, Transformed by: SVG Repo Mixer Tools -->
+<svg width="800px" height="800px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" transform="matrix(-1, 0, 0, 1, 0, 0)">
+<g id="SVGRepo_bgCarrier" stroke-width="0"/>
+<g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"/>
+<g id="SVGRepo_iconCarrier"> <path d="M5 12H19M5 12L11 6M5 12L11 18" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/> </g>
+</svg>
+</file>
+
+<file path="src/shared/assets/icons/arrow-rotate.svg">
+<?xml version="1.0" encoding="utf-8"?><!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+<svg width="800px" height="800px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M4.06189 13C4.02104 12.6724 4 12.3387 4 12C4 7.58172 7.58172 4 12 4C14.5006 4 16.7332 5.14727 18.2002 6.94416M19.9381 11C19.979 11.3276 20 11.6613 20 12C20 16.4183 16.4183 20 12 20C9.61061 20 7.46589 18.9525 6 17.2916M9 17H6V17.2916M18.2002 4V6.94416M18.2002 6.94416V6.99993L15.2002 7M6 20V17.2916" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+</file>
+
+<file path="src/shared/assets/icons/index.ts">
+import ArrowLeftIcon from './arrow-left.svg?react';
+import ArrowRightIcon from './arrow-right.svg?react';
+import ArrowRotate from './arrow-rotate.svg?react';
+
+export { ArrowLeftIcon, ArrowRightIcon, ArrowRotate };
+</file>
+
+<file path="src/shared/lib/validateCube.ts">
+export function validateCubeColors(cube: string[]): {
+  valid: boolean;
+  error?: string;
+} {
+  if (cube.length !== 54) {
+    return { valid: false, error: "Кубик должен содержать 54 наклейки." };
+  }
+
+  const colorCounts: Record<string, number> = {};
+
+  for (const color of cube) {
+    colorCounts[color] = (colorCounts[color] || 0) + 1;
+  }
+
+  const entries = Object.entries(colorCounts);
+  if (entries.length !== 6) {
+    return { valid: false, error: "Должно быть ровно 6 цветов." };
+  }
+
+  for (const [color, count] of entries) {
+    if (count !== 9) {
+      return {
+        valid: false,
+        error: `Цвет ${color} встречается ${count} раз вместо 9.`,
+      };
+    }
+  }
+
+  return { valid: true };
+}
+</file>
+
+<file path="src/styles.css">
+@import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
+
+* {
+  padding: 0;
+  margin: 0;
+  font-family: "Rubik", sans-serif;
+  font-optical-sizing: auto;
+  border: 0;
+  scroll-behavior: smooth;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+:focus,
+:active {
+  outline: none;
+}
+
+a,
+a:link,
+a:visited {
+  display: inline-block;
+  color: inherit;
+  text-decoration: none;
+}
+
+a:focus,
+a:active {
+  outline: none;
+}
+
+a:hover {
+  color: inherit;
+  text-decoration: none;
+}
+
+aside,
+nav,
+footer,
+header,
+section,
+main {
+  display: block;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+ul,
+ul li {
+  list-style: none;
+}
+
+img {
+  vertical-align: top;
+}
+
+img,
+svg {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+address {
+  font-style: normal;
+}
+
+input,
+textarea,
+button,
+select {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  background-color: transparent;
+
+  ::-webkit-search-decoration,
+  ::-webkit-search-cancel-button,
+  ::-webkit-search-results-button,
+  ::-webkit-search-results-decoration,
+  ::-ms-clear {
+    display: none;
+  }
+}
+
+button {
+  display: inline-block;
+  cursor: pointer;
+  background: none;
+  background-color: transparent;
+  box-shadow: none;
+}
+
+input:focus,
+input:active,
+button:focus,
+button:active {
+  outline: none;
+}
+
+button::-moz-focus-inner {
+  padding: 0;
+  border: 0;
+}
+
+label {
+  cursor: pointer;
+}
+
+legend {
+  display: block;
+}
+</file>
+
+<file path="docker/docker-compose.yml">
+version: '3.8'
+services:
+  frontend-prod:
+    container_name: rubik-prod-frontend
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile.frontend
+    ports:
+      - '5001:80'
+    depends_on:
+      - backend-prod
+    networks:
+      - rubiks-network
+
+  backend-prod:
+    container_name: rubik-prod-backend
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile.backend
+    ports:
+      - '5000:5000'
+    networks:
+      - rubiks-network
+
+networks:
+  rubiks-network:
+    driver: bridge
+</file>
+
+<file path="docker/Dockerfile.frontend">
+FROM node:slim AS builder
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm install
+COPY src ./src
+COPY public ./public
+COPY index.html tsconfig.json tsconfig.app.json tsconfig.node.json vite.config.ts eslint.config.js ./
+RUN npm run build
+
+FROM nginx:alpine
+COPY --from=builder /app/dist /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
+</file>
+
+<file path="eslint.config.js">
+import js from "@eslint/js";
+import globals from "globals";
+import reactHooks from "eslint-plugin-react-hooks";
+import reactRefresh from "eslint-plugin-react-refresh";
+import tseslint from "typescript-eslint";
+import importPlugin from "eslint-plugin-import";
+
+export default tseslint.config(
+  { ignores: ["dist"] },
+  {
+    extends: [js.configs.recommended, ...tseslint.configs.recommended],
+    files: ["**/*.{ts,tsx}"],
+    languageOptions: {
+      ecmaVersion: 2020,
+      globals: globals.browser,
+    },
+    plugins: {
+      "react-hooks": reactHooks,
+      "react-refresh": reactRefresh,
+      import: importPlugin,
+    },
+    rules: {
+      ...reactHooks.configs.recommended.rules,
+      "react-refresh/only-export-components": [
+        "warn",
+        { allowConstantExport: true },
+      ],
+      "import/order": [
+        "error",
+        {
+          groups: [
+            "builtin",
+            "external",
+            "internal",
+            "parent",
+            "sibling",
+            "index",
+          ],
+          pathGroups: [
+            {
+              pattern: "react",
+              group: "external",
+              position: "before",
+            },
+            {
+              pattern: "./**.module.css",
+              group: "sibling",
+              position: "after",
+            },
+            {
+              pattern: "@/**",
+              group: "internal",
+              position: "after",
+            },
+          ],
+          pathGroupsExcludedImportTypes: ["react"],
+          "newlines-between": "always",
+          alphabetize: {
+            order: "asc",
+            caseInsensitive: true,
+          },
+        },
+      ],
+    },
+  }
+);
+</file>
+
+<file path="index.html">
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/logo.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rubik's Cube Solver</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+</file>
+
+<file path="src/App.module.css">
+.app {
+  width: 100dvw;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+</file>
+
+<file path="src/features/cube3D/model/scramble.ts">
+import { initCube } from '../../../entities/cube/model';
+import { CubeState } from '../../../entities/cube/types';
+
+import { applyMove } from './applyMove';
+
+const getRandomMove = (): string => {
+  const moves = ['U', 'D', 'L', 'R', 'F', 'B'];
+  const directions = ['', "'", '2'];
+  const randomMove = moves[Math.floor(Math.random() * moves.length)];
+  const randomDirection =
+    directions[Math.floor(Math.random() * directions.length)];
+  return randomMove + randomDirection;
+};
+
+export const generateScramble = (length = 15): string[] => {
+  const scramble = [];
+  let previousMove = '';
+
+  for (let i = 0; i < length; i++) {
+    let move = getRandomMove();
+    while (move[0] === previousMove[0]) {
+      move = getRandomMove();
+    }
+    scramble.push(move);
+    previousMove = move;
+  }
+
+  return scramble;
+};
+
+export const applyScramble = (): { cube: CubeState; scramble: string[] } => {
+  const scrambleMoves = generateScramble();
+  let newCube = initCube();
+  scrambleMoves.forEach((move) => {
+    newCube = applyMove(newCube, move);
+  });
+  return { cube: newCube, scramble: scrambleMoves };
+};
+</file>
+
+<file path="src/features/cube3D/model/storage.ts">
+import { LOCAL_STORAGE_KEY } from '../../../entities/cube/constants';
+import { CubeState } from '../../../entities/cube/types';
+
+export const saveScramble = (cube: CubeState): void => {
+  localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(cube));
+  alert('Скрамбл сохранён!');
+};
+
+export const loadScramble = (): CubeState | null => {
+  const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
+  if (saved) {
+    const parsed = JSON.parse(saved);
+    if (Array.isArray(parsed) && parsed.length === 54) {
+      return parsed;
+    } else {
+      alert('Сохранённый скрамбл повреждён.');
+    }
+  } else {
+    alert('Скрамбл не найден.');
+  }
+  return null;
+};
+</file>
+
+<file path="src/features/cube3D/ui/ActionButtons.tsx">
+import styles from '../Cube3D.module.css';
+
+interface ActionButtonsProps {
+  onReset: () => void;
+  onSave: () => void;
+  onLoad: () => void;
+  onScramble: () => void;
+  onSolve: () => void;
+  onMove: (move: string) => void;
+}
+
+export const ActionButtons = ({
+  onReset,
+  onSave,
+  onLoad,
+  onScramble,
+  onSolve,
+  onMove,
+}: ActionButtonsProps) => {
+  const moves = [
+    ['F', 'R', 'U', 'B', 'L', 'D'],
+    ["F'", "R'", "U'", "B'", "L'", "D'"],
+  ];
+
+  return (
+    <>
+      <div className={styles.movesColumn}>
+        {moves.map((moveSet, index) => (
+          <div key={index} className={styles.movesRow}>
+            {moveSet.map((move) => (
+              <button
+                key={move}
+                className={styles.moveButton}
+                onClick={() => onMove(move)}
+              >
+                {move}
+              </button>
+            ))}
+          </div>
+        ))}
+      </div>
+      <div className={styles.actionsRow}>
+        <button className={styles.actionButton} onClick={onReset}>
+          Сбросить
+        </button>
+        <button className={styles.actionButton} onClick={onSave}>
+          Сохранить скрамбл
+        </button>
+        <button className={styles.actionButton} onClick={onLoad}>
+          Загрузить скрамбл
+        </button>
+        <button className={styles.actionButton} onClick={onScramble}>
+          Запутать кубик
+        </button>
+        <button className={styles.actionButton} onClick={onSolve}>
+          Найти решение
+        </button>
+      </div>
+    </>
+  );
+};
+</file>
+
+<file path="src/features/cube3D/ui/index.ts">
+export * from './CubeFace';
+export * from './ColorPicker';
+export * from './ActionButtons';
+export * from './RotationButtons';
+export * from './SolutionDisplay';
+export * from './ScrambleDisplay';
+export * from '../SolutionPlayback';
+</file>
+
+<file path="src/features/cube3D/ui/RotationButtons.tsx">
+import {
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  ArrowRotate,
+} from '@shared/assets/icons';
+
+import styles from '../Cube3D.module.css';
+
+interface RotationButtonsProps {
+  onRotate: (axis: 'x' | 'y' | 'z', angle: number) => void;
+}
+
+export const RotationButtons = ({ onRotate }: RotationButtonsProps) => {
+  return (
+    <div className={styles.rotationButtons}>
+      <button
+        className={styles.rotationButton}
+        onClick={() => onRotate('y', -90)}
+      >
+        <ArrowLeftIcon width={32} height={32} />
+      </button>
+      <button
+        className={styles.rotationButton}
+        onClick={() => onRotate('z', 180)}
+      >
+        <ArrowRotate width={32} height={32} />
+      </button>
+      <button
+        className={styles.rotationButton}
+        onClick={() => onRotate('y', 90)}
+      >
+        <ArrowRightIcon width={32} height={32} />
+      </button>
+    </div>
+  );
+};
+</file>
+
+<file path="src/features/cube3D/ui/SolutionDisplay.tsx">
+import { motion, AnimatePresence } from 'framer-motion';
+
+import styles from '../Cube3D.module.css';
+
+interface SolutionDisplayProps {
+  solution: string | null;
+}
+
+export const SolutionDisplay = ({ solution }: SolutionDisplayProps) => {
+  return (
+    <AnimatePresence>
+      {solution && (
+        <motion.div
+          className={styles.solution}
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: 'auto' }}
+          exit={{ opacity: 0, height: 0 }}
+          transition={{ duration: 0.4 }}
+        >
+          <h2>Решение:</h2>
+          <p>{solution}</p>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+};
+</file>
+
+<file path="src/vite-env.d.ts">
+/// <reference types="vite/client" />
+
+declare module '*.svg?react' {
+  import * as React from 'react';
+  const ReactComponent: React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
+  export default ReactComponent;
+}
+</file>
+
+<file path="backend/solve_server.py">
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+import kociemba
+
+app = Flask(__name__)
+CORS(app)
+
+@app.route("/solve", methods=["POST"])
+def solve():
+    data = request.get_json()
+    print(f"Received cube data: {data['cube']}")
+    try:
+        result = kociemba.solve(data["cube"])
+        return jsonify({"solution": result})
+    except Exception as e:
+        print("[ERROR] ", str(e))
+        return jsonify({"error": str(e)}), 400
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000, debug=True)
+</file>
+
+<file path="package.json">
+{
+  "name": "rubiks-cube-assistant",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@react-three/cannon": "^6.6.0",
+    "@react-three/drei": "^10.0.7",
+    "@react-three/fiber": "^9.1.2",
+    "framer-motion": "^12.9.2",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-router-dom": "^7.6.0",
+    "react-three-fiber": "^6.0.13",
+    "three": "^0.176.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.22.0",
+    "@types/node": "^22.15.2",
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
+    "@types/three": "^0.176.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "eslint": "^9.22.0",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.19",
+    "globals": "^16.0.0",
+    "typescript": "~5.7.2",
+    "typescript-eslint": "^8.26.1",
+    "vite": "^6.3.1",
+    "vite-plugin-svgr": "^4.3.0"
+  }
+}
+</file>
+
+<file path="src/App.tsx">
+import React from 'react';
+
+import MainPage from './pages/MainPage';
+
+import styles from './App.module.css';
+
+const App: React.FC = () => {
+  return (
+    <div className={styles.app}>
+      <MainPage />
+    </div>
+  );
+};
+
+export default App;
+</file>
+
+<file path="src/features/cube3D/model/solve.ts">
+import { COLORS } from '../../../entities/cube/constants';
+import { CubeState } from '../../../entities/cube/types';
+
+export const getScrambleString = (cube: CubeState): string => {
+  const colorMapping: Record<string, string> = {
+    [COLORS[0]]: 'U',
+    [COLORS[1]]: 'R',
+    [COLORS[2]]: 'F',
+    [COLORS[3]]: 'D',
+    [COLORS[4]]: 'L',
+    [COLORS[5]]: 'B',
+  };
+
+  const scramble = cube.map((color) => colorMapping[color]).join('');
+  console.log('Generated scramble string:', scramble);
+  return scramble;
+};
+
+export const sendScrambleToBackend = async (
+  cube: CubeState
+): Promise<string | null> => {
+  const scramble = getScrambleString(cube);
+
+  if (scramble.length !== 54) {
+    console.error('Invalid scramble string:', scramble);
+    return null;
+  }
+
+  try {
+    const response = await fetch('https://rubik-api.kixylab.ru/solve', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ cube: scramble }),
+    });
+
+    const data = await response.json();
+    if (response.ok) {
+      console.log('Solution:', data.solution);
+      return data.solution;
+    } else {
+      console.error('Error solving cube:', data.error);
+      return 'Невозможно найти решение';
+    }
+  } catch (error) {
+    console.error('Network error:', error);
+    return 'Сервер недоступен';
+  }
+};
+</file>
+
+<file path="src/main.tsx">
+import { StrictMode } from 'react';
+
+import { createRoot } from 'react-dom/client';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+
+import App from './App.tsx';
+import SolutionPlayback from './features/cube3D/SolutionPlayback.tsx';
+
+import './styles.css';
+
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<App />} />
+        <Route path="/solution-playback" element={<SolutionPlayback />} />
+      </Routes>
+    </BrowserRouter>
+  </StrictMode>
+);
+</file>
+
+<file path="tsconfig.app.json">
+{
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+    "baseUrl": "src",
+    "paths": {
+      "@entities/*": ["entities/*"],
+      "@features/*": ["features/*"],
+      "@pages/*": ["pages/*"],
+      "@shared/*": ["shared/*"],
+      "@app/*": ["app/*"]
+    },
+    "types": ["node", "@types/react", "@types/react-dom"],
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true
+  },
+  "include": ["src"]
+}
+</file>
+
+<file path="tsconfig.node.json">
+{
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
+    "target": "ES2022",
+    "lib": ["ES2023"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+    "types": ["node"],
+    "baseUrl": ".",
+    "paths": {
+      "@entities/*": ["src/entities/*"],
+      "@features/*": ["src/features/*"],
+      "@pages/*": ["src/pages/*"],
+      "@shared/*": ["src/shared/*"],
+      "@app/*": ["src/app/*"]
+    },
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true
+  },
+  "include": ["vite.config.ts"]
+}
+</file>
+
+<file path="vite.config.ts">
+import path from 'path';
+
+import react from '@vitejs/plugin-react';
+import { defineConfig } from 'vite';
+import svgr from 'vite-plugin-svgr';
+
+export default defineConfig({
+  plugins: [
+    react(),
+    svgr({
+      svgrOptions: {
+        icon: true,
+      },
+    }),
+  ],
+  resolve: {
+    alias: {
+      '@entities': path.resolve(__dirname, './src/entities'),
+      '@features': path.resolve(__dirname, './src/features'),
+      '@pages': path.resolve(__dirname, './src/pages'),
+      '@shared': path.resolve(__dirname, './src/shared'),
+      '@app': path.resolve(__dirname, './src/app'),
+    },
+  },
+});
+</file>
+
+<file path=".github/workflows/prod.yml">
+name: rubik-prod
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+            ref: main
+
+      - name: Deploy app
+        run: |
+          docker-compose -f docker/docker-compose.yml down || true
+          docker-compose -f docker/docker-compose.yml up --build -d
+
+      - name: Clean up
+        run: |
+          docker image prune -f
+          find . -mindepth 1 -not -path "./.git*" -exec rm -rf {} +
+</file>
+
+<file path="docker/docker-compose-dev.yml">
+version: '3.8'
+services:
+  frontend-dev:
+    container_name: rubik-dev-frontend
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile.frontend
+    ports:
+      - '5002:80'
+    networks:
+      - rubiks-dev-network
+
+networks:
+  rubiks-dev-network:
+    driver: bridge
+</file>
+
+<file path="src/pages/MainPage.tsx">
+import { Cube3D } from '../features/cube3D/Cube3D';
+
+const MainPage: React.FC = () => {
+  return <Cube3D />;
+};
+
+export default MainPage;
+</file>
+
+<file path="tsconfig.json">
+{
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ],
+  "compilerOptions": {
+    "baseUrl": "src",
+    "paths": {
+      "@entities/*": ["entities/*"],
+      "@features/*": ["features/*"],
+      "@pages/*": ["pages/*"],
+      "@shared/*": ["shared/*"],
+      "@app/*": ["app/*"]
+    },
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "strict": true
+  }
+}
+</file>
+
+<file path="src/features/cube3D/Cube3D.module.css">
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  align-items: center;
+  padding: 20px;
+}
+
+.controls {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(3, 40px);
+  grid-template-rows: repeat(2, 40px);
+}
+
+.colorButton {
+  border: 2px solid black;
+  cursor: pointer;
+}
+
+.colorButton:hover {
+  border: 2px solid #fff;
+}
+
+.movesColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.movesRow {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}
+
+.moveButton {
+  aspect-ratio: 1 / 1;
+  min-width: 36px;
+  border: solid 1px gray;
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: #fff;
+  transition: all 0.2s ease;
+}
+
+.moveButton:hover {
+  background-color: gainsboro;
+}
+
+.cubeWrapper {
+  padding: 64px;
+}
+
+.cube {
+  position: relative;
+  width: 156px;
+  height: 156px;
+  transform-style: preserve-3d;
+  transition: transform 0.5s ease-in-out;
+}
+
+.face {
+  position: absolute;
+  width: 156px;
+  height: 156px;
+  display: grid;
+  background: black;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+}
+
+.sticker {
+  width: 49px;
+  height: 49px;
+  margin: 1px;
+  border-radius: 4px;
+  border: 1px solid black;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  position: relative;
+}
+
+.colorIndicator {
+  position: absolute;
+  bottom: 10%;
+  right: 10%;
+  width: 20px;
+  height: 20px;
+  background-color: transparent;
+  border-top-left-radius: 100%;
+}
+
+.sticker:hover {
+  box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.6);
+}
+
+.up {
+  transform: rotateX(90deg) translateZ(78px);
+}
+.left {
+  transform: rotateY(-90deg) translateZ(78px);
+}
+.front {
+  transform: translateZ(78px);
+}
+.right {
+  transform: rotateY(90deg) translateZ(78px);
+}
+.back {
+  transform: rotateY(180deg) translateZ(78px);
+}
+.down {
+  transform: rotateX(-90deg) translateZ(78px);
+}
+
+.rotationButtons {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.rotationButton {
+  aspect-ratio: 1 / 1;
+  min-width: 36px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: #fff;
+}
+
+.actionsRow {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+.actionButton {
+  padding: 8px;
+  border: solid 1px gray;
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: #fff;
+  transition: all 0.2s ease;
+}
+
+.actionButton:hover {
+  background-color: gainsboro;
+}
+
+@media screen and (max-width: 992px) {
+  .actionButton {
+    width: 256px;
+  }
+
+  .actionsRow {
+    flex-direction: column;
+  }
+
+  .cubeWrapper {
+    padding-top: 128px;
+  }
+}
+
+.displayContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.solution {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  padding: 16px;
+  border-radius: 8px;
+  font-size: 1.7rem;
+  text-align: center;
+}
+
+.solutionContainer {
+  min-height: 100px;
+  transition: opacity 0.4s ease;
+  opacity: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.hidden {
+  opacity: 0;
+}
+
+.solutionSlider {
+  width: 500px;
+  margin: 20px 0;
+}
+
+.solutionMoves {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  max-width: 500px;
+}
+
+.solutionMove {
+  padding: 4px 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+}
+
+.activeMove {
+  border: 1px solid #007bff;
+  background-color: #e7f1ff;
+}
+</file>
+
+<file path="src/features/cube3D/Cube3D.tsx">
+import { useState } from 'react';
+
+import { initCube, isCubeSolved } from '@entities/cube/model';
+import { CubeState, Rotation } from '@entities/cube/types';
+import { useNavigate } from 'react-router-dom';
+
+import {
+  applyMove,
+  applyScramble,
+  loadScramble,
+  saveScramble,
+  sendScrambleToBackend,
+} from './model';
+import {
+  ActionButtons,
+  ColorPicker,
+  CubeFace,
+  RotationButtons,
+  SolutionDisplay,
+} from './ui';
+import { ScrambleDisplay } from './ui/ScrambleDisplay';
+
+import styles from './Cube3D.module.css';
+
+export const Cube3D = () => {
+  const [cube, setCube] = useState<CubeState>(initCube);
+  const [selectedColor, setSelectedColor] = useState<string>('#B90000');
+  const [rotation, setRotation] = useState<Rotation>({ x: -22, y: -38, z: 0 });
+  const [solution, setSolution] = useState<string | null>(null);
+  const [scramble, setScramble] = useState<string | null>(null);
+  const [isSolved, setIsSolved] = useState<boolean>(true);
+  const [hoveredStickerIndex, setHoveredStickerIndex] = useState<number | null>(
+    null
+  );
+
+  const navigate = useNavigate();
+
+  const handleMove = (move: string) => {
+    setCube(applyMove(cube, move));
+    setIsSolved(false);
+  };
+
+  const handleStickerClick = (index: number) => {
+    const newCube = [...cube];
+    newCube[index] = selectedColor;
+    setCube(newCube);
+    setIsSolved(false);
+  };
+
+  const handleRotate = (axis: 'x' | 'y' | 'z', angle: number) => {
+    setRotation((prev) => ({
+      ...prev,
+      [axis]: prev[axis] + angle,
+    }));
+  };
+
+  const handleScramble = () => {
+    const { cube: scrambledCube, scramble: scrambleMoves } = applyScramble();
+    setCube(scrambledCube);
+    setScramble(scrambleMoves.join(' '));
+    setSolution(null);
+    setIsSolved(false);
+  };
+
+  const handleSolve = async () => {
+    if (isSolved || isCubeSolved(cube)) {
+      alert('Кубик уже собран или не был изменён! Пожалуйста, запутайте его.');
+    } else {
+      const solution = await sendScrambleToBackend(cube);
+      if (solution) setSolution(solution);
+    }
+  };
+
+  const handleReset = () => {
+    setCube(initCube());
+    setSolution(null);
+    setScramble(null);
+    setIsSolved(true);
+  };
+
+  const handleSave = () => {
+    saveScramble(cube);
+  };
+
+  const handleLoad = () => {
+    const loadedCube = loadScramble();
+    if (loadedCube) {
+      setCube(loadedCube);
+      setSolution(null);
+      setScramble(null);
+      setIsSolved(false);
+    }
+  };
+
+  const handleShowSolution = () => {
+    if (solution && scramble) {
+      navigate('/solution-playback', {
+        state: { initialCube: cube, solution },
+      });
+    }
+  };
+
+  return (
+    <div className={styles.container}>
+      <div className={styles.cubeWrapper}>
+        <div
+          className={styles.cube}
+          style={{
+            transform: `rotateX(${rotation.x}deg) rotateY(${rotation.y}deg) rotateZ(${rotation.z}deg)`,
+          }}
+        >
+          <CubeFace
+            start={0}
+            faceClass="up"
+            cube={cube}
+            selectedColor={selectedColor}
+            hoveredStickerIndex={hoveredStickerIndex}
+            onStickerClick={handleStickerClick}
+            setHoveredStickerIndex={setHoveredStickerIndex}
+          />
+          <CubeFace
+            start={9}
+            faceClass="right"
+            cube={cube}
+            selectedColor={selectedColor}
+            hoveredStickerIndex={hoveredStickerIndex}
+            onStickerClick={handleStickerClick}
+            setHoveredStickerIndex={setHoveredStickerIndex}
+          />
+          <CubeFace
+            start={18}
+            faceClass="front"
+            cube={cube}
+            selectedColor={selectedColor}
+            hoveredStickerIndex={hoveredStickerIndex}
+            onStickerClick={handleStickerClick}
+            setHoveredStickerIndex={setHoveredStickerIndex}
+          />
+          <CubeFace
+            start={27}
+            faceClass="down"
+            cube={cube}
+            selectedColor={selectedColor}
+            hoveredStickerIndex={hoveredStickerIndex}
+            onStickerClick={handleStickerClick}
+            setHoveredStickerIndex={setHoveredStickerIndex}
+          />
+          <CubeFace
+            start={36}
+            faceClass="left"
+            cube={cube}
+            selectedColor={selectedColor}
+            hoveredStickerIndex={hoveredStickerIndex}
+            onStickerClick={handleStickerClick}
+            setHoveredStickerIndex={setHoveredStickerIndex}
+          />
+          <CubeFace
+            start={45}
+            faceClass="back"
+            cube={cube}
+            selectedColor={selectedColor}
+            hoveredStickerIndex={hoveredStickerIndex}
+            onStickerClick={handleStickerClick}
+            setHoveredStickerIndex={setHoveredStickerIndex}
+          />
+        </div>
+      </div>
+      <RotationButtons onRotate={handleRotate} />
+      <ColorPicker onColorSelect={setSelectedColor} />
+      <ActionButtons
+        onReset={handleReset}
+        onSave={handleSave}
+        onLoad={handleLoad}
+        onScramble={handleScramble}
+        onSolve={handleSolve}
+        onMove={handleMove}
+      />
+      <div className={styles.displayContainer}>
+        <ScrambleDisplay scramble={scramble} />
+      </div>
+      <div className={styles.displayContainer}>
+        <SolutionDisplay solution={solution} />
+        {solution && (
+          <button className={styles.actionButton} onClick={handleShowSolution}>
+            Показать решение
+          </button>
+        )}
+      </div>
+    </div>
+  );
+};
+</file>
+
+</files>

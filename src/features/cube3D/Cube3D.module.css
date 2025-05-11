@@ -4,6 +4,7 @@
   gap: 32px;
   align-items: center;
   padding: 20px;
+  width: 100dvw;
 }
 
 .controls {
@@ -92,7 +93,6 @@
   border-top-left-radius: 100%;
 }
 
-
 .sticker:hover {
   box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.6);
 }
@@ -169,6 +169,12 @@
   }
 }
 
+.displayContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .solution {
   display: flex;
   flex-direction: column;
@@ -178,6 +184,8 @@
   border-radius: 8px;
   font-size: 1.7rem;
   text-align: center;
+  max-width: 532px;
+  width: 100%;
 }
 
 .solutionContainer {
@@ -192,4 +200,37 @@
 
 .hidden {
   opacity: 0;
+}
+
+.solutionSlider {
+  max-width: 500px;
+  width: 100%;
+  margin: 20px 0;
+}
+
+.solutionMoves {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  max-width: 500px;
+}
+
+.solutionMove {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  min-height: 40px;
+  min-width: 40px;
+}
+
+.activeMove {
+  border: 1px solid #007bff;
+  background-color: #e7f1ff;
 }

@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { initCube, isCubeSolved } from '@entities/cube/model';
 import { CubeState, Rotation } from '@entities/cube/types';
+import { useNavigate } from 'react-router-dom';
 
 import {
   applyMove,
@@ -31,6 +32,8 @@ export const Cube3D = () => {
   const [hoveredStickerIndex, setHoveredStickerIndex] = useState<number | null>(
     null
   );
+
+  const navigate = useNavigate();
 
   const handleMove = (move: string) => {
     setCube(applyMove(cube, move));
@@ -84,9 +87,16 @@ export const Cube3D = () => {
     if (loadedCube) {
       setCube(loadedCube);
       setSolution(null);
-      // TODO: add new method for saving/loading scramble string
       setScramble(null);
       setIsSolved(false);
+    }
+  };
+
+  const handleShowSolution = () => {
+    if (solution && scramble) {
+      navigate('/solution-playback', {
+        state: { initialCube: cube, solution },
+      });
     }
   };
 
@@ -168,9 +178,13 @@ export const Cube3D = () => {
       <div className={styles.displayContainer}>
         <ScrambleDisplay scramble={scramble} />
       </div>
-
       <div className={styles.displayContainer}>
         <SolutionDisplay solution={solution} />
+        {solution && (
+          <button className={styles.actionButton} onClick={handleShowSolution}>
+            Показать решение
+          </button>
+        )}
       </div>
     </div>
   );
