@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 
-import { COLORS } from '@entities/cube/constants';
+import { COLORS, CENTER_INDICES } from '@entities/cube/constants';
 import { CubeState, Rotation } from '@entities/cube/types';
 import { validateCubeColors } from '@shared/lib/validateCube';
 import { useNavigate } from 'react-router-dom';
 
-import { CubeFace, ColorPicker } from './ui';
+import { CubeFace, ColorPicker, RotationButtons } from './ui';
 
 import styles from './Cube3D.module.css';
 
@@ -32,14 +32,21 @@ const FACE_INSTRUCTIONS: Record<
 };
 
 const CubeScanner = () => {
-  const [cube, setCube] = useState<CubeState>(new Array(54).fill('#000000'));
+  const [cube, setCube] = useState<CubeState>(new Array(54).fill('#808080'));
+  const [previewCube, setPreviewCube] = useState<CubeState>(() => {
+    const initial = new Array(54).fill('#808080');
+    CENTER_INDICES.forEach((idx, i) => {
+      initial[idx] = COLORS[i];
+    });
+    return initial;
+  });
   const [currentFaceIndex, setCurrentFaceIndex] = useState(0);
   const [rotation, setRotation] = useState<Rotation>({ x: -22, y: -38, z: 0 });
   const [isScanning, setIsScanning] = useState(false);
   const [confirmationMode, setConfirmationMode] = useState(false);
   const [selectedColor, setSelectedColor] = useState<string>(COLORS[0]);
   const [detectedColors, setDetectedColors] = useState<string[]>(
-    new Array(9).fill('#000000')
+    new Array(9).fill('#808080')
   );
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -111,7 +118,7 @@ const CubeScanner = () => {
   const startWebcam = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { width: 640, height: 480 },
+        video: { width: 640, height: 480, facingMode: 'environment' },
       });
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
@@ -172,15 +179,18 @@ const CubeScanner = () => {
     const currentFace = FACE_ORDER[currentFaceIndex];
     const start = FACE_STARTS[currentFace];
     const newCube = [...cube];
+    const newPreviewCube = [...previewCube];
     detectedColors.forEach((color, idx) => {
       newCube[start + idx] = color;
+      newPreviewCube[start + idx] = color;
     });
     setCube(newCube);
+    setPreviewCube(newPreviewCube);
     console.log(`Confirmed colors for ${currentFace}:`, detectedColors);
 
     if (currentFaceIndex < FACE_ORDER.length - 1) {
       setCurrentFaceIndex(currentFaceIndex + 1);
-      setDetectedColors(new Array(9).fill('#000000'));
+      setDetectedColors(new Array(9).fill('#808080'));
       setConfirmationMode(false);
       setIsScanning(true);
     } else {
@@ -191,7 +201,14 @@ const CubeScanner = () => {
       } else {
         alert(`Ошибка валидации куба: ${validation.error}`);
         setCurrentFaceIndex(0);
-        setCube(new Array(54).fill('#000000'));
+        setCube(new Array(54).fill('#808080'));
+        setPreviewCube(() => {
+          const initial = new Array(54).fill('#808080');
+          CENTER_INDICES.forEach((idx, i) => {
+            initial[idx] = COLORS[i];
+          });
+          return initial;
+        });
         setConfirmationMode(false);
         startWebcam();
       }
@@ -199,7 +216,7 @@ const CubeScanner = () => {
   };
 
   const handleRescan = () => {
-    setDetectedColors(new Array(9).fill('#000000'));
+    setDetectedColors(new Array(9).fill('#808080'));
     setConfirmationMode(false);
     setIsScanning(true);
   };
@@ -210,12 +227,26 @@ const CubeScanner = () => {
     setDetectedColors(newColors);
   };
 
+  const handleRotate = (axis: 'x' | 'y' | 'z', angle: number) => {
+    setRotation((prev) => ({
+      ...prev,
+      [axis]: prev[axis] + angle,
+    }));
+  };
+
+  const handleBack = () => {
+    navigate('/');
+  };
+
   const currentFace = FACE_ORDER[currentFaceIndex];
   const instructions = FACE_INSTRUCTIONS[currentFace];
 
   return (
     <div className={styles.container}>
       <h2>Сканирование кубика Рубика</h2>
+      <button className={styles.actionButton} onClick={handleBack}>
+        Вернуться
+      </button>
       <div className={styles.instructions}>
         {!confirmationMode ? (
           <>
@@ -256,23 +287,71 @@ const CubeScanner = () => {
           ></video>
           <canvas ref={canvasRef} className={styles.canvas}></canvas>
         </div>
-        <div className={styles.cubeWrapper}>
-          <div
-            className={styles.cube}
-            style={{
-              transform: `rotateX(${rotation.x}deg) rotateY(${rotation.y}deg) rotateZ(${rotation.z}deg)`,
-            }}
-          >
-            <CubeFace
-              start={FACE_STARTS[currentFace]}
-              faceClass={currentFace}
-              cube={cube}
-              selectedColor=""
-              hoveredStickerIndex={null}
-              onStickerClick={() => {}}
-              setHoveredStickerIndex={() => {}}
-            />
+        <div className={styles.cubeContainer}>
+          <div className={styles.cubeWrapper}>
+            <div
+              className={styles.cube}
+              style={{
+                transform: `rotateX(${rotation.x}deg) rotateY(${rotation.y}deg) rotateZ(${rotation.z}deg)`,
+              }}
+            >
+              <CubeFace
+                start={0}
+                faceClass="up"
+                cube={previewCube}
+                selectedColor=""
+                hoveredStickerIndex={null}
+                onStickerClick={() => {}}
+                setHoveredStickerIndex={() => {}}
+              />
+              <CubeFace
+                start={9}
+                faceClass="right"
+                cube={previewCube}
+                selectedColor=""
+                hoveredStickerIndex={null}
+                onStickerClick={() => {}}
+                setHoveredStickerIndex={() => {}}
+              />
+              <CubeFace
+                start={18}
+                faceClass="front"
+                cube={previewCube}
+                selectedColor=""
+                hoveredStickerIndex={null}
+                onStickerClick={() => {}}
+                setHoveredStickerIndex={() => {}}
+              />
+              <CubeFace
+                start={27}
+                faceClass="down"
+                cube={previewCube}
+                selectedColor=""
+                hoveredStickerIndex={null}
+                onStickerClick={() => {}}
+                setHoveredStickerIndex={() => {}}
+              />
+              <CubeFace
+                start={36}
+                faceClass="left"
+                cube={previewCube}
+                selectedColor=""
+                hoveredStickerIndex={null}
+                onStickerClick={() => {}}
+                setHoveredStickerIndex={() => {}}
+              />
+              <CubeFace
+                start={45}
+                faceClass="back"
+                cube={previewCube}
+                selectedColor=""
+                hoveredStickerIndex={null}
+                onStickerClick={() => {}}
+                setHoveredStickerIndex={() => {}}
+              />
+            </div>
           </div>
+          <RotationButtons onRotate={handleRotate} />
         </div>
       </div>
       {!confirmationMode ? (

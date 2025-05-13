@@ -137,11 +137,16 @@ export const Cube3D = () => {
   };
 
   const handleShowSolution = () => {
-    if (solution && scramble) {
+    console.log('handleShowSolution:', { solution, scramble });
+    if (solution) {
       navigate('/solution-playback', {
         state: { initialCube: cube, solution },
       });
     }
+  };
+
+  const handleScan = () => {
+    navigate('/scan');
   };
 
   const faceToMove: Record<string, string> = {
@@ -250,6 +255,11 @@ export const Cube3D = () => {
         onMove={handleMove}
         onHoverMove={setHoveredMove}
       />
+      <div className={styles.actionsRow}>
+        <button className={styles.actionButton} onClick={handleScan}>
+          Сканировать кубик
+        </button>
+      </div>
       <div className={styles.displayContainer}>
         <ScrambleDisplay scramble={scramble} />
       </div>

@@ -1,16 +1,16 @@
 .container {
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 24px;
   align-items: center;
-  padding: 20px;
+  padding: 16px;
 }
 
 .controls {
   display: grid;
-  gap: 10px;
-  grid-template-columns: repeat(3, 40px);
-  grid-template-rows: repeat(2, 40px);
+  gap: 8px;
+  grid-template-columns: repeat(3, 36px);
+  grid-template-rows: repeat(2, 36px);
 }
 
 .colorButton {
@@ -36,12 +36,13 @@
 
 .moveButton {
   aspect-ratio: 1 / 1;
-  min-width: 36px;
+  min-width: 32px;
   border: solid 1px gray;
   border-radius: 8px;
   cursor: pointer;
   background-color: #fff;
   transition: all 0.2s ease;
+  font-size: 0.9rem;
 }
 
 .moveButton:hover {
@@ -49,7 +50,14 @@
 }
 
 .cubeWrapper {
-  padding: 64px;
+  padding: 48px;
+}
+
+.cubeContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
 }
 
 .cube {
@@ -96,8 +104,8 @@
   position: absolute;
   bottom: 10%;
   right: 10%;
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   background-color: transparent;
   border-top-left-radius: 100%;
 }
@@ -130,12 +138,12 @@
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: 20px;
+  gap: 16px;
 }
 
 .rotationButton {
   aspect-ratio: 1 / 1;
-  min-width: 36px;
+  min-width: 32px;
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -148,34 +156,21 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 16px;
+  gap: 12px;
 }
 
 .actionButton {
-  padding: 8px;
+  padding: 8px 16px;
   border: solid 1px gray;
   border-radius: 8px;
   cursor: pointer;
   background-color: #fff;
   transition: all 0.2s ease;
+  font-size: 1rem;
 }
 
 .actionButton:hover {
   background-color: gainsboro;
-}
-
-@media screen and (max-width: 992px) {
-  .actionButton {
-    width: 256px;
-  }
-
-  .actionsRow {
-    flex-direction: column;
-  }
-
-  .cubeWrapper {
-    padding-top: 128px;
-  }
 }
 
 .displayContainer {
@@ -187,18 +182,18 @@
 .solution {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   align-items: center;
-  padding: 16px;
+  padding: 12px;
   border-radius: 8px;
-  font-size: 1.7rem;
+  font-size: 1.5rem;
   text-align: center;
-  max-width: 532px;
+  max-width: 500px;
   width: 100%;
 }
 
 .solutionContainer {
-  min-height: 100px;
+  min-height: 80px;
   transition: opacity 0.4s ease;
   opacity: 1;
   display: flex;
@@ -212,17 +207,17 @@
 }
 
 .solutionSlider {
-  max-width: 500px;
+  max-width: 450px;
   width: 100%;
-  margin: 20px 0;
+  margin: 16px 0;
 }
 
 .solutionMoves {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 6px;
   justify-content: center;
-  max-width: 500px;
+  max-width: 450px;
 }
 
 .solutionMove {
@@ -233,10 +228,10 @@
   border: 1px solid #ccc;
   border-radius: 4px;
   background-color: #f9f9f9;
-  font-size: 1rem;
+  font-size: 0.9rem;
   transition: all 0.2s ease;
-  min-height: 40px;
-  min-width: 40px;
+  min-height: 36px;
+  min-width: 36px;
 }
 
 .activeMove {
@@ -244,19 +239,36 @@
   background-color: #e7f1ff;
 }
 
+.completedMove {
+  border: 1px solid #4caf50;
+  background-color: #e8f5e9;
+}
+
+.pulse {
+  animation: pulse 1s ease-in-out;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
 .instructions {
   text-align: center;
-  max-width: 600px;
-  padding: 16px;
+  max-width: 90%;
+  padding: 12px;
   border: 1px solid #ccc;
   border-radius: 8px;
   background-color: #f9f9f9;
+  font-size: 1rem;
+  text-wrap: balance;
 }
 
 .scannerWrapper {
   display: flex;
   flex-direction: row;
-  gap: 32px;
+  gap: 24px;
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
@@ -264,8 +276,10 @@
 
 .videoContainer {
   position: relative;
-  width: 640px;
-  height: 480px;
+  max-width: 640px;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
 }
 
 .video {
@@ -285,10 +299,10 @@
 
 .colorGrid {
   display: grid;
-  grid-template-columns: repeat(3, 50px);
-  grid-template-rows: repeat(3, 50px);
-  gap: 5px;
-  margin-top: 20px;
+  grid-template-columns: repeat(3, 48px);
+  grid-template-rows: repeat(3, 48px);
+  gap: 4px;
+  margin-top: 16px;
 }
 
 .colorCell {
@@ -300,15 +314,15 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
-  margin-top: 20px;
+  gap: 16px;
+  margin-top: 16px;
 }
 
 .confirmationGrid {
   display: grid;
   grid-template-columns: repeat(3, 60px);
   grid-template-rows: repeat(3, 60px);
-  gap: 5px;
+  gap: 4px;
 }
 
 .confirmationCell {
@@ -324,5 +338,249 @@
 
 .confirmationButtons {
   display: flex;
-  gap: 16px;
+  gap: 12px;
+}
+
+/* Tablet (768px–992px) */
+@media screen and (max-width: 992px) {
+  .container {
+    padding: 12px;
+  }
+
+  .cubeWrapper {
+    padding: 32px;
+  }
+
+  .cube {
+    width: 120px;
+    height: 120px;
+  }
+
+  .face {
+    width: 120px;
+    height: 120px;
+  }
+
+  .sticker {
+    width: 37px;
+    height: 37px;
+  }
+
+  .faceArrow {
+    width: 90px;
+    height: 90px;
+  }
+
+  .colorIndicator {
+    width: 14px;
+    height: 14px;
+  }
+
+  .up {
+    transform: rotateX(90deg) translateZ(60px);
+  }
+  .left {
+    transform: rotateY(-90deg) translateZ(60px);
+  }
+  .front {
+    transform: translateZ(60px);
+  }
+  .right {
+    transform: rotateY(90deg) translateZ(60px);
+  }
+  .back {
+    transform: rotateY(180deg) translateZ(60px);
+  }
+  .down {
+    transform: rotateX(-90deg) translateZ(60px);
+  }
+
+  .actionButton {
+    padding: 6px 12px;
+    font-size: 0.9rem;
+  }
+
+  .scannerWrapper {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .videoContainer {
+    max-width: 480px;
+  }
+
+  .confirmationGrid {
+    grid-template-columns: repeat(3, 50px);
+    grid-template-rows: repeat(3, 50px);
+  }
+
+  .colorGrid {
+    grid-template-columns: repeat(3, 40px);
+    grid-template-rows: repeat(3, 40px);
+  }
+
+  .solution {
+    font-size: 1.3rem;
+    max-width: 400px;
+  }
+}
+
+/* Mobile (<768px) */
+@media screen and (max-width: 768px) {
+  .container {
+    padding: 8px;
+    gap: 16px;
+  }
+
+  .cubeWrapper {
+    padding: 24px;
+  }
+
+  .cube {
+    width: 100px;
+    height: 100px;
+  }
+
+  .face {
+    width: 100px;
+    height: 100px;
+  }
+
+  .sticker {
+    width: 31px;
+    height: 31px;
+    margin: 0.5px;
+  }
+
+  .faceArrow {
+    width: 80px;
+    height: 80px;
+  }
+
+  .colorIndicator {
+    width: 12px;
+    height: 12px;
+  }
+
+  .up {
+    transform: rotateX(90deg) translateZ(50px);
+  }
+  .left {
+    transform: rotateY(-90deg) translateZ(50px);
+  }
+  .front {
+    transform: translateZ(50px);
+  }
+  .right {
+    transform: rotateY(90deg) translateZ(50px);
+  }
+  .back {
+    transform: rotateY(180deg) translateZ(50px);
+  }
+  .down {
+    transform: rotateX(-90deg) translateZ(50px);
+  }
+
+  .controls {
+    grid-template-columns: repeat(3, 32px);
+    grid-template-rows: repeat(2, 32px);
+    gap: 6px;
+  }
+
+  .moveButton {
+    min-width: 28px;
+    font-size: 0.8rem;
+  }
+
+  .rotationButtons {
+    gap: 12px;
+  }
+
+  .rotationButton {
+    min-width: 28px;
+  }
+
+  .actionsRow {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .actionButton {
+    width: 100%;
+    max-width: 200px;
+    padding: 6px;
+    font-size: 0.85rem;
+  }
+
+  .scannerWrapper {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .videoContainer {
+    max-width: 100%;
+  }
+
+  .video {
+    width: 100%;
+    height: auto;
+  }
+
+  .canvas {
+    width: 100%;
+    height: 100%;
+  }
+
+  .confirmationContainer {
+    gap: 12px;
+  }
+
+  .confirmationGrid {
+    grid-template-columns: repeat(3, 40px);
+    grid-template-rows: repeat(3, 40px);
+    gap: 3px;
+  }
+
+  .confirmationButtons {
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .confirmationButtons .actionButton {
+    width: 100%;
+  }
+
+  .colorGrid {
+    grid-template-columns: repeat(3, 32px);
+    grid-template-rows: repeat(3, 32px);
+    gap: 3px;
+    margin-top: 12px;
+  }
+
+  .instructions {
+    font-size: 0.9rem;
+    padding: 8px;
+  }
+
+  .solution {
+    font-size: 1.2rem;
+    max-width: 300px;
+    padding: 8px;
+  }
+
+  .solutionSlider {
+    max-width: 280px;
+  }
+
+  .solutionMoves {
+    max-width: 280px;
+    gap: 4px;
+  }
+
+  .solutionMove {
+    font-size: 0.8rem;
+    min-height: 32px;
+    min-width: 32px;
+  }
 }
