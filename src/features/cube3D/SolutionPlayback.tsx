@@ -17,6 +17,7 @@ const SolutionPlayback = () => {
   const [rotation, setRotation] = useState<Rotation>({ x: -22, y: -38, z: 0 });
   const [moveIndex, setMoveIndex] = useState<number>(0);
   const [solutionMoves, setSolutionMoves] = useState<string[]>([]);
+  const [pulseIndices, setPulseIndices] = useState<number[]>([]);
 
   useEffect(() => {
     if (solution) {
@@ -24,8 +25,24 @@ const SolutionPlayback = () => {
       setSolutionMoves(moves);
       setCube(initialCube);
       setMoveIndex(0);
+      setPulseIndices([]);
     }
   }, [solution, initialCube]);
+
+  useEffect(() => {
+    if (moveIndex === solutionMoves.length && solutionMoves.length > 0) {
+      const timers: NodeJS.Timeout[] = [];
+      solutionMoves.forEach((_, index) => {
+        const timer = setTimeout(() => {
+          setPulseIndices((prev) => [...prev, index]);
+        }, index * 200); // 200ms delay between each move
+        timers.push(timer);
+      });
+      return () => timers.forEach(clearTimeout); // Cleanup on unmount or moveIndex change
+    } else {
+      setPulseIndices([]); // Reset pulse animation if not at the end
+    }
+  }, [moveIndex, solutionMoves]);
 
   const applyMovesUpToIndex = (index: number) => {
     let currentCube = [...initialCube];
@@ -166,6 +183,8 @@ const SolutionPlayback = () => {
               key={index}
               className={`${styles.solutionMove} ${
                 index === moveIndex ? styles.activeMove : ''
+              } ${index < moveIndex ? styles.completedMove : ''} ${
+                pulseIndices.includes(index) ? styles.pulse : ''
               }`}
               onClick={() => handleMoveClick(index)}
               style={{ cursor: 'pointer' }}

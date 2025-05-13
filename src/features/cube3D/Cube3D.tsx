@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import { initCube, isCubeSolved } from '@entities/cube/model';
 import { CubeState, Rotation } from '@entities/cube/types';
 import { ClockwiseIcon, CounterclockwiseIcon } from '@shared/assets/icons';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import {
   applyMove,
@@ -58,18 +58,26 @@ const Arrow = ({ face, isVisible, isCounterclockwise }: ArrowProps) => {
 };
 
 export const Cube3D = () => {
-  const [cube, setCube] = useState<CubeState>(initCube());
+  const location = useLocation();
+  const scannedCube = location.state?.scannedCube;
+  const [cube, setCube] = useState<CubeState>(scannedCube || initCube());
   const [selectedColor, setSelectedColor] = useState<string>('#B90000');
   const [rotation, setRotation] = useState<Rotation>({ x: -22, y: -38, z: 0 });
   const [solution, setSolution] = useState<string | null>(null);
   const [scramble, setScramble] = useState<string | null>(null);
-  const [isSolved, setIsSolved] = useState<boolean>(true);
+  const [isSolved, setIsSolved] = useState<boolean>(!scannedCube);
   const [hoveredStickerIndex, setHoveredStickerIndex] = useState<number | null>(
     null
   );
   const [hoveredMove, setHoveredMove] = useState<string | null>(null);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (scannedCube) {
+      setIsSolved(isCubeSolved(scannedCube));
+    }
+  }, [scannedCube]);
 
   const handleMove = (move: string) => {
     setCube(applyMove(cube, move));
@@ -129,11 +137,16 @@ export const Cube3D = () => {
   };
 
   const handleShowSolution = () => {
-    if (solution && scramble) {
+    console.log('handleShowSolution:', { solution, scramble });
+    if (solution) {
       navigate('/solution-playback', {
         state: { initialCube: cube, solution },
       });
     }
+  };
+
+  const handleScan = () => {
+    navigate('/scan');
   };
 
   const faceToMove: Record<string, string> = {
@@ -242,6 +255,11 @@ export const Cube3D = () => {
         onMove={handleMove}
         onHoverMove={setHoveredMove}
       />
+      <div className={styles.actionsRow}>
+        <button className={styles.actionButton} onClick={handleScan}>
+          Сканировать кубик
+        </button>
+      </div>
       <div className={styles.displayContainer}>
         <ScrambleDisplay scramble={scramble} />
       </div>

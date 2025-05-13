@@ -64,11 +64,13 @@ public/vite.svg
 README.md
 src/App.module.css
 src/App.tsx
+src/css.d.ts
 src/entities/cube/constants.ts
 src/entities/cube/model.ts
 src/entities/cube/types.ts
 src/features/cube3D/Cube3D.module.css
 src/features/cube3D/Cube3D.tsx
+src/features/cube3D/CubeScanner.tsx
 src/features/cube3D/model/applyMove.ts
 src/features/cube3D/model/index.ts
 src/features/cube3D/model/scramble.ts
@@ -92,6 +94,9 @@ src/shared/assets/icons/counterclockwise.svg
 src/shared/assets/icons/index.ts
 src/shared/lib/validateCube.ts
 src/styles.css
+src/styles/colors.css
+src/styles/global.css
+src/styles/typography.css
 src/vite-env.d.ts
 tsconfig.app.json
 tsconfig.json
@@ -102,16 +107,132 @@ vite.config.ts
 <files>
 This section contains the contents of the repository's files.
 
-<file path="src/shared/assets/icons/clockwise.svg">
-<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <path d="M12 4V2L8 6L12 10V8C15.31 8 18 10.69 18 14C18 17.31 15.31 20 12 20C8.69 20 6 17.31 6 14H4C4 18.42 7.58 22 12 22C16.42 22 20 18.42 20 14C20 9.58 16.42 6 12 6Z" fill="#000000"/>
-  </svg>
+<file path="src/css.d.ts">
+export {};
+
+declare module '*.css' {
+  interface IClassNames {
+    [className: string]: string;
+  }
+  const classNames: IClassNames;
+  export = classNames;
+}
+
+declare global {
+  interface CSSStyleDeclaration {
+    '--font-size-h1': string;
+    '--font-size-h2': string;
+    '--font-size-h3': string;
+    '--font-size-p': string;
+    '--font-size-small': string;
+    '--font-size-xsmall': string;
+    '--font-weight-bold': string;
+    '--font-weight-regular': string;
+    '--color-background-light': string;
+    '--color-background-white': string;
+    '--color-border-default': string;
+    '--color-border-dark': string;
+    '--color-border-gray': string;
+    '--color-hover-light': string;
+    '--color-success-bg': string;
+    '--color-success-border': string;
+    '--color-active-bg': string;
+    '--color-active-border': string;
+    '--color-text-dark': string;
+    '--color-shadow-light': string;
+    '--color-shadow-dark': string;
+  }
+}
 </file>
 
-<file path="src/shared/assets/icons/counterclockwise.svg">
-<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <path d="M12 20V22L16 18L12 14V16C8.69 16 6 13.31 6 10C6 6.69 8.69 4 12 4C15.31 4 18 6.69 18 10H20C20 5.58 16.42 2 12 2C7.58 2 4 5.58 4 10C4 14.42 7.58 18 12 18Z" fill="#000000"/>
-  </svg>
+<file path="src/styles/colors.css">
+:root {
+  /* Neutral colors */
+  --color-background-light: #f9f9f9; /* Background for solution moves, instructions */
+  --color-background-white: #fff;     /* White backgrounds */
+  --color-border-default: #ccc;       /* Default borders */
+  --color-border-dark: #000;          /* Black borders */
+  --color-border-gray: #808080;       /* Gray borders */
+  --color-hover-light: #dcdcdc;       /* Gainsboro for hover effects */
+
+  /* Success colors */
+  --color-success-bg: #e8f5e9;       /* Soft green for completed moves */
+  --color-success-border: #4caf50;    /* Green border for completed moves */
+
+  /* Active colors */
+  --color-active-bg: #e7f1ff;        /* Light blue for active moves */
+  --color-active-border: #007bff;     /* Blue border for active moves */
+
+  /* Text and accents */
+  --color-text-dark: #000;           /* Primary text color */
+  --color-shadow-light: rgba(0, 0, 0, 0.1); /* Light shadow */
+  --color-shadow-dark: rgba(0, 0, 0, 0.6);  /* Darker shadow for hover */
+}
+</file>
+
+<file path="src/styles/global.css">
+@import './typography.css';
+@import './colors.css';
+
+h1 {
+  font-size: var(--font-size-h1);
+  font-weight: var(--font-weight-bold);
+}
+
+h2 {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-bold);
+}
+
+h3 {
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-bold);
+}
+
+p {
+  font-size: var(--font-size-p);
+  font-weight: var(--font-weight-regular);
+}
+</file>
+
+<file path="src/styles/typography.css">
+:root {
+  /* Base font sizes */
+  --font-size-h1: 2.5rem; /* For main headings */
+  --font-size-h2: 2rem;   /* For subheadings like "Воспроизведение решения" */
+  --font-size-h3: 1.5rem; /* For step indicators like "Шаг X из Y" */
+  --font-size-p: 1rem;    /* For paragraphs and general text */
+  --font-size-small: 0.9rem; /* For smaller text like solution moves */
+  --font-size-xsmall: 0.8rem; /* For very small text in mobile views */
+
+  /* Font weights (optional, for consistency) */
+  --font-weight-bold: 700;
+  --font-weight-regular: 400;
+}
+
+/* Tablet (768px–992px) */
+@media screen and (max-width: 992px) {
+  :root {
+    --font-size-h1: 2.2rem;
+    --font-size-h2: 1.8rem;
+    --font-size-h3: 1.3rem;
+    --font-size-p: 0.95rem;
+    --font-size-small: 0.85rem;
+    --font-size-xsmall: 0.75rem;
+  }
+}
+
+/* Mobile (<768px) */
+@media screen and (max-width: 768px) {
+  :root {
+    --font-size-h1: 2rem;
+    --font-size-h2: 1.6rem;
+    --font-size-h3: 1.2rem;
+    --font-size-p: 0.9rem;
+    --font-size-small: 0.8rem;
+    --font-size-xsmall: 0.7rem;
+  }
+}
 </file>
 
 <file path=".github/workflows/dev.yml">
@@ -141,33 +262,6 @@ jobs:
         run: |
           docker image prune -f
           find . -mindepth 1 -not -path "./.git*" -exec rm -rf {} +
-</file>
-
-<file path=".gitignore">
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
-
-node_modules
-dist
-dist-ssr
-*.local
-
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
-.DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
 </file>
 
 <file path=".prettierrc">
@@ -603,188 +697,6 @@ export * from './storage';
 export * from './solve';
 </file>
 
-<file path="src/features/cube3D/SolutionPlayback.tsx">
-import { useState, useEffect } from 'react';
-
-import { CubeState, Rotation } from '@entities/cube/types';
-import { useLocation, useNavigate } from 'react-router-dom';
-
-import { applyMove } from './model';
-import { CubeFace, RotationButtons } from './ui';
-
-import styles from './Cube3D.module.css';
-
-const SolutionPlayback = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const { initialCube, solution } = location.state || {};
-
-  const [cube, setCube] = useState<CubeState>(initialCube || []);
-  const [rotation, setRotation] = useState<Rotation>({ x: -22, y: -38, z: 0 });
-  const [moveIndex, setMoveIndex] = useState<number>(0);
-  const [solutionMoves, setSolutionMoves] = useState<string[]>([]);
-
-  useEffect(() => {
-    if (solution) {
-      const moves = solution.trim().split(' ');
-      setSolutionMoves(moves);
-      setCube(initialCube);
-      setMoveIndex(0);
-    }
-  }, [solution, initialCube]);
-
-  const applyMovesUpToIndex = (index: number) => {
-    let currentCube = [...initialCube];
-    for (let i = 0; i <= index; i++) {
-      if (solutionMoves[i]) {
-        currentCube = applyMove(currentCube, solutionMoves[i]);
-      }
-    }
-    setCube(currentCube);
-  };
-
-  const handleSliderChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newIndex = Number(event.target.value);
-    setMoveIndex(newIndex);
-    applyMovesUpToIndex(newIndex);
-  };
-
-  const handleMoveClick = (index: number) => {
-    setMoveIndex(index);
-    applyMovesUpToIndex(index);
-  };
-
-  const handleRotate = (axis: 'x' | 'y' | 'z', angle: number) => {
-    setRotation((prev) => ({
-      ...prev,
-      [axis]: prev[axis] + angle,
-    }));
-  };
-
-  const handleBack = () => {
-    navigate('/');
-  };
-
-  if (!initialCube || !solution) {
-    return (
-      <div className={styles.container}>
-        <h2>Ошибка: данные кубика или решения отсутствуют</h2>
-        <button className={styles.actionButton} onClick={handleBack}>
-          Вернуться
-        </button>
-      </div>
-    );
-  }
-
-  return (
-    <div className={styles.container}>
-      <h2>Воспроизведение решения</h2>
-      <div className={styles.cubeWrapper}>
-        <div
-          className={styles.cube}
-          style={{
-            transform: `rotateX(${rotation.x}deg) rotateY(${rotation.y}deg) rotateZ(${rotation.z}deg)`,
-          }}
-        >
-          <CubeFace
-            start={0}
-            faceClass="up"
-            cube={cube}
-            selectedColor=""
-            hoveredStickerIndex={null}
-            onStickerClick={() => {}}
-            setHoveredStickerIndex={() => {}}
-          />
-          <CubeFace
-            start={9}
-            faceClass="right"
-            cube={cube}
-            selectedColor=""
-            hoveredStickerIndex={null}
-            onStickerClick={() => {}}
-            setHoveredStickerIndex={() => {}}
-          />
-          <CubeFace
-            start={18}
-            faceClass="front"
-            cube={cube}
-            selectedColor=""
-            hoveredStickerIndex={null}
-            onStickerClick={() => {}}
-            setHoveredStickerIndex={() => {}}
-          />
-          <CubeFace
-            start={27}
-            faceClass="down"
-            cube={cube}
-            selectedColor=""
-            hoveredStickerIndex={null}
-            onStickerClick={() => {}}
-            setHoveredStickerIndex={() => {}}
-          />
-          <CubeFace
-            start={36}
-            faceClass="left"
-            cube={cube}
-            selectedColor=""
-            hoveredStickerIndex={null}
-            onStickerClick={() => {}}
-            setHoveredStickerIndex={() => {}}
-          />
-          <CubeFace
-            start={45}
-            faceClass="back"
-            cube={cube}
-            selectedColor=""
-            hoveredStickerIndex={null}
-            onStickerClick={() => {}}
-            setHoveredStickerIndex={() => {}}
-          />
-        </div>
-      </div>
-      <RotationButtons onRotate={handleRotate} />
-      <div className={styles.solution}>
-        <h3>
-          Шаг {moveIndex + 1} из {solutionMoves.length + 1}
-        </h3>
-        <p>
-          {solutionMoves[moveIndex]
-            ? `Текущий ход: ${solutionMoves[moveIndex]}`
-            : 'Успех!'}
-        </p>
-        <input
-          type="range"
-          min="0"
-          max={solutionMoves.length}
-          value={moveIndex}
-          onChange={handleSliderChange}
-          className={styles.solutionSlider}
-        />
-        <div className={styles.solutionMoves}>
-          {solutionMoves.map((move, index) => (
-            <span
-              key={index}
-              className={`${styles.solutionMove} ${
-                index === moveIndex ? styles.activeMove : ''
-              }`}
-              onClick={() => handleMoveClick(index)}
-              style={{ cursor: 'pointer' }}
-            >
-              {move}
-            </span>
-          ))}
-        </div>
-      </div>
-      <button className={styles.actionButton} onClick={handleBack}>
-        Вернуться
-      </button>
-    </div>
-  );
-};
-
-export default SolutionPlayback;
-</file>
-
 <file path="src/features/cube3D/ui/ColorPicker.tsx">
 import { COLORS } from "../../../entities/cube/constants";
 import styles from "../Cube3D.module.css";
@@ -804,84 +716,6 @@ export const ColorPicker = ({ onColorSelect }: ColorPickerProps) => {
           onClick={() => onColorSelect(color)}
         />
       ))}
-    </div>
-  );
-};
-</file>
-
-<file path="src/features/cube3D/ui/CubeFace.tsx">
-import { ClockwiseIcon, CounterclockwiseIcon } from '@shared/assets/icons';
-
-import { CENTER_INDICES } from '../../../entities/cube/constants';
-import styles from '../Cube3D.module.css';
-
-interface CubeFaceProps {
-  start: number;
-  faceClass: string;
-  cube: string[];
-  selectedColor: string;
-  hoveredStickerIndex: number | null;
-  onStickerClick: (index: number) => void;
-  setHoveredStickerIndex: (index: number | null) => void;
-  hoveredMove: string | null;
-}
-
-export const CubeFace = ({
-  start,
-  faceClass,
-  cube,
-  selectedColor,
-  hoveredStickerIndex,
-  onStickerClick,
-  setHoveredStickerIndex,
-  hoveredMove,
-}: CubeFaceProps) => {
-  const faceToMove: Record<string, string> = {
-    up: 'U',
-    right: 'R',
-    front: 'F',
-    down: 'D',
-    left: 'L',
-    back: 'B',
-  };
-
-  const moveLetter = faceToMove[faceClass];
-  const isHovered = hoveredMove && hoveredMove.startsWith(moveLetter);
-  const isCounterclockwise = isHovered && hoveredMove?.includes("'");
-
-  return (
-    <div className={`${styles.face} ${styles[faceClass]}`}>
-      {cube.slice(start, start + 9).map((color, idx) => {
-        const index = start + idx;
-        return (
-          <div
-            key={index}
-            className={styles.sticker}
-            style={{ backgroundColor: color }}
-            onClick={() =>
-              !CENTER_INDICES.includes(index) && onStickerClick(index)
-            }
-            onMouseEnter={() => setHoveredStickerIndex(index)}
-            onMouseLeave={() => setHoveredStickerIndex(null)}
-          >
-            {hoveredStickerIndex === index && selectedColor && (
-              <div
-                className={styles.colorIndicator}
-                style={{ backgroundColor: selectedColor }}
-              />
-            )}
-          </div>
-        );
-      })}
-      {isHovered && (
-        <div className={styles.faceArrow}>
-          {isCounterclockwise ? (
-            <CounterclockwiseIcon width={48} height={48} fill="#ffffff" />
-          ) : (
-            <ClockwiseIcon width={48} height={48} fill="#ffffff" />
-          )}
-        </div>
-      )}
     </div>
   );
 };
@@ -940,20 +774,16 @@ export const ScrambleDisplay = ({ scramble }: ScrambleDisplayProps) => {
 </svg>
 </file>
 
-<file path="src/shared/assets/icons/index.ts">
-import ArrowLeftIcon from './arrow-left.svg?react';
-import ArrowRightIcon from './arrow-right.svg?react';
-import ArrowRotate from './arrow-rotate.svg?react';
-import ClockwiseIcon from './clockwise.svg?react';
-import CounterclockwiseIcon from './counterclockwise.svg?react';
+<file path="src/shared/assets/icons/clockwise.svg">
+<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M60 20V10L40 30L60 50V40C76.55 40 90 53.45 90 70C90 86.55 76.55 100 60 100C43.45 100 30 86.55 30 70H20C20 92.1 38.9 110 60 110C81.1 110 100 92.1 100 70C100 47.9 81.1 30 60 30Z" fill="#000000"/>
+</svg>
+</file>
 
-export {
-  ArrowLeftIcon,
-  ArrowRightIcon,
-  ArrowRotate,
-  ClockwiseIcon,
-  CounterclockwiseIcon,
-};
+<file path="src/shared/assets/icons/counterclockwise.svg">
+<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M60 100V110L80 90L60 70V80C43.45 80 30 66.55 30 50C30 33.45 43.45 20 60 20C76.55 20 90 33.45 90 50H100C100 27.9 81.1 10 60 10C38.9 10 20 27.9 20 50C20 72.1 38.9 90 60 90Z" fill="#000000"/>
+</svg>
 </file>
 
 <file path="src/shared/lib/validateCube.ts">
@@ -1116,6 +946,34 @@ legend {
 }
 </file>
 
+<file path=".gitignore">
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+repomix-output.xml
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+</file>
+
 <file path="docker/docker-compose.yml">
 version: '3.8'
 services:
@@ -1247,15 +1105,406 @@ export default tseslint.config(
 </html>
 </file>
 
-<file path="src/App.module.css">
-.app {
-  width: 100dvw;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
+<file path="src/features/cube3D/CubeScanner.tsx">
+import { useState, useEffect, useRef, useCallback } from 'react';
+
+import { COLORS, CENTER_INDICES } from '@entities/cube/constants';
+import { CubeState, Rotation } from '@entities/cube/types';
+import { validateCubeColors } from '@shared/lib/validateCube';
+import { useNavigate } from 'react-router-dom';
+
+import { CubeFace, ColorPicker, RotationButtons } from './ui';
+
+import styles from './Cube3D.module.css';
+
+const FACE_ORDER = ['up', 'right', 'front', 'down', 'left', 'back'];
+const FACE_STARTS: Record<string, number> = {
+  up: 0,
+  right: 9,
+  front: 18,
+  down: 27,
+  left: 36,
+  back: 45,
+};
+
+const FACE_INSTRUCTIONS: Record<
+  string,
+  { front: string; up: string; right: string }
+> = {
+  front: { front: 'красный', up: 'белый', right: 'синий' },
+  right: { front: 'синий', up: 'белый', right: 'оранжевый' },
+  back: { front: 'оранжевый', up: 'белый', right: 'зеленый' },
+  left: { front: 'зеленый', up: 'белый', right: 'красный' },
+  up: { front: 'белый', up: 'оранжевый', right: 'синий' },
+  down: { front: 'желтый', up: 'красный', right: 'синий' },
+};
+
+const CubeScanner = () => {
+  const [cube, setCube] = useState<CubeState>(new Array(54).fill('#808080'));
+  const [previewCube, setPreviewCube] = useState<CubeState>(() => {
+    const initial = new Array(54).fill('#808080');
+    CENTER_INDICES.forEach((idx, i) => {
+      initial[idx] = COLORS[i];
+    });
+    return initial;
+  });
+  const [currentFaceIndex, setCurrentFaceIndex] = useState(0);
+  const [rotation, setRotation] = useState<Rotation>({ x: -22, y: -38, z: 0 });
+  const [isScanning, setIsScanning] = useState(false);
+  const [confirmationMode, setConfirmationMode] = useState(false);
+  const [selectedColor, setSelectedColor] = useState<string>(COLORS[0]);
+  const [detectedColors, setDetectedColors] = useState<string[]>(
+    new Array(9).fill('#808080')
+  );
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    startWebcam();
+    return () => stopWebcam();
+  }, []);
+
+  const detectColors = useCallback(() => {
+    if (!videoRef.current || !canvasRef.current) return;
+
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const video = videoRef.current;
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    // Define 3x3 grid (assuming cube face occupies center 50% of video)
+    const gridSize = Math.min(canvas.width, canvas.height) * 0.25;
+    const startX = (canvas.width - gridSize * 3) / 2;
+    const startY = (canvas.height - gridSize * 3) / 2;
+    const cellSize = gridSize;
+
+    const colors: string[] = [];
+    for (let row = 0; row < 3; row++) {
+      for (let col = 0; col < 3; col++) {
+        const x = startX + col * cellSize + cellSize / 2;
+        const y = startY + row * cellSize + cellSize / 2;
+        const pixel = ctx.getImageData(x, y, 1, 1).data;
+        const color = rgbToClosestColor(pixel[0], pixel[1], pixel[2]);
+        colors.push(color);
+
+        // Draw grid and color
+        ctx.strokeStyle = '#000000';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(
+          startX + col * cellSize,
+          startY + row * cellSize,
+          cellSize,
+          cellSize
+        );
+        ctx.fillStyle = color;
+        ctx.fillRect(
+          startX + col * cellSize + 10,
+          startY + row * cellSize + 10,
+          cellSize - 20,
+          cellSize - 20
+        );
+      }
+    }
+
+    setDetectedColors(colors);
+    console.log('Detected colors:', colors);
+  }, []);
+
+  useEffect(() => {
+    if (isScanning && !confirmationMode) {
+      const interval = setInterval(detectColors, 100);
+      return () => clearInterval(interval);
+    }
+  }, [isScanning, confirmationMode, detectColors]);
+
+  const startWebcam = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { width: 640, height: 480, facingMode: 'environment' },
+      });
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        videoRef.current.play();
+        setIsScanning(true);
+      }
+    } catch (error) {
+      console.error('Error accessing webcam:', error);
+      alert('Не удалось получить доступ к веб-камере. Проверьте разрешения.');
+    }
+  };
+
+  const stopWebcam = () => {
+    if (videoRef.current && videoRef.current.srcObject) {
+      const stream = videoRef.current.srcObject as MediaStream;
+      stream.getTracks().forEach((track) => track.stop());
+      videoRef.current.srcObject = null;
+      setIsScanning(false);
+    }
+  };
+
+  const rgbToClosestColor = (r: number, g: number, b: number): string => {
+    const rgbToHex = (c: number) => {
+      const hex = Math.round(c).toString(16).padStart(2, '0');
+      return hex;
+    };
+
+    let minDistance = Infinity;
+    let closestColor = COLORS[0];
+
+    for (const color of COLORS) {
+      const colorRgb = hexToRgb(color);
+      const distance = Math.sqrt(
+        (r - colorRgb.r) ** 2 + (g - colorRgb.g) ** 2 + (b - colorRgb.b) ** 2
+      );
+      if (distance < minDistance) {
+        minDistance = distance;
+        closestColor = color;
+      }
+    }
+
+    return closestColor;
+  };
+
+  const hexToRgb = (hex: string): { r: number; g: number; b: number } => {
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    return { r, g, b };
+  };
+
+  const handleStop = () => {
+    setConfirmationMode(true);
+    setIsScanning(false); // Pause color detection
+  };
+
+  const handleConfirm = () => {
+    const currentFace = FACE_ORDER[currentFaceIndex];
+    const start = FACE_STARTS[currentFace];
+    const newCube = [...cube];
+    const newPreviewCube = [...previewCube];
+    detectedColors.forEach((color, idx) => {
+      newCube[start + idx] = color;
+      newPreviewCube[start + idx] = color;
+    });
+    setCube(newCube);
+    setPreviewCube(newPreviewCube);
+    console.log(`Confirmed colors for ${currentFace}:`, detectedColors);
+
+    if (currentFaceIndex < FACE_ORDER.length - 1) {
+      setCurrentFaceIndex(currentFaceIndex + 1);
+      setDetectedColors(new Array(9).fill('#808080'));
+      setConfirmationMode(false);
+      setIsScanning(true);
+    } else {
+      stopWebcam();
+      const validation = validateCubeColors(newCube);
+      if (validation.valid) {
+        navigate('/', { state: { scannedCube: newCube } });
+      } else {
+        alert(`Ошибка валидации куба: ${validation.error}`);
+        setCurrentFaceIndex(0);
+        setCube(new Array(54).fill('#808080'));
+        setPreviewCube(() => {
+          const initial = new Array(54).fill('#808080');
+          CENTER_INDICES.forEach((idx, i) => {
+            initial[idx] = COLORS[i];
+          });
+          return initial;
+        });
+        setConfirmationMode(false);
+        startWebcam();
+      }
+    }
+  };
+
+  const handleRescan = () => {
+    setDetectedColors(new Array(9).fill('#808080'));
+    setConfirmationMode(false);
+    setIsScanning(true);
+  };
+
+  const handleColorClick = (index: number) => {
+    const newColors = [...detectedColors];
+    newColors[index] = selectedColor;
+    setDetectedColors(newColors);
+  };
+
+  const handleRotate = (axis: 'x' | 'y' | 'z', angle: number) => {
+    setRotation((prev) => ({
+      ...prev,
+      [axis]: prev[axis] + angle,
+    }));
+  };
+
+  const handleBack = () => {
+    navigate('/');
+  };
+
+  const currentFace = FACE_ORDER[currentFaceIndex];
+  const instructions = FACE_INSTRUCTIONS[currentFace];
+
+  return (
+    <div className={styles.container}>
+      <h2>Сканирование кубика Рубика</h2>
+      <button className={styles.actionButton} onClick={handleBack}>
+        Вернуться
+      </button>
+      <div className={styles.instructions}>
+        {!confirmationMode ? (
+          <>
+            <p>
+              Держите кубик так, чтобы центр спереди был{' '}
+              <strong>{instructions.front}</strong> (грань{' '}
+              {currentFace.toUpperCase()}), центр сверху был{' '}
+              <strong>{instructions.up}</strong>, и центр справа был{' '}
+              <strong>{instructions.right}</strong>.
+            </p>
+            <p>
+              Текущая грань для сканирования:{' '}
+              <strong>{currentFace.toUpperCase()}</strong>. Нажмите "Стоп",
+              чтобы зафиксировать цвета.
+            </p>
+          </>
+        ) : (
+          <>
+            <p>
+              Проверьте цвета для грани{' '}
+              <strong>{currentFace.toUpperCase()}</strong>. Щелкните на клетку,
+              чтобы изменить цвет с помощью палитры.
+            </p>
+            <p>
+              Подтвердите цвета кнопкой "Да" или нажмите "Пересканировать",
+              чтобы повторить сканирование.
+            </p>
+          </>
+        )}
+      </div>
+      <div className={styles.scannerWrapper}>
+        <div className={styles.videoContainer}>
+          <video
+            ref={videoRef}
+            autoPlay
+            playsInline
+            className={styles.video}
+          ></video>
+          <canvas ref={canvasRef} className={styles.canvas}></canvas>
+        </div>
+        <div className={styles.cubeContainer}>
+          <div className={styles.cubeWrapper}>
+            <div
+              className={styles.cube}
+              style={{
+                transform: `rotateX(${rotation.x}deg) rotateY(${rotation.y}deg) rotateZ(${rotation.z}deg)`,
+              }}
+            >
+              <CubeFace
+                start={0}
+                faceClass="up"
+                cube={previewCube}
+                selectedColor=""
+                hoveredStickerIndex={null}
+                onStickerClick={() => {}}
+                setHoveredStickerIndex={() => {}}
+              />
+              <CubeFace
+                start={9}
+                faceClass="right"
+                cube={previewCube}
+                selectedColor=""
+                hoveredStickerIndex={null}
+                onStickerClick={() => {}}
+                setHoveredStickerIndex={() => {}}
+              />
+              <CubeFace
+                start={18}
+                faceClass="front"
+                cube={previewCube}
+                selectedColor=""
+                hoveredStickerIndex={null}
+                onStickerClick={() => {}}
+                setHoveredStickerIndex={() => {}}
+              />
+              <CubeFace
+                start={27}
+                faceClass="down"
+                cube={previewCube}
+                selectedColor=""
+                hoveredStickerIndex={null}
+                onStickerClick={() => {}}
+                setHoveredStickerIndex={() => {}}
+              />
+              <CubeFace
+                start={36}
+                faceClass="left"
+                cube={previewCube}
+                selectedColor=""
+                hoveredStickerIndex={null}
+                onStickerClick={() => {}}
+                setHoveredStickerIndex={() => {}}
+              />
+              <CubeFace
+                start={45}
+                faceClass="back"
+                cube={previewCube}
+                selectedColor=""
+                hoveredStickerIndex={null}
+                onStickerClick={() => {}}
+                setHoveredStickerIndex={() => {}}
+              />
+            </div>
+          </div>
+          <RotationButtons onRotate={handleRotate} />
+        </div>
+      </div>
+      {!confirmationMode ? (
+        <button className={styles.actionButton} onClick={handleStop}>
+          Стоп
+        </button>
+      ) : (
+        <div className={styles.confirmationContainer}>
+          <ColorPicker onColorSelect={setSelectedColor} />
+          <div className={styles.confirmationGrid}>
+            {detectedColors.map((color, idx) => (
+              <div
+                key={idx}
+                className={styles.confirmationCell}
+                style={{ backgroundColor: color }}
+                onClick={() => handleColorClick(idx)}
+              ></div>
+            ))}
+          </div>
+          <div className={styles.confirmationButtons}>
+            <button className={styles.actionButton} onClick={handleConfirm}>
+              Да
+            </button>
+            <button className={styles.actionButton} onClick={handleRescan}>
+              Пересканировать
+            </button>
+          </div>
+        </div>
+      )}
+      {!confirmationMode && (
+        <div className={styles.colorGrid}>
+          {detectedColors.map((color, idx) => (
+            <div
+              key={idx}
+              className={styles.colorCell}
+              style={{ backgroundColor: color }}
+            ></div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default CubeScanner;
 </file>
 
 <file path="src/features/cube3D/model/scramble.ts">
@@ -1321,74 +1570,6 @@ export const loadScramble = (): CubeState | null => {
     alert('Скрамбл не найден.');
   }
   return null;
-};
-</file>
-
-<file path="src/features/cube3D/ui/ActionButtons.tsx">
-import styles from '../Cube3D.module.css';
-
-interface ActionButtonsProps {
-  onReset: () => void;
-  onSave: () => void;
-  onLoad: () => void;
-  onScramble: () => void;
-  onSolve: () => void;
-  onMove: (move: string) => void;
-  onHoverMove: (move: string | null) => void; // New prop to handle hover
-}
-
-export const ActionButtons = ({
-  onReset,
-  onSave,
-  onLoad,
-  onScramble,
-  onSolve,
-  onMove,
-  onHoverMove,
-}: ActionButtonsProps) => {
-  const moves = [
-    ['F', 'R', 'U', 'B', 'L', 'D'],
-    ["F'", "R'", "U'", "B'", "L'", "D'"],
-  ];
-
-  return (
-    <>
-      <div className={styles.movesColumn}>
-        {moves.map((moveSet, index) => (
-          <div key={index} className={styles.movesRow}>
-            {moveSet.map((move) => (
-              <button
-                key={move}
-                className={styles.moveButton}
-                onClick={() => onMove(move)}
-                onMouseEnter={() => onHoverMove(move)}
-                onMouseLeave={() => onHoverMove(null)}
-              >
-                {move}
-              </button>
-            ))}
-          </div>
-        ))}
-      </div>
-      <div className={styles.actionsRow}>
-        <button className={styles.actionButton} onClick={onReset}>
-          Сбросить
-        </button>
-        <button className={styles.actionButton} onClick={onSave}>
-          Сохранить скрамбл
-        </button>
-        <button className={styles.actionButton} onClick={onLoad}>
-          Загрузить скрамбл
-        </button>
-        <button className={styles.actionButton} onClick={onScramble}>
-          Запутать кубик
-        </button>
-        <button className={styles.actionButton} onClick={onSolve}>
-          Найти решение
-        </button>
-      </div>
-    </>
-  );
 };
 </file>
 
@@ -1460,6 +1641,22 @@ export const SolutionDisplay = ({ solution }: SolutionDisplayProps) => {
 };
 </file>
 
+<file path="src/shared/assets/icons/index.ts">
+import ArrowLeftIcon from './arrow-left.svg?react';
+import ArrowRightIcon from './arrow-right.svg?react';
+import ArrowRotate from './arrow-rotate.svg?react';
+import ClockwiseIcon from './clockwise.svg?react';
+import CounterclockwiseIcon from './counterclockwise.svg?react';
+
+export {
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  ArrowRotate,
+  ClockwiseIcon,
+  CounterclockwiseIcon,
+};
+</file>
+
 <file path="src/vite-env.d.ts">
 /// <reference types="vite/client" />
 
@@ -1491,6 +1688,16 @@ def solve():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
+</file>
+
+<file path="src/App.module.css">
+.app {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
 </file>
 
 <file path="src/App.tsx">
@@ -1564,14 +1771,332 @@ export const sendScrambleToBackend = async (
 };
 </file>
 
-<file path="src/features/cube3D/ui/index.ts">
-export * from './CubeFace';
-export * from './ColorPicker';
-export * from './ActionButtons';
-export * from './RotationButtons';
-export * from './SolutionDisplay';
-export * from './ScrambleDisplay';
-export * from '../SolutionPlayback';
+<file path="src/features/cube3D/SolutionPlayback.tsx">
+import { useState, useEffect } from 'react';
+
+import { CubeState, Rotation } from '@entities/cube/types';
+import { useLocation, useNavigate } from 'react-router-dom';
+
+import { applyMove } from './model';
+import { CubeFace, RotationButtons } from './ui';
+
+import styles from './Cube3D.module.css';
+
+const SolutionPlayback = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { initialCube, solution } = location.state || {};
+
+  const [cube, setCube] = useState<CubeState>(initialCube || []);
+  const [rotation, setRotation] = useState<Rotation>({ x: -22, y: -38, z: 0 });
+  const [moveIndex, setMoveIndex] = useState<number>(0);
+  const [solutionMoves, setSolutionMoves] = useState<string[]>([]);
+  const [pulseIndices, setPulseIndices] = useState<number[]>([]);
+
+  useEffect(() => {
+    if (solution) {
+      const moves = solution.trim().split(' ');
+      setSolutionMoves(moves);
+      setCube(initialCube);
+      setMoveIndex(0);
+      setPulseIndices([]);
+    }
+  }, [solution, initialCube]);
+
+  useEffect(() => {
+    if (moveIndex === solutionMoves.length && solutionMoves.length > 0) {
+      const timers: NodeJS.Timeout[] = [];
+      solutionMoves.forEach((_, index) => {
+        const timer = setTimeout(() => {
+          setPulseIndices((prev) => [...prev, index]);
+        }, index * 200); // 200ms delay between each move
+        timers.push(timer);
+      });
+      return () => timers.forEach(clearTimeout); // Cleanup on unmount or moveIndex change
+    } else {
+      setPulseIndices([]); // Reset pulse animation if not at the end
+    }
+  }, [moveIndex, solutionMoves]);
+
+  const applyMovesUpToIndex = (index: number) => {
+    let currentCube = [...initialCube];
+    for (let i = 0; i <= index; i++) {
+      if (solutionMoves[i]) {
+        currentCube = applyMove(currentCube, solutionMoves[i]);
+      }
+    }
+    setCube(currentCube);
+  };
+
+  const handleSliderChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newIndex = Number(event.target.value);
+    setMoveIndex(newIndex);
+    applyMovesUpToIndex(newIndex);
+  };
+
+  const handleMoveClick = (index: number) => {
+    setMoveIndex(index);
+    applyMovesUpToIndex(index);
+  };
+
+  const handleRotate = (axis: 'x' | 'y' | 'z', angle: number) => {
+    setRotation((prev) => ({
+      ...prev,
+      [axis]: prev[axis] + angle,
+    }));
+  };
+
+  const handleBack = () => {
+    navigate('/');
+  };
+
+  if (!initialCube || !solution) {
+    return (
+      <div className={styles.container}>
+        <h2>Ошибка: данные кубика или решения отсутствуют</h2>
+        <button className={styles.actionButton} onClick={handleBack}>
+          Вернуться
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className={styles.container}>
+      <h2>Воспроизведение решения</h2>
+      <div className={styles.cubeWrapper}>
+        <div
+          className={styles.cube}
+          style={{
+            transform: `rotateX(${rotation.x}deg) rotateY(${rotation.y}deg) rotateZ(${rotation.z}deg)`,
+          }}
+        >
+          <CubeFace
+            start={0}
+            faceClass="up"
+            cube={cube}
+            selectedColor=""
+            hoveredStickerIndex={null}
+            onStickerClick={() => {}}
+            setHoveredStickerIndex={() => {}}
+            hoveredMove={null}
+          />
+          <CubeFace
+            start={9}
+            faceClass="right"
+            cube={cube}
+            selectedColor=""
+            hoveredStickerIndex={null}
+            onStickerClick={() => {}}
+            setHoveredStickerIndex={() => {}}
+            hoveredMove={null}
+          />
+          <CubeFace
+            start={18}
+            faceClass="front"
+            cube={cube}
+            selectedColor=""
+            hoveredStickerIndex={null}
+            onStickerClick={() => {}}
+            setHoveredStickerIndex={() => {}}
+            hoveredMove={null}
+          />
+          <CubeFace
+            start={27}
+            faceClass="down"
+            cube={cube}
+            selectedColor=""
+            hoveredStickerIndex={null}
+            onStickerClick={() => {}}
+            setHoveredStickerIndex={() => {}}
+            hoveredMove={null}
+          />
+          <CubeFace
+            start={36}
+            faceClass="left"
+            cube={cube}
+            selectedColor=""
+            hoveredStickerIndex={null}
+            onStickerClick={() => {}}
+            setHoveredStickerIndex={() => {}}
+            hoveredMove={null}
+          />
+          <CubeFace
+            start={45}
+            faceClass="back"
+            cube={cube}
+            selectedColor=""
+            hoveredStickerIndex={null}
+            onStickerClick={() => {}}
+            setHoveredStickerIndex={() => {}}
+            hoveredMove={null}
+          />
+        </div>
+      </div>
+      <RotationButtons onRotate={handleRotate} />
+      <div className={styles.solution}>
+        <h3>
+          Шаг {moveIndex + 1} из {solutionMoves.length + 1}
+        </h3>
+        <p>
+          {solutionMoves[moveIndex]
+            ? `Текущий ход: ${solutionMoves[moveIndex]}`
+            : 'Успех!'}
+        </p>
+        <input
+          type="range"
+          min="0"
+          max={solutionMoves.length}
+          value={moveIndex}
+          onChange={handleSliderChange}
+          className={styles.solutionSlider}
+        />
+        <div className={styles.solutionMoves}>
+          {solutionMoves.map((move, index) => (
+            <span
+              key={index}
+              className={`${styles.solutionMove} ${
+                index === moveIndex ? styles.activeMove : ''
+              } ${index < moveIndex ? styles.completedMove : ''} ${
+                pulseIndices.includes(index) ? styles.pulse : ''
+              }`}
+              onClick={() => handleMoveClick(index)}
+              style={{ cursor: 'pointer' }}
+            >
+              {move}
+            </span>
+          ))}
+        </div>
+      </div>
+      <button className={styles.actionButton} onClick={handleBack}>
+        Вернуться
+      </button>
+    </div>
+  );
+};
+
+export default SolutionPlayback;
+</file>
+
+<file path="src/features/cube3D/ui/ActionButtons.tsx">
+import styles from '../Cube3D.module.css';
+
+interface ActionButtonsProps {
+  onReset: () => void;
+  onSave: () => void;
+  onLoad: () => void;
+  onScramble: () => void;
+  onSolve: () => void;
+  onMove: (move: string) => void;
+  onHoverMove: (move: string | null) => void;
+}
+
+export const ActionButtons = ({
+  onReset,
+  onSave,
+  onLoad,
+  onScramble,
+  onSolve,
+  onMove,
+  onHoverMove,
+}: ActionButtonsProps) => {
+  const moves = [
+    ['F', 'R', 'U', 'B', 'L', 'D'],
+    ["F'", "R'", "U'", "B'", "L'", "D'"],
+  ];
+
+  return (
+    <>
+      <div className={styles.movesColumn}>
+        {moves.map((moveSet, index) => (
+          <div key={index} className={styles.movesRow}>
+            {moveSet.map((move) => (
+              <button
+                key={move}
+                className={styles.moveButton}
+                onClick={() => onMove(move)}
+                onMouseEnter={() => onHoverMove(move)}
+                onMouseLeave={() => onHoverMove(null)}
+              >
+                {move}
+              </button>
+            ))}
+          </div>
+        ))}
+      </div>
+      <div className={styles.actionsRow}>
+        <button className={styles.actionButton} onClick={onReset}>
+          Сбросить
+        </button>
+        <button className={styles.actionButton} onClick={onSave}>
+          Сохранить скрамбл
+        </button>
+        <button className={styles.actionButton} onClick={onLoad}>
+          Загрузить скрамбл
+        </button>
+        <button className={styles.actionButton} onClick={onScramble}>
+          Запутать кубик
+        </button>
+        <button className={styles.actionButton} onClick={onSolve}>
+          Найти решение
+        </button>
+      </div>
+    </>
+  );
+};
+</file>
+
+<file path="src/features/cube3D/ui/CubeFace.tsx">
+import { CENTER_INDICES } from '../../../entities/cube/constants';
+import styles from '../Cube3D.module.css';
+
+interface CubeFaceProps {
+  start: number;
+  faceClass: string;
+  cube: string[];
+  selectedColor: string;
+  hoveredStickerIndex: number | null;
+  onStickerClick: (index: number) => void;
+  setHoveredStickerIndex: (index: number | null) => void;
+  hoveredMove?: string | null;
+}
+
+export const CubeFace = ({
+  start,
+  faceClass,
+  cube,
+  selectedColor,
+  hoveredStickerIndex,
+  onStickerClick,
+  setHoveredStickerIndex,
+}: CubeFaceProps) => {
+  return (
+    <div className={`${styles.face} ${styles[faceClass]}`}>
+      {cube.slice(start, start + 9).map((color, idx) => {
+        const index = start + idx;
+        return (
+          <div
+            key={index}
+            className={styles.sticker}
+            style={{ backgroundColor: color }}
+            onClick={() =>
+              !CENTER_INDICES.includes(index) && onStickerClick(index)
+            }
+            onMouseEnter={() => setHoveredStickerIndex(index)}
+            onMouseLeave={() => setHoveredStickerIndex(null)}
+          >
+            {hoveredStickerIndex === index && selectedColor && (
+              <div
+                className={styles.colorIndicator}
+                style={{ backgroundColor: selectedColor }}
+              />
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+};
 </file>
 
 <file path="tsconfig.node.json">
@@ -1729,27 +2254,15 @@ networks:
 }
 </file>
 
-<file path="src/main.tsx">
-import { StrictMode } from 'react';
-
-import { createRoot } from 'react-dom/client';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-
-import App from './App.tsx';
-import SolutionPlayback from './features/cube3D/SolutionPlayback.tsx';
-
-import './styles.css';
-
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<App />} />
-        <Route path="/solution-playback" element={<SolutionPlayback />} />
-      </Routes>
-    </BrowserRouter>
-  </StrictMode>
-);
+<file path="src/features/cube3D/ui/index.ts">
+export * from './CubeFace';
+export * from './ColorPicker';
+export * from './ActionButtons';
+export * from './RotationButtons';
+export * from './SolutionDisplay';
+export * from './ScrambleDisplay';
+export * from '../SolutionPlayback';
+export * from '../CubeScanner';
 </file>
 
 <file path="src/pages/MainPage.tsx">
@@ -1819,262 +2332,38 @@ export default MainPage;
 }
 </file>
 
-<file path="src/features/cube3D/Cube3D.module.css">
-.container {
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-  align-items: center;
-  padding: 20px;
-  width: 100dvw;
-}
+<file path="src/main.tsx">
+import { StrictMode } from 'react';
 
-.controls {
-  display: grid;
-  gap: 10px;
-  grid-template-columns: repeat(3, 40px);
-  grid-template-rows: repeat(2, 40px);
-}
+import { createRoot } from 'react-dom/client';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
-.colorButton {
-  border: 2px solid black;
-  cursor: pointer;
-}
+import App from './App.tsx';
+import CubeScanner from './features/cube3D/CubeScanner.tsx';
+import SolutionPlayback from './features/cube3D/SolutionPlayback.tsx';
 
-.colorButton:hover {
-  border: 2px solid #fff;
-}
+import './styles.css';
 
-.movesColumn {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.movesRow {
-  display: flex;
-  flex-direction: row;
-  gap: 8px;
-}
-
-.moveButton {
-  aspect-ratio: 1 / 1;
-  min-width: 36px;
-  border: solid 1px gray;
-  border-radius: 8px;
-  cursor: pointer;
-  background-color: #fff;
-  transition: all 0.2s ease;
-}
-
-.moveButton:hover {
-  background-color: gainsboro;
-}
-
-.cubeWrapper {
-  padding: 64px;
-}
-
-.cube {
-  position: relative;
-  width: 156px;
-  height: 156px;
-  transform-style: preserve-3d;
-  transition: transform 0.5s ease-in-out;
-}
-
-.face {
-  position: absolute;
-  width: 156px;
-  height: 156px;
-  display: grid;
-  background: black;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(3, 1fr);
-}
-
-.faceArrow {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 48px;
-  height: 48px;
-  opacity: 0.8;
-  pointer-events: none; /* Prevent arrow from interfering with clicks */
-}
-
-.sticker {
-  width: 49px;
-  height: 49px;
-  margin: 1px;
-  border-radius: 4px;
-  border: 1px solid black;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  position: relative;
-}
-
-.colorIndicator {
-  position: absolute;
-  bottom: 10%;
-  right: 10%;
-  width: 20px;
-  height: 20px;
-  background-color: transparent;
-  border-top-left-radius: 100%;
-}
-
-.sticker:hover {
-  box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.6);
-}
-
-.up {
-  transform: rotateX(90deg) translateZ(78px);
-}
-.left {
-  transform: rotateY(-90deg) translateZ(78px);
-}
-.front {
-  transform: translateZ(78px);
-}
-.right {
-  transform: rotateY(90deg) translateZ(78px);
-}
-.back {
-  transform: rotateY(180deg) translateZ(78px);
-}
-.down {
-  transform: rotateX(-90deg) translateZ(78px);
-}
-
-.rotationButtons {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
-}
-
-.rotationButton {
-  aspect-ratio: 1 / 1;
-  min-width: 36px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  background-color: #fff;
-}
-
-.actionsRow {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-}
-
-.actionButton {
-  padding: 8px;
-  border: solid 1px gray;
-  border-radius: 8px;
-  cursor: pointer;
-  background-color: #fff;
-  transition: all 0.2s ease;
-}
-
-.actionButton:hover {
-  background-color: gainsboro;
-}
-
-@media screen and (max-width: 992px) {
-  .actionButton {
-    width: 256px;
-  }
-
-  .actionsRow {
-    flex-direction: column;
-  }
-
-  .cubeWrapper {
-    padding-top: 128px;
-  }
-}
-
-.displayContainer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.solution {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  align-items: center;
-  padding: 16px;
-  border-radius: 8px;
-  font-size: 1.7rem;
-  text-align: center;
-  max-width: 532px;
-  width: 100%;
-}
-
-.solutionContainer {
-  min-height: 100px;
-  transition: opacity 0.4s ease;
-  opacity: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-}
-
-.hidden {
-  opacity: 0;
-}
-
-.solutionSlider {
-  max-width: 500px;
-  width: 100%;
-  margin: 20px 0;
-}
-
-.solutionMoves {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  justify-content: center;
-  max-width: 500px;
-}
-
-.solutionMove {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 4px 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background-color: #f9f9f9;
-  font-size: 1rem;
-  transition: all 0.2s ease;
-  min-height: 40px;
-  min-width: 40px;
-}
-
-.activeMove {
-  border: 1px solid #007bff;
-  background-color: #e7f1ff;
-}
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<App />} />
+        <Route path="/solution-playback" element={<SolutionPlayback />} />
+        <Route path="/scan" element={<CubeScanner />} />
+      </Routes>
+    </BrowserRouter>
+  </StrictMode>
+);
 </file>
 
 <file path="src/features/cube3D/Cube3D.tsx">
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import { initCube, isCubeSolved } from '@entities/cube/model';
 import { CubeState, Rotation } from '@entities/cube/types';
-import { useNavigate } from 'react-router-dom';
+import { ClockwiseIcon, CounterclockwiseIcon } from '@shared/assets/icons';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import {
   applyMove,
@@ -2094,19 +2383,61 @@ import { ScrambleDisplay } from './ui/ScrambleDisplay';
 
 import styles from './Cube3D.module.css';
 
+interface ArrowProps {
+  face: string;
+  isVisible: boolean;
+  isCounterclockwise: boolean;
+}
+
+const Arrow = ({ face, isVisible, isCounterclockwise }: ArrowProps) => {
+  if (!isVisible) return null;
+
+  const faceTransforms: Record<string, string> = {
+    up: 'rotateX(90deg) translateZ(130px) translateX(20px)',
+    right: 'rotateY(90deg) translateZ(130px)',
+    front: 'translateZ(130px)',
+    down: 'rotateX(-90deg) translateZ(130px) translateX(15px) translateY(-15px)',
+    left: 'rotateY(-90deg) translateZ(130px)',
+    back: 'rotateY(180deg) translateZ(130px)',
+  };
+
+  return (
+    <div
+      className={styles.faceArrow}
+      style={{
+        transform: faceTransforms[face],
+      }}
+    >
+      {isCounterclockwise ? (
+        <CounterclockwiseIcon width={120} height={120} fill="#ffffff" />
+      ) : (
+        <ClockwiseIcon width={120} height={120} fill="#ffffff" />
+      )}
+    </div>
+  );
+};
+
 export const Cube3D = () => {
-  const [cube, setCube] = useState<CubeState>(initCube());
+  const location = useLocation();
+  const scannedCube = location.state?.scannedCube;
+  const [cube, setCube] = useState<CubeState>(scannedCube || initCube());
   const [selectedColor, setSelectedColor] = useState<string>('#B90000');
-  const [rotation, setRotation] = useState<Rotation>({ x: -30, y: -45, z: 0 }); // Adjusted for better initial view
+  const [rotation, setRotation] = useState<Rotation>({ x: -22, y: -38, z: 0 });
   const [solution, setSolution] = useState<string | null>(null);
   const [scramble, setScramble] = useState<string | null>(null);
-  const [isSolved, setIsSolved] = useState<boolean>(true);
+  const [isSolved, setIsSolved] = useState<boolean>(!scannedCube);
   const [hoveredStickerIndex, setHoveredStickerIndex] = useState<number | null>(
     null
   );
   const [hoveredMove, setHoveredMove] = useState<string | null>(null);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (scannedCube) {
+      setIsSolved(isCubeSolved(scannedCube));
+    }
+  }, [scannedCube]);
 
   const handleMove = (move: string) => {
     setCube(applyMove(cube, move));
@@ -2166,12 +2497,28 @@ export const Cube3D = () => {
   };
 
   const handleShowSolution = () => {
-    if (solution && scramble) {
+    console.log('handleShowSolution:', { solution, scramble });
+    if (solution) {
       navigate('/solution-playback', {
         state: { initialCube: cube, solution },
       });
     }
   };
+
+  const handleScan = () => {
+    navigate('/scan');
+  };
+
+  const faceToMove: Record<string, string> = {
+    up: 'U',
+    right: 'R',
+    front: 'F',
+    down: 'D',
+    left: 'L',
+    back: 'B',
+  };
+
+  const faces = ['up', 'right', 'front', 'down', 'left', 'back'];
 
   return (
     <div className={styles.container}>
@@ -2180,7 +2527,6 @@ export const Cube3D = () => {
           className={styles.cube}
           style={{
             transform: `rotateX(${rotation.x}deg) rotateY(${rotation.y}deg) rotateZ(${rotation.z}deg)`,
-            transformStyle: 'preserve-3d', // Explicitly ensure 3D context
           }}
         >
           <CubeFace
@@ -2243,6 +2589,19 @@ export const Cube3D = () => {
             setHoveredStickerIndex={setHoveredStickerIndex}
             hoveredMove={hoveredMove}
           />
+          {faces.map((face) => {
+            const moveLetter = faceToMove[face];
+            const isVisible = hoveredMove && hoveredMove.startsWith(moveLetter);
+            const isCounterclockwise = isVisible && hoveredMove?.includes("'");
+            return (
+              <Arrow
+                key={face}
+                face={face}
+                isVisible={!!isVisible}
+                isCounterclockwise={!!isCounterclockwise}
+              />
+            );
+          })}
         </div>
       </div>
       <RotationButtons onRotate={handleRotate} />
@@ -2256,6 +2615,11 @@ export const Cube3D = () => {
         onMove={handleMove}
         onHoverMove={setHoveredMove}
       />
+      <div className={styles.actionsRow}>
+        <button className={styles.actionButton} onClick={handleScan}>
+          Сканировать кубик
+        </button>
+      </div>
       <div className={styles.displayContainer}>
         <ScrambleDisplay scramble={scramble} />
       </div>
@@ -2270,6 +2634,598 @@ export const Cube3D = () => {
     </div>
   );
 };
+</file>
+
+<file path="src/features/cube3D/Cube3D.module.css">
+@import './typography.css';
+@import './colors.css';
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  align-items: center;
+  padding: 16px;
+}
+
+.controls {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(3, 36px);
+  grid-template-rows: repeat(2, 36px);
+}
+
+.colorButton {
+  border: 2px solid var(--color-border-dark);
+  cursor: pointer;
+}
+
+.colorButton:hover {
+  border: 2px solid var(--color-background-white);
+}
+
+.movesColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.movesRow {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}
+
+.moveButton {
+  aspect-ratio: 1 / 1;
+  min-width: 32px;
+  border: solid 1px var(--color-border-gray);
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: var(--color-background-white);
+  transition: all 0.2s ease;
+  font-size: var(--font-size-small);
+}
+
+.moveButton:hover {
+  background-color: var(--color-hover-light);
+}
+
+.cubeWrapper {
+  padding: 48px;
+}
+
+.cubeContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.cube {
+  position: relative;
+  width: 156px;
+  height: 156px;
+  transform-style: preserve-3d;
+  transition: transform 0.5s ease-in-out;
+}
+
+.face {
+  position: absolute;
+  width: 156px;
+  height: 156px;
+  display: grid;
+  background: var(--color-text-dark);
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+}
+
+.faceArrow {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  opacity: 0.8;
+  pointer-events: none;
+  z-index: 20;
+  transform-origin: center;
+}
+
+.sticker {
+  width: 49px;
+  height: 49px;
+  margin: 1px;
+  border-radius: 4px;
+  border: 1px solid var(--color-border-dark);
+  box-shadow: 0 0 5px var(--color-shadow-light);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  position: relative;
+}
+
+.colorIndicator {
+  position: absolute;
+  bottom: 10%;
+  right: 10%;
+  width: 18px;
+  height: 18px;
+  background-color: transparent;
+  border-top-left-radius: 100%;
+}
+
+.sticker:hover {
+  box-shadow: inset 0px 0px 10px var(--color-shadow-dark);
+}
+
+.up {
+  transform: rotateX(90deg) translateZ(78px);
+}
+.left {
+  transform: rotateY(-90deg) translateZ(78px);
+}
+.front {
+  transform: translateZ(78px);
+}
+.right {
+  transform: rotateY(90deg) translateZ(78px);
+}
+.back {
+  transform: rotateY(180deg) translateZ(78px);
+}
+.down {
+  transform: rotateX(-90deg) translateZ(78px);
+}
+
+.rotationButtons {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+.rotationButton {
+  aspect-ratio: 1 / 1;
+  min-width: 32px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: var(--color-background-white);
+}
+
+.actionsRow {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.actionButton {
+  padding: 8px 16px;
+  border: solid 1px var(--color-border-gray);
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: var(--color-background-white);
+  transition: all 0.2s ease;
+  font-size: var(--font-size-p);
+}
+
+.actionButton:hover {
+  background-color: var(--color-hover-light);
+}
+
+.displayContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.solution {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: var(--font-size-h3);
+  text-align: center;
+  max-width: 500px;
+  width: 100%;
+}
+
+.solutionContainer {
+  min-height: 80px;
+  transition: opacity 0.4s ease;
+  opacity: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.hidden {
+  opacity: 0;
+}
+
+.solutionSlider {
+  max-width: 450px;
+  width: 100%;
+  margin: 16px 0;
+}
+
+.solutionMoves {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+  max-width: 450px;
+}
+
+.solutionMove {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 8px;
+  border: 1px solid var(--color-border-default);
+  border-radius: 4px;
+  background-color: var(--color-background-light);
+  font-size: var(--font-size-small);
+  transition: all 0.2s ease;
+  min-height: 36px;
+  min-width: 36px;
+}
+
+.activeMove {
+  border: 1px solid var(--color-active-border);
+  background-color: var(--color-active-bg);
+}
+
+.completedMove {
+  border: 1px solid var(--color-success-border);
+  background-color: var(--color-success-bg);
+}
+
+.pulse {
+  animation: pulse 1s ease-in-out;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.instructions {
+  text-align: center;
+  max-width: 90%;
+  padding: 12px;
+  border: 1px solid var(--color-border-default);
+  border-radius: 8px;
+  background-color: var(--color-background-light);
+  font-size: var(--font-size-p);
+  text-wrap: balance;
+}
+
+.scannerWrapper {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.videoContainer {
+  position: relative;
+  max-width: 640px;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+}
+
+.video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.colorGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 48px);
+  grid-template-rows: repeat(3, 48px);
+  gap: 4px;
+  margin-top: 16px;
+}
+
+.colorCell {
+  border: 1px solid var(--color-border-dark);
+  border-radius: 4px;
+}
+
+.confirmationContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.confirmationGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 60px);
+  grid-template-rows: repeat(3, 60px);
+  gap: 4px;
+}
+
+.confirmationCell {
+  border: 2px solid var(--color-border-dark);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.confirmationCell:hover {
+  border-color: var(--color-active-border);
+}
+
+.confirmationButtons {
+  display: flex;
+  gap: 12px;
+}
+
+/* Tablet (768px–992px) */
+@media screen and (max-width: 992px) {
+  .container {
+    padding: 12px;
+  }
+
+  .cubeWrapper {
+    padding: 32px;
+  }
+
+  .cube {
+    width: 120px;
+    height: 120px;
+  }
+
+  .face {
+    width: 120px;
+    height: 120px;
+  }
+
+  .sticker {
+    width: 37px;
+    height: 37px;
+  }
+
+  .faceArrow {
+    width: 90px;
+    height: 90px;
+  }
+
+  .colorIndicator {
+    width: 14px;
+    height: 14px;
+  }
+
+  .up {
+    transform: rotateX(90deg) translateZ(60px);
+  }
+  .left {
+    transform: rotateY(-90deg) translateZ(60px);
+  }
+  .front {
+    transform: translateZ(60px);
+  }
+  .right {
+    transform: rotateY(90deg) translateZ(60px);
+  }
+  .back {
+    transform: rotateY(180deg) translateZ(60px);
+  }
+  .down {
+    transform: rotateX(-90deg) translateZ(60px);
+  }
+
+  .actionButton {
+    padding: 6px 12px;
+    font-size: var(--font-size-small);
+  }
+
+  .scannerWrapper {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .videoContainer {
+    max-width: 480px;
+  }
+
+  .confirmationGrid {
+    grid-template-columns: repeat(3, 50px);
+    grid-template-rows: repeat(3, 50px);
+  }
+
+  .colorGrid {
+    grid-template-columns: repeat(3, 40px);
+    grid-template-rows: repeat(3, 40px);
+  }
+
+  .solution {
+    font-size: var(--font-size-h3);
+    max-width: 400px;
+  }
+}
+
+/* Mobile (<768px) */
+@media screen and (max-width: 768px) {
+  .container {
+    padding: 8px;
+    gap: 16px;
+  }
+
+  .cubeWrapper {
+    padding: 24px;
+  }
+
+  .cube {
+    width: 100px;
+    height: 100px;
+  }
+
+  .face {
+    width: 100px;
+    height: 100px;
+  }
+
+  .sticker {
+    width: 31px;
+    height: 31px;
+    margin: 0.5px;
+  }
+
+  .faceArrow {
+    width: 80px;
+    height: 80px;
+  }
+
+  .colorIndicator {
+    width: 12px;
+    height: 12px;
+  }
+
+  .up {
+    transform: rotateX(90deg) translateZ(50px);
+  }
+  .left {
+    transform: rotateY(-90deg) translateZ(50px);
+  }
+  .front {
+    transform: translateZ(50px);
+  }
+  .right {
+    transform: rotateY(90deg) translateZ(50px);
+  }
+  .back {
+    transform: rotateY(180deg) translateZ(50px);
+  }
+  .down {
+    transform: rotateX(-90deg) translateZ(50px);
+  }
+
+  .controls {
+    grid-template-columns: repeat(3, 32px);
+    grid-template-rows: repeat(2, 32px);
+    gap: 6px;
+  }
+
+  .moveButton {
+    min-width: 28px;
+    font-size: var(--font-size-xsmall);
+  }
+
+  .rotationButtons {
+    gap: 12px;
+  }
+
+  .rotationButton {
+    min-width: 28px;
+  }
+
+  .actionsRow {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .actionButton {
+    width: 100%;
+    max-width: 200px;
+    padding: 6px;
+    font-size: var(--font-size-xsmall);
+  }
+
+  .scannerWrapper {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .videoContainer {
+    max-width: 100%;
+  }
+
+  .video {
+    width: 100%;
+    height: auto;
+  }
+
+  .canvas {
+    width: 100%;
+    height: 100%;
+  }
+
+  .confirmationContainer {
+    gap: 12px;
+  }
+
+  .confirmationGrid {
+    grid-template-columns: repeat(3, 40px);
+    grid-template-rows: repeat(3, 40px);
+    gap: 3px;
+  }
+
+  .confirmationButtons {
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .confirmationButtons .actionButton {
+    width: 100%;
+  }
+
+  .colorGrid {
+    grid-template-columns: repeat(3, 32px);
+    grid-template-rows: repeat(3, 32px);
+    gap: 3px;
+    margin-top: 12px;
+  }
+
+  .instructions {
+    font-size: var(--font-size-small);
+    padding: 8px;
+  }
+
+  .solution {
+    font-size: var(--font-size-h3);
+    max-width: 300px;
+    padding: 8px;
+  }
+
+  .solutionSlider {
+    max-width: 280px;
+  }
+
+  .solutionMoves {
+    max-width: 280px;
+    gap: 4px;
+  }
+
+  .solutionMove {
+    font-size: var(--font-size-xsmall);
+    min-height: 32px;
+    min-width: 32px;
+  }
+}
 </file>
 
 </files>
