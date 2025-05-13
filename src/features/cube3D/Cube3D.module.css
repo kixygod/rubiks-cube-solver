@@ -285,6 +285,22 @@
   aspect-ratio: 4 / 3;
 }
 
+.videoBox {
+  position: relative;
+  width: 100%;
+  padding-top: 75%;          /* 4:3  ⇒  3 / 4 = 0.75 */
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.surface {                   /* и <video>, и <canvas> */
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .video {
   width: 100%;
   height: 100%;

@@ -244,14 +244,14 @@ const CubeScanner = () => {
         )}
       </div>
       <div className={styles.scannerWrapper}>
-        <div className={styles.videoContainer}>
+        <div className={styles.videoBox}>
           <video
             ref={videoRef}
             autoPlay
             playsInline
-            className={styles.video}
+            className={styles.surface}
           ></video>
-          <canvas ref={canvasRef} className={styles.canvas}></canvas>
+          <canvas ref={canvasRef} className={styles.surface}></canvas>
         </div>
         <div className={styles.cubeContainer}>
           <div className={styles.cubeWrapper}>
