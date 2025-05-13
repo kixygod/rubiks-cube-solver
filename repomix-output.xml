@@ -102,18 +102,6 @@ vite.config.ts
 <files>
 This section contains the contents of the repository's files.
 
-<file path="src/shared/assets/icons/clockwise.svg">
-<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <path d="M12 4V2L8 6L12 10V8C15.31 8 18 10.69 18 14C18 17.31 15.31 20 12 20C8.69 20 6 17.31 6 14H4C4 18.42 7.58 22 12 22C16.42 22 20 18.42 20 14C20 9.58 16.42 6 12 6Z" fill="#000000"/>
-  </svg>
-</file>
-
-<file path="src/shared/assets/icons/counterclockwise.svg">
-<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <path d="M12 20V22L16 18L12 14V16C8.69 16 6 13.31 6 10C6 6.69 8.69 4 12 4C15.31 4 18 6.69 18 10H20C20 5.58 16.42 2 12 2C7.58 2 4 5.58 4 10C4 14.42 7.58 18 12 18Z" fill="#000000"/>
-  </svg>
-</file>
-
 <file path=".github/workflows/dev.yml">
 name: rubik-dev
 
@@ -603,188 +591,6 @@ export * from './storage';
 export * from './solve';
 </file>
 
-<file path="src/features/cube3D/SolutionPlayback.tsx">
-import { useState, useEffect } from 'react';
-
-import { CubeState, Rotation } from '@entities/cube/types';
-import { useLocation, useNavigate } from 'react-router-dom';
-
-import { applyMove } from './model';
-import { CubeFace, RotationButtons } from './ui';
-
-import styles from './Cube3D.module.css';
-
-const SolutionPlayback = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const { initialCube, solution } = location.state || {};
-
-  const [cube, setCube] = useState<CubeState>(initialCube || []);
-  const [rotation, setRotation] = useState<Rotation>({ x: -22, y: -38, z: 0 });
-  const [moveIndex, setMoveIndex] = useState<number>(0);
-  const [solutionMoves, setSolutionMoves] = useState<string[]>([]);
-
-  useEffect(() => {
-    if (solution) {
-      const moves = solution.trim().split(' ');
-      setSolutionMoves(moves);
-      setCube(initialCube);
-      setMoveIndex(0);
-    }
-  }, [solution, initialCube]);
-
-  const applyMovesUpToIndex = (index: number) => {
-    let currentCube = [...initialCube];
-    for (let i = 0; i <= index; i++) {
-      if (solutionMoves[i]) {
-        currentCube = applyMove(currentCube, solutionMoves[i]);
-      }
-    }
-    setCube(currentCube);
-  };
-
-  const handleSliderChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newIndex = Number(event.target.value);
-    setMoveIndex(newIndex);
-    applyMovesUpToIndex(newIndex);
-  };
-
-  const handleMoveClick = (index: number) => {
-    setMoveIndex(index);
-    applyMovesUpToIndex(index);
-  };
-
-  const handleRotate = (axis: 'x' | 'y' | 'z', angle: number) => {
-    setRotation((prev) => ({
-      ...prev,
-      [axis]: prev[axis] + angle,
-    }));
-  };
-
-  const handleBack = () => {
-    navigate('/');
-  };
-
-  if (!initialCube || !solution) {
-    return (
-      <div className={styles.container}>
-        <h2>Ошибка: данные кубика или решения отсутствуют</h2>
-        <button className={styles.actionButton} onClick={handleBack}>
-          Вернуться
-        </button>
-      </div>
-    );
-  }
-
-  return (
-    <div className={styles.container}>
-      <h2>Воспроизведение решения</h2>
-      <div className={styles.cubeWrapper}>
-        <div
-          className={styles.cube}
-          style={{
-            transform: `rotateX(${rotation.x}deg) rotateY(${rotation.y}deg) rotateZ(${rotation.z}deg)`,
-          }}
-        >
-          <CubeFace
-            start={0}
-            faceClass="up"
-            cube={cube}
-            selectedColor=""
-            hoveredStickerIndex={null}
-            onStickerClick={() => {}}
-            setHoveredStickerIndex={() => {}}
-          />
-          <CubeFace
-            start={9}
-            faceClass="right"
-            cube={cube}
-            selectedColor=""
-            hoveredStickerIndex={null}
-            onStickerClick={() => {}}
-            setHoveredStickerIndex={() => {}}
-          />
-          <CubeFace
-            start={18}
-            faceClass="front"
-            cube={cube}
-            selectedColor=""
-            hoveredStickerIndex={null}
-            onStickerClick={() => {}}
-            setHoveredStickerIndex={() => {}}
-          />
-          <CubeFace
-            start={27}
-            faceClass="down"
-            cube={cube}
-            selectedColor=""
-            hoveredStickerIndex={null}
-            onStickerClick={() => {}}
-            setHoveredStickerIndex={() => {}}
-          />
-          <CubeFace
-            start={36}
-            faceClass="left"
-            cube={cube}
-            selectedColor=""
-            hoveredStickerIndex={null}
-            onStickerClick={() => {}}
-            setHoveredStickerIndex={() => {}}
-          />
-          <CubeFace
-            start={45}
-            faceClass="back"
-            cube={cube}
-            selectedColor=""
-            hoveredStickerIndex={null}
-            onStickerClick={() => {}}
-            setHoveredStickerIndex={() => {}}
-          />
-        </div>
-      </div>
-      <RotationButtons onRotate={handleRotate} />
-      <div className={styles.solution}>
-        <h3>
-          Шаг {moveIndex + 1} из {solutionMoves.length + 1}
-        </h3>
-        <p>
-          {solutionMoves[moveIndex]
-            ? `Текущий ход: ${solutionMoves[moveIndex]}`
-            : 'Успех!'}
-        </p>
-        <input
-          type="range"
-          min="0"
-          max={solutionMoves.length}
-          value={moveIndex}
-          onChange={handleSliderChange}
-          className={styles.solutionSlider}
-        />
-        <div className={styles.solutionMoves}>
-          {solutionMoves.map((move, index) => (
-            <span
-              key={index}
-              className={`${styles.solutionMove} ${
-                index === moveIndex ? styles.activeMove : ''
-              }`}
-              onClick={() => handleMoveClick(index)}
-              style={{ cursor: 'pointer' }}
-            >
-              {move}
-            </span>
-          ))}
-        </div>
-      </div>
-      <button className={styles.actionButton} onClick={handleBack}>
-        Вернуться
-      </button>
-    </div>
-  );
-};
-
-export default SolutionPlayback;
-</file>
-
 <file path="src/features/cube3D/ui/ColorPicker.tsx">
 import { COLORS } from "../../../entities/cube/constants";
 import styles from "../Cube3D.module.css";
@@ -804,84 +610,6 @@ export const ColorPicker = ({ onColorSelect }: ColorPickerProps) => {
           onClick={() => onColorSelect(color)}
         />
       ))}
-    </div>
-  );
-};
-</file>
-
-<file path="src/features/cube3D/ui/CubeFace.tsx">
-import { ClockwiseIcon, CounterclockwiseIcon } from '@shared/assets/icons';
-
-import { CENTER_INDICES } from '../../../entities/cube/constants';
-import styles from '../Cube3D.module.css';
-
-interface CubeFaceProps {
-  start: number;
-  faceClass: string;
-  cube: string[];
-  selectedColor: string;
-  hoveredStickerIndex: number | null;
-  onStickerClick: (index: number) => void;
-  setHoveredStickerIndex: (index: number | null) => void;
-  hoveredMove: string | null;
-}
-
-export const CubeFace = ({
-  start,
-  faceClass,
-  cube,
-  selectedColor,
-  hoveredStickerIndex,
-  onStickerClick,
-  setHoveredStickerIndex,
-  hoveredMove,
-}: CubeFaceProps) => {
-  const faceToMove: Record<string, string> = {
-    up: 'U',
-    right: 'R',
-    front: 'F',
-    down: 'D',
-    left: 'L',
-    back: 'B',
-  };
-
-  const moveLetter = faceToMove[faceClass];
-  const isHovered = hoveredMove && hoveredMove.startsWith(moveLetter);
-  const isCounterclockwise = isHovered && hoveredMove?.includes("'");
-
-  return (
-    <div className={`${styles.face} ${styles[faceClass]}`}>
-      {cube.slice(start, start + 9).map((color, idx) => {
-        const index = start + idx;
-        return (
-          <div
-            key={index}
-            className={styles.sticker}
-            style={{ backgroundColor: color }}
-            onClick={() =>
-              !CENTER_INDICES.includes(index) && onStickerClick(index)
-            }
-            onMouseEnter={() => setHoveredStickerIndex(index)}
-            onMouseLeave={() => setHoveredStickerIndex(null)}
-          >
-            {hoveredStickerIndex === index && selectedColor && (
-              <div
-                className={styles.colorIndicator}
-                style={{ backgroundColor: selectedColor }}
-              />
-            )}
-          </div>
-        );
-      })}
-      {isHovered && (
-        <div className={styles.faceArrow}>
-          {isCounterclockwise ? (
-            <CounterclockwiseIcon width={48} height={48} fill="#ffffff" />
-          ) : (
-            <ClockwiseIcon width={48} height={48} fill="#ffffff" />
-          )}
-        </div>
-      )}
     </div>
   );
 };
@@ -940,20 +668,16 @@ export const ScrambleDisplay = ({ scramble }: ScrambleDisplayProps) => {
 </svg>
 </file>
 
-<file path="src/shared/assets/icons/index.ts">
-import ArrowLeftIcon from './arrow-left.svg?react';
-import ArrowRightIcon from './arrow-right.svg?react';
-import ArrowRotate from './arrow-rotate.svg?react';
-import ClockwiseIcon from './clockwise.svg?react';
-import CounterclockwiseIcon from './counterclockwise.svg?react';
+<file path="src/shared/assets/icons/clockwise.svg">
+<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M60 20V10L40 30L60 50V40C76.55 40 90 53.45 90 70C90 86.55 76.55 100 60 100C43.45 100 30 86.55 30 70H20C20 92.1 38.9 110 60 110C81.1 110 100 92.1 100 70C100 47.9 81.1 30 60 30Z" fill="#000000"/>
+</svg>
+</file>
 
-export {
-  ArrowLeftIcon,
-  ArrowRightIcon,
-  ArrowRotate,
-  ClockwiseIcon,
-  CounterclockwiseIcon,
-};
+<file path="src/shared/assets/icons/counterclockwise.svg">
+<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M60 100V110L80 90L60 70V80C43.45 80 30 66.55 30 50C30 33.45 43.45 20 60 20C76.55 20 90 33.45 90 50H100C100 27.9 81.1 10 60 10C38.9 10 20 27.9 20 50C20 72.1 38.9 90 60 90Z" fill="#000000"/>
+</svg>
 </file>
 
 <file path="src/shared/lib/validateCube.ts">
@@ -1247,17 +971,6 @@ export default tseslint.config(
 </html>
 </file>
 
-<file path="src/App.module.css">
-.app {
-  width: 100dvw;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-</file>
-
 <file path="src/features/cube3D/model/scramble.ts">
 import { initCube } from '../../../entities/cube/model';
 import { CubeState } from '../../../entities/cube/types';
@@ -1324,72 +1037,192 @@ export const loadScramble = (): CubeState | null => {
 };
 </file>
 
-<file path="src/features/cube3D/ui/ActionButtons.tsx">
-import styles from '../Cube3D.module.css';
+<file path="src/features/cube3D/SolutionPlayback.tsx">
+import { useState, useEffect } from 'react';
 
-interface ActionButtonsProps {
-  onReset: () => void;
-  onSave: () => void;
-  onLoad: () => void;
-  onScramble: () => void;
-  onSolve: () => void;
-  onMove: (move: string) => void;
-  onHoverMove: (move: string | null) => void; // New prop to handle hover
-}
+import { CubeState, Rotation } from '@entities/cube/types';
+import { useLocation, useNavigate } from 'react-router-dom';
 
-export const ActionButtons = ({
-  onReset,
-  onSave,
-  onLoad,
-  onScramble,
-  onSolve,
-  onMove,
-  onHoverMove,
-}: ActionButtonsProps) => {
-  const moves = [
-    ['F', 'R', 'U', 'B', 'L', 'D'],
-    ["F'", "R'", "U'", "B'", "L'", "D'"],
-  ];
+import { applyMove } from './model';
+import { CubeFace, RotationButtons } from './ui';
+
+import styles from './Cube3D.module.css';
+
+const SolutionPlayback = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { initialCube, solution } = location.state || {};
+
+  const [cube, setCube] = useState<CubeState>(initialCube || []);
+  const [rotation, setRotation] = useState<Rotation>({ x: -22, y: -38, z: 0 });
+  const [moveIndex, setMoveIndex] = useState<number>(0);
+  const [solutionMoves, setSolutionMoves] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (solution) {
+      const moves = solution.trim().split(' ');
+      setSolutionMoves(moves);
+      setCube(initialCube);
+      setMoveIndex(0);
+    }
+  }, [solution, initialCube]);
+
+  const applyMovesUpToIndex = (index: number) => {
+    let currentCube = [...initialCube];
+    for (let i = 0; i <= index; i++) {
+      if (solutionMoves[i]) {
+        currentCube = applyMove(currentCube, solutionMoves[i]);
+      }
+    }
+    setCube(currentCube);
+  };
+
+  const handleSliderChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newIndex = Number(event.target.value);
+    setMoveIndex(newIndex);
+    applyMovesUpToIndex(newIndex);
+  };
+
+  const handleMoveClick = (index: number) => {
+    setMoveIndex(index);
+    applyMovesUpToIndex(index);
+  };
+
+  const handleRotate = (axis: 'x' | 'y' | 'z', angle: number) => {
+    setRotation((prev) => ({
+      ...prev,
+      [axis]: prev[axis] + angle,
+    }));
+  };
+
+  const handleBack = () => {
+    navigate('/');
+  };
+
+  if (!initialCube || !solution) {
+    return (
+      <div className={styles.container}>
+        <h2>Ошибка: данные кубика или решения отсутствуют</h2>
+        <button className={styles.actionButton} onClick={handleBack}>
+          Вернуться
+        </button>
+      </div>
+    );
+  }
 
   return (
-    <>
-      <div className={styles.movesColumn}>
-        {moves.map((moveSet, index) => (
-          <div key={index} className={styles.movesRow}>
-            {moveSet.map((move) => (
-              <button
-                key={move}
-                className={styles.moveButton}
-                onClick={() => onMove(move)}
-                onMouseEnter={() => onHoverMove(move)}
-                onMouseLeave={() => onHoverMove(null)}
-              >
-                {move}
-              </button>
-            ))}
-          </div>
-        ))}
+    <div className={styles.container}>
+      <h2>Воспроизведение решения</h2>
+      <div className={styles.cubeWrapper}>
+        <div
+          className={styles.cube}
+          style={{
+            transform: `rotateX(${rotation.x}deg) rotateY(${rotation.y}deg) rotateZ(${rotation.z}deg)`,
+          }}
+        >
+          <CubeFace
+            start={0}
+            faceClass="up"
+            cube={cube}
+            selectedColor=""
+            hoveredStickerIndex={null}
+            onStickerClick={() => {}}
+            setHoveredStickerIndex={() => {}}
+            hoveredMove={null}
+          />
+          <CubeFace
+            start={9}
+            faceClass="right"
+            cube={cube}
+            selectedColor=""
+            hoveredStickerIndex={null}
+            onStickerClick={() => {}}
+            setHoveredStickerIndex={() => {}}
+            hoveredMove={null}
+          />
+          <CubeFace
+            start={18}
+            faceClass="front"
+            cube={cube}
+            selectedColor=""
+            hoveredStickerIndex={null}
+            onStickerClick={() => {}}
+            setHoveredStickerIndex={() => {}}
+            hoveredMove={null}
+          />
+          <CubeFace
+            start={27}
+            faceClass="down"
+            cube={cube}
+            selectedColor=""
+            hoveredStickerIndex={null}
+            onStickerClick={() => {}}
+            setHoveredStickerIndex={() => {}}
+            hoveredMove={null}
+          />
+          <CubeFace
+            start={36}
+            faceClass="left"
+            cube={cube}
+            selectedColor=""
+            hoveredStickerIndex={null}
+            onStickerClick={() => {}}
+            setHoveredStickerIndex={() => {}}
+            hoveredMove={null}
+          />
+          <CubeFace
+            start={45}
+            faceClass="back"
+            cube={cube}
+            selectedColor=""
+            hoveredStickerIndex={null}
+            onStickerClick={() => {}}
+            setHoveredStickerIndex={() => {}}
+            hoveredMove={null}
+          />
+        </div>
       </div>
-      <div className={styles.actionsRow}>
-        <button className={styles.actionButton} onClick={onReset}>
-          Сбросить
-        </button>
-        <button className={styles.actionButton} onClick={onSave}>
-          Сохранить скрамбл
-        </button>
-        <button className={styles.actionButton} onClick={onLoad}>
-          Загрузить скрамбл
-        </button>
-        <button className={styles.actionButton} onClick={onScramble}>
-          Запутать кубик
-        </button>
-        <button className={styles.actionButton} onClick={onSolve}>
-          Найти решение
-        </button>
+      <RotationButtons onRotate={handleRotate} />
+      <div className={styles.solution}>
+        <h3>
+          Шаг {moveIndex + 1} из {solutionMoves.length + 1}
+        </h3>
+        <p>
+          {solutionMoves[moveIndex]
+            ? `Текущий ход: ${solutionMoves[moveIndex]}`
+            : 'Успех!'}
+        </p>
+        <input
+          type="range"
+          min="0"
+          max={solutionMoves.length}
+          value={moveIndex}
+          onChange={handleSliderChange}
+          className={styles.solutionSlider}
+        />
+        <div className={styles.solutionMoves}>
+          {solutionMoves.map((move, index) => (
+            <span
+              key={index}
+              className={`${styles.solutionMove} ${
+                index === moveIndex ? styles.activeMove : ''
+              }`}
+              onClick={() => handleMoveClick(index)}
+              style={{ cursor: 'pointer' }}
+            >
+              {move}
+            </span>
+          ))}
+        </div>
       </div>
-    </>
+      <button className={styles.actionButton} onClick={handleBack}>
+        Вернуться
+      </button>
+    </div>
   );
 };
+
+export default SolutionPlayback;
 </file>
 
 <file path="src/features/cube3D/ui/RotationButtons.tsx">
@@ -1460,6 +1293,22 @@ export const SolutionDisplay = ({ solution }: SolutionDisplayProps) => {
 };
 </file>
 
+<file path="src/shared/assets/icons/index.ts">
+import ArrowLeftIcon from './arrow-left.svg?react';
+import ArrowRightIcon from './arrow-right.svg?react';
+import ArrowRotate from './arrow-rotate.svg?react';
+import ClockwiseIcon from './clockwise.svg?react';
+import CounterclockwiseIcon from './counterclockwise.svg?react';
+
+export {
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  ArrowRotate,
+  ClockwiseIcon,
+  CounterclockwiseIcon,
+};
+</file>
+
 <file path="src/vite-env.d.ts">
 /// <reference types="vite/client" />
 
@@ -1491,6 +1340,16 @@ def solve():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
+</file>
+
+<file path="src/App.module.css">
+.app {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
 </file>
 
 <file path="src/App.tsx">
@@ -1561,6 +1420,127 @@ export const sendScrambleToBackend = async (
     console.error('Network error:', error);
     return 'Сервер недоступен';
   }
+};
+</file>
+
+<file path="src/features/cube3D/ui/ActionButtons.tsx">
+import styles from '../Cube3D.module.css';
+
+interface ActionButtonsProps {
+  onReset: () => void;
+  onSave: () => void;
+  onLoad: () => void;
+  onScramble: () => void;
+  onSolve: () => void;
+  onMove: (move: string) => void;
+  onHoverMove: (move: string | null) => void;
+}
+
+export const ActionButtons = ({
+  onReset,
+  onSave,
+  onLoad,
+  onScramble,
+  onSolve,
+  onMove,
+  onHoverMove,
+}: ActionButtonsProps) => {
+  const moves = [
+    ['F', 'R', 'U', 'B', 'L', 'D'],
+    ["F'", "R'", "U'", "B'", "L'", "D'"],
+  ];
+
+  return (
+    <>
+      <div className={styles.movesColumn}>
+        {moves.map((moveSet, index) => (
+          <div key={index} className={styles.movesRow}>
+            {moveSet.map((move) => (
+              <button
+                key={move}
+                className={styles.moveButton}
+                onClick={() => onMove(move)}
+                onMouseEnter={() => onHoverMove(move)}
+                onMouseLeave={() => onHoverMove(null)}
+              >
+                {move}
+              </button>
+            ))}
+          </div>
+        ))}
+      </div>
+      <div className={styles.actionsRow}>
+        <button className={styles.actionButton} onClick={onReset}>
+          Сбросить
+        </button>
+        <button className={styles.actionButton} onClick={onSave}>
+          Сохранить скрамбл
+        </button>
+        <button className={styles.actionButton} onClick={onLoad}>
+          Загрузить скрамбл
+        </button>
+        <button className={styles.actionButton} onClick={onScramble}>
+          Запутать кубик
+        </button>
+        <button className={styles.actionButton} onClick={onSolve}>
+          Найти решение
+        </button>
+      </div>
+    </>
+  );
+};
+</file>
+
+<file path="src/features/cube3D/ui/CubeFace.tsx">
+import { CENTER_INDICES } from '../../../entities/cube/constants';
+import styles from '../Cube3D.module.css';
+
+interface CubeFaceProps {
+  start: number;
+  faceClass: string;
+  cube: string[];
+  selectedColor: string;
+  hoveredStickerIndex: number | null;
+  onStickerClick: (index: number) => void;
+  setHoveredStickerIndex: (index: number | null) => void;
+  hoveredMove?: string | null;
+}
+
+export const CubeFace = ({
+  start,
+  faceClass,
+  cube,
+  selectedColor,
+  hoveredStickerIndex,
+  onStickerClick,
+  setHoveredStickerIndex,
+}: CubeFaceProps) => {
+  return (
+    <div className={`${styles.face} ${styles[faceClass]}`}>
+      {cube.slice(start, start + 9).map((color, idx) => {
+        const index = start + idx;
+        return (
+          <div
+            key={index}
+            className={styles.sticker}
+            style={{ backgroundColor: color }}
+            onClick={() =>
+              !CENTER_INDICES.includes(index) && onStickerClick(index)
+            }
+            onMouseEnter={() => setHoveredStickerIndex(index)}
+            onMouseLeave={() => setHoveredStickerIndex(null)}
+          >
+            {hoveredStickerIndex === index && selectedColor && (
+              <div
+                className={styles.colorIndicator}
+                style={{ backgroundColor: selectedColor }}
+              />
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
 };
 </file>
 
@@ -1819,6 +1799,267 @@ export default MainPage;
 }
 </file>
 
+<file path="src/features/cube3D/Cube3D.tsx">
+import { useState } from 'react';
+
+import { initCube, isCubeSolved } from '@entities/cube/model';
+import { CubeState, Rotation } from '@entities/cube/types';
+import { ClockwiseIcon, CounterclockwiseIcon } from '@shared/assets/icons';
+import { useNavigate } from 'react-router-dom';
+
+import {
+  applyMove,
+  applyScramble,
+  loadScramble,
+  saveScramble,
+  sendScrambleToBackend,
+} from './model';
+import {
+  ActionButtons,
+  ColorPicker,
+  CubeFace,
+  RotationButtons,
+  SolutionDisplay,
+} from './ui';
+import { ScrambleDisplay } from './ui/ScrambleDisplay';
+
+import styles from './Cube3D.module.css';
+
+interface ArrowProps {
+  face: string;
+  isVisible: boolean;
+  isCounterclockwise: boolean;
+}
+
+const Arrow = ({ face, isVisible, isCounterclockwise }: ArrowProps) => {
+  if (!isVisible) return null;
+
+  const faceTransforms: Record<string, string> = {
+    up: 'rotateX(90deg) translateZ(130px) translateX(20px)',
+    right: 'rotateY(90deg) translateZ(130px)',
+    front: 'translateZ(130px)',
+    down: 'rotateX(-90deg) translateZ(130px) translateX(15px) translateY(-15px)',
+    left: 'rotateY(-90deg) translateZ(130px)',
+    back: 'rotateY(180deg) translateZ(130px)',
+  };
+
+  return (
+    <div
+      className={styles.faceArrow}
+      style={{
+        transform: faceTransforms[face],
+      }}
+    >
+      {isCounterclockwise ? (
+        <CounterclockwiseIcon width={120} height={120} fill="#ffffff" />
+      ) : (
+        <ClockwiseIcon width={120} height={120} fill="#ffffff" />
+      )}
+    </div>
+  );
+};
+
+export const Cube3D = () => {
+  const [cube, setCube] = useState<CubeState>(initCube());
+  const [selectedColor, setSelectedColor] = useState<string>('#B90000');
+  const [rotation, setRotation] = useState<Rotation>({ x: -22, y: -38, z: 0 });
+  const [solution, setSolution] = useState<string | null>(null);
+  const [scramble, setScramble] = useState<string | null>(null);
+  const [isSolved, setIsSolved] = useState<boolean>(true);
+  const [hoveredStickerIndex, setHoveredStickerIndex] = useState<number | null>(
+    null
+  );
+  const [hoveredMove, setHoveredMove] = useState<string | null>(null);
+
+  const navigate = useNavigate();
+
+  const handleMove = (move: string) => {
+    setCube(applyMove(cube, move));
+    setIsSolved(false);
+  };
+
+  const handleStickerClick = (index: number) => {
+    const newCube = [...cube];
+    newCube[index] = selectedColor;
+    setCube(newCube);
+    setIsSolved(false);
+  };
+
+  const handleRotate = (axis: 'x' | 'y' | 'z', angle: number) => {
+    setRotation((prev) => ({
+      ...prev,
+      [axis]: prev[axis] + angle,
+    }));
+  };
+
+  const handleScramble = () => {
+    const { cube: scrambledCube, scramble: scrambleMoves } = applyScramble();
+    setCube(scrambledCube);
+    setScramble(scrambleMoves.join(' '));
+    setSolution(null);
+    setIsSolved(false);
+  };
+
+  const handleSolve = async () => {
+    if (isSolved || isCubeSolved(cube)) {
+      alert('Кубик уже собран или не был изменён! Пожалуйста, запутайте его.');
+    } else {
+      const solution = await sendScrambleToBackend(cube);
+      if (solution) setSolution(solution);
+    }
+  };
+
+  const handleReset = () => {
+    setCube(initCube());
+    setSolution(null);
+    setScramble(null);
+    setIsSolved(true);
+  };
+
+  const handleSave = () => {
+    saveScramble(cube);
+  };
+
+  const handleLoad = () => {
+    const loadedCube = loadScramble();
+    if (loadedCube) {
+      setCube(loadedCube);
+      setSolution(null);
+      setScramble(null);
+      setIsSolved(false);
+    }
+  };
+
+  const handleShowSolution = () => {
+    if (solution && scramble) {
+      navigate('/solution-playback', {
+        state: { initialCube: cube, solution },
+      });
+    }
+  };
+
+  const faceToMove: Record<string, string> = {
+    up: 'U',
+    right: 'R',
+    front: 'F',
+    down: 'D',
+    left: 'L',
+    back: 'B',
+  };
+
+  const faces = ['up', 'right', 'front', 'down', 'left', 'back'];
+
+  return (
+    <div className={styles.container}>
+      <div className={styles.cubeWrapper}>
+        <div
+          className={styles.cube}
+          style={{
+            transform: `rotateX(${rotation.x}deg) rotateY(${rotation.y}deg) rotateZ(${rotation.z}deg)`,
+          }}
+        >
+          <CubeFace
+            start={0}
+            faceClass="up"
+            cube={cube}
+            selectedColor={selectedColor}
+            hoveredStickerIndex={hoveredStickerIndex}
+            onStickerClick={handleStickerClick}
+            setHoveredStickerIndex={setHoveredStickerIndex}
+            hoveredMove={hoveredMove}
+          />
+          <CubeFace
+            start={9}
+            faceClass="right"
+            cube={cube}
+            selectedColor={selectedColor}
+            hoveredStickerIndex={hoveredStickerIndex}
+            onStickerClick={handleStickerClick}
+            setHoveredStickerIndex={setHoveredStickerIndex}
+            hoveredMove={hoveredMove}
+          />
+          <CubeFace
+            start={18}
+            faceClass="front"
+            cube={cube}
+            selectedColor={selectedColor}
+            hoveredStickerIndex={hoveredStickerIndex}
+            onStickerClick={handleStickerClick}
+            setHoveredStickerIndex={setHoveredStickerIndex}
+            hoveredMove={hoveredMove}
+          />
+          <CubeFace
+            start={27}
+            faceClass="down"
+            cube={cube}
+            selectedColor={selectedColor}
+            hoveredStickerIndex={hoveredStickerIndex}
+            onStickerClick={handleStickerClick}
+            setHoveredStickerIndex={setHoveredStickerIndex}
+            hoveredMove={hoveredMove}
+          />
+          <CubeFace
+            start={36}
+            faceClass="left"
+            cube={cube}
+            selectedColor={selectedColor}
+            hoveredStickerIndex={hoveredStickerIndex}
+            onStickerClick={handleStickerClick}
+            setHoveredStickerIndex={setHoveredStickerIndex}
+            hoveredMove={hoveredMove}
+          />
+          <CubeFace
+            start={45}
+            faceClass="back"
+            cube={cube}
+            selectedColor={selectedColor}
+            hoveredStickerIndex={hoveredStickerIndex}
+            onStickerClick={handleStickerClick}
+            setHoveredStickerIndex={setHoveredStickerIndex}
+            hoveredMove={hoveredMove}
+          />
+          {faces.map((face) => {
+            const moveLetter = faceToMove[face];
+            const isVisible = hoveredMove && hoveredMove.startsWith(moveLetter);
+            const isCounterclockwise = isVisible && hoveredMove?.includes("'");
+            return (
+              <Arrow
+                key={face}
+                face={face}
+                isVisible={!!isVisible}
+                isCounterclockwise={!!isCounterclockwise}
+              />
+            );
+          })}
+        </div>
+      </div>
+      <RotationButtons onRotate={handleRotate} />
+      <ColorPicker onColorSelect={setSelectedColor} />
+      <ActionButtons
+        onReset={handleReset}
+        onSave={handleSave}
+        onLoad={handleLoad}
+        onScramble={handleScramble}
+        onSolve={handleSolve}
+        onMove={handleMove}
+        onHoverMove={setHoveredMove}
+      />
+      <div className={styles.displayContainer}>
+        <ScrambleDisplay scramble={scramble} />
+      </div>
+      <div className={styles.displayContainer}>
+        <SolutionDisplay solution={solution} />
+        {solution && (
+          <button className={styles.actionButton} onClick={handleShowSolution}>
+            Показать решение
+          </button>
+        )}
+      </div>
+    </div>
+  );
+};
+</file>
+
 <file path="src/features/cube3D/Cube3D.module.css">
 .container {
   display: flex;
@@ -1826,7 +2067,6 @@ export default MainPage;
   gap: 32px;
   align-items: center;
   padding: 20px;
-  width: 100dvw;
 }
 
 .controls {
@@ -1895,13 +2135,12 @@ export default MainPage;
 
 .faceArrow {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 48px;
-  height: 48px;
+  width: 120px;
+  height: 120px;
   opacity: 0.8;
-  pointer-events: none; /* Prevent arrow from interfering with clicks */
+  pointer-events: none; /* Prevent interference with clicks */
+  z-index: 20; /* Higher z-index for visibility */
+  transform-origin: center; /* Ensure scaling is centered */
 }
 
 .sticker {
@@ -2067,209 +2306,6 @@ export default MainPage;
   border: 1px solid #007bff;
   background-color: #e7f1ff;
 }
-</file>
-
-<file path="src/features/cube3D/Cube3D.tsx">
-import { useState } from 'react';
-
-import { initCube, isCubeSolved } from '@entities/cube/model';
-import { CubeState, Rotation } from '@entities/cube/types';
-import { useNavigate } from 'react-router-dom';
-
-import {
-  applyMove,
-  applyScramble,
-  loadScramble,
-  saveScramble,
-  sendScrambleToBackend,
-} from './model';
-import {
-  ActionButtons,
-  ColorPicker,
-  CubeFace,
-  RotationButtons,
-  SolutionDisplay,
-} from './ui';
-import { ScrambleDisplay } from './ui/ScrambleDisplay';
-
-import styles from './Cube3D.module.css';
-
-export const Cube3D = () => {
-  const [cube, setCube] = useState<CubeState>(initCube());
-  const [selectedColor, setSelectedColor] = useState<string>('#B90000');
-  const [rotation, setRotation] = useState<Rotation>({ x: -30, y: -45, z: 0 }); // Adjusted for better initial view
-  const [solution, setSolution] = useState<string | null>(null);
-  const [scramble, setScramble] = useState<string | null>(null);
-  const [isSolved, setIsSolved] = useState<boolean>(true);
-  const [hoveredStickerIndex, setHoveredStickerIndex] = useState<number | null>(
-    null
-  );
-  const [hoveredMove, setHoveredMove] = useState<string | null>(null);
-
-  const navigate = useNavigate();
-
-  const handleMove = (move: string) => {
-    setCube(applyMove(cube, move));
-    setIsSolved(false);
-  };
-
-  const handleStickerClick = (index: number) => {
-    const newCube = [...cube];
-    newCube[index] = selectedColor;
-    setCube(newCube);
-    setIsSolved(false);
-  };
-
-  const handleRotate = (axis: 'x' | 'y' | 'z', angle: number) => {
-    setRotation((prev) => ({
-      ...prev,
-      [axis]: prev[axis] + angle,
-    }));
-  };
-
-  const handleScramble = () => {
-    const { cube: scrambledCube, scramble: scrambleMoves } = applyScramble();
-    setCube(scrambledCube);
-    setScramble(scrambleMoves.join(' '));
-    setSolution(null);
-    setIsSolved(false);
-  };
-
-  const handleSolve = async () => {
-    if (isSolved || isCubeSolved(cube)) {
-      alert('Кубик уже собран или не был изменён! Пожалуйста, запутайте его.');
-    } else {
-      const solution = await sendScrambleToBackend(cube);
-      if (solution) setSolution(solution);
-    }
-  };
-
-  const handleReset = () => {
-    setCube(initCube());
-    setSolution(null);
-    setScramble(null);
-    setIsSolved(true);
-  };
-
-  const handleSave = () => {
-    saveScramble(cube);
-  };
-
-  const handleLoad = () => {
-    const loadedCube = loadScramble();
-    if (loadedCube) {
-      setCube(loadedCube);
-      setSolution(null);
-      setScramble(null);
-      setIsSolved(false);
-    }
-  };
-
-  const handleShowSolution = () => {
-    if (solution && scramble) {
-      navigate('/solution-playback', {
-        state: { initialCube: cube, solution },
-      });
-    }
-  };
-
-  return (
-    <div className={styles.container}>
-      <div className={styles.cubeWrapper}>
-        <div
-          className={styles.cube}
-          style={{
-            transform: `rotateX(${rotation.x}deg) rotateY(${rotation.y}deg) rotateZ(${rotation.z}deg)`,
-            transformStyle: 'preserve-3d', // Explicitly ensure 3D context
-          }}
-        >
-          <CubeFace
-            start={0}
-            faceClass="up"
-            cube={cube}
-            selectedColor={selectedColor}
-            hoveredStickerIndex={hoveredStickerIndex}
-            onStickerClick={handleStickerClick}
-            setHoveredStickerIndex={setHoveredStickerIndex}
-            hoveredMove={hoveredMove}
-          />
-          <CubeFace
-            start={9}
-            faceClass="right"
-            cube={cube}
-            selectedColor={selectedColor}
-            hoveredStickerIndex={hoveredStickerIndex}
-            onStickerClick={handleStickerClick}
-            setHoveredStickerIndex={setHoveredStickerIndex}
-            hoveredMove={hoveredMove}
-          />
-          <CubeFace
-            start={18}
-            faceClass="front"
-            cube={cube}
-            selectedColor={selectedColor}
-            hoveredStickerIndex={hoveredStickerIndex}
-            onStickerClick={handleStickerClick}
-            setHoveredStickerIndex={setHoveredStickerIndex}
-            hoveredMove={hoveredMove}
-          />
-          <CubeFace
-            start={27}
-            faceClass="down"
-            cube={cube}
-            selectedColor={selectedColor}
-            hoveredStickerIndex={hoveredStickerIndex}
-            onStickerClick={handleStickerClick}
-            setHoveredStickerIndex={setHoveredStickerIndex}
-            hoveredMove={hoveredMove}
-          />
-          <CubeFace
-            start={36}
-            faceClass="left"
-            cube={cube}
-            selectedColor={selectedColor}
-            hoveredStickerIndex={hoveredStickerIndex}
-            onStickerClick={handleStickerClick}
-            setHoveredStickerIndex={setHoveredStickerIndex}
-            hoveredMove={hoveredMove}
-          />
-          <CubeFace
-            start={45}
-            faceClass="back"
-            cube={cube}
-            selectedColor={selectedColor}
-            hoveredStickerIndex={hoveredStickerIndex}
-            onStickerClick={handleStickerClick}
-            setHoveredStickerIndex={setHoveredStickerIndex}
-            hoveredMove={hoveredMove}
-          />
-        </div>
-      </div>
-      <RotationButtons onRotate={handleRotate} />
-      <ColorPicker onColorSelect={setSelectedColor} />
-      <ActionButtons
-        onReset={handleReset}
-        onSave={handleSave}
-        onLoad={handleLoad}
-        onScramble={handleScramble}
-        onSolve={handleSolve}
-        onMove={handleMove}
-        onHoverMove={setHoveredMove}
-      />
-      <div className={styles.displayContainer}>
-        <ScrambleDisplay scramble={scramble} />
-      </div>
-      <div className={styles.displayContainer}>
-        <SolutionDisplay solution={solution} />
-        {solution && (
-          <button className={styles.actionButton} onClick={handleShowSolution}>
-            Показать решение
-          </button>
-        )}
-      </div>
-    </div>
-  );
-};
 </file>
 
 </files>

@@ -75,9 +75,9 @@
   width: 120px;
   height: 120px;
   opacity: 0.8;
-  pointer-events: none; /* Prevent interference with clicks */
-  z-index: 20; /* Higher z-index for visibility */
-  transform-origin: center; /* Ensure scaling is centered */
+  pointer-events: none;
+  z-index: 20;
+  transform-origin: center;
 }
 
 .sticker {
@@ -242,4 +242,87 @@
 .activeMove {
   border: 1px solid #007bff;
   background-color: #e7f1ff;
+}
+
+.instructions {
+  text-align: center;
+  max-width: 600px;
+  padding: 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+
+.scannerWrapper {
+  display: flex;
+  flex-direction: row;
+  gap: 32px;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.videoContainer {
+  position: relative;
+  width: 640px;
+  height: 480px;
+}
+
+.video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.colorGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 50px);
+  grid-template-rows: repeat(3, 50px);
+  gap: 5px;
+  margin-top: 20px;
+}
+
+.colorCell {
+  border: 1px solid black;
+  border-radius: 4px;
+}
+
+.confirmationContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.confirmationGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 60px);
+  grid-template-rows: repeat(3, 60px);
+  gap: 5px;
+}
+
+.confirmationCell {
+  border: 2px solid black;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.confirmationCell:hover {
+  border-color: #007bff;
+}
+
+.confirmationButtons {
+  display: flex;
+  gap: 16px;
 }

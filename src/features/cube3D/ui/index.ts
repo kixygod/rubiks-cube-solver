@@ -5,3 +5,4 @@ export * from './RotationButtons';
 export * from './SolutionDisplay';
 export * from './ScrambleDisplay';
 export * from '../SolutionPlayback';
+export * from '../CubeScanner';
