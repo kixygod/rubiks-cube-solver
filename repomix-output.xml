@@ -107,134 +107,6 @@ vite.config.ts
 <files>
 This section contains the contents of the repository's files.
 
-<file path="src/css.d.ts">
-export {};
-
-declare module '*.css' {
-  interface IClassNames {
-    [className: string]: string;
-  }
-  const classNames: IClassNames;
-  export = classNames;
-}
-
-declare global {
-  interface CSSStyleDeclaration {
-    '--font-size-h1': string;
-    '--font-size-h2': string;
-    '--font-size-h3': string;
-    '--font-size-p': string;
-    '--font-size-small': string;
-    '--font-size-xsmall': string;
-    '--font-weight-bold': string;
-    '--font-weight-regular': string;
-    '--color-background-light': string;
-    '--color-background-white': string;
-    '--color-border-default': string;
-    '--color-border-dark': string;
-    '--color-border-gray': string;
-    '--color-hover-light': string;
-    '--color-success-bg': string;
-    '--color-success-border': string;
-    '--color-active-bg': string;
-    '--color-active-border': string;
-    '--color-text-dark': string;
-    '--color-shadow-light': string;
-    '--color-shadow-dark': string;
-  }
-}
-</file>
-
-<file path="src/styles/colors.css">
-:root {
-  /* Neutral colors */
-  --color-background-light: #f9f9f9; /* Background for solution moves, instructions */
-  --color-background-white: #fff;     /* White backgrounds */
-  --color-border-default: #ccc;       /* Default borders */
-  --color-border-dark: #000;          /* Black borders */
-  --color-border-gray: #808080;       /* Gray borders */
-  --color-hover-light: #dcdcdc;       /* Gainsboro for hover effects */
-
-  /* Success colors */
-  --color-success-bg: #e8f5e9;       /* Soft green for completed moves */
-  --color-success-border: #4caf50;    /* Green border for completed moves */
-
-  /* Active colors */
-  --color-active-bg: #e7f1ff;        /* Light blue for active moves */
-  --color-active-border: #007bff;     /* Blue border for active moves */
-
-  /* Text and accents */
-  --color-text-dark: #000;           /* Primary text color */
-  --color-shadow-light: rgba(0, 0, 0, 0.1); /* Light shadow */
-  --color-shadow-dark: rgba(0, 0, 0, 0.6);  /* Darker shadow for hover */
-}
-</file>
-
-<file path="src/styles/global.css">
-@import './typography.css';
-@import './colors.css';
-
-h1 {
-  font-size: var(--font-size-h1);
-  font-weight: var(--font-weight-bold);
-}
-
-h2 {
-  font-size: var(--font-size-h2);
-  font-weight: var(--font-weight-bold);
-}
-
-h3 {
-  font-size: var(--font-size-h3);
-  font-weight: var(--font-weight-bold);
-}
-
-p {
-  font-size: var(--font-size-p);
-  font-weight: var(--font-weight-regular);
-}
-</file>
-
-<file path="src/styles/typography.css">
-:root {
-  /* Base font sizes */
-  --font-size-h1: 2.5rem; /* For main headings */
-  --font-size-h2: 2rem;   /* For subheadings like "Воспроизведение решения" */
-  --font-size-h3: 1.5rem; /* For step indicators like "Шаг X из Y" */
-  --font-size-p: 1rem;    /* For paragraphs and general text */
-  --font-size-small: 0.9rem; /* For smaller text like solution moves */
-  --font-size-xsmall: 0.8rem; /* For very small text in mobile views */
-
-  /* Font weights (optional, for consistency) */
-  --font-weight-bold: 700;
-  --font-weight-regular: 400;
-}
-
-/* Tablet (768px–992px) */
-@media screen and (max-width: 992px) {
-  :root {
-    --font-size-h1: 2.2rem;
-    --font-size-h2: 1.8rem;
-    --font-size-h3: 1.3rem;
-    --font-size-p: 0.95rem;
-    --font-size-small: 0.85rem;
-    --font-size-xsmall: 0.75rem;
-  }
-}
-
-/* Mobile (<768px) */
-@media screen and (max-width: 768px) {
-  :root {
-    --font-size-h1: 2rem;
-    --font-size-h2: 1.6rem;
-    --font-size-h3: 1.2rem;
-    --font-size-p: 0.9rem;
-    --font-size-small: 0.8rem;
-    --font-size-xsmall: 0.7rem;
-  }
-}
-</file>
-
 <file path=".github/workflows/dev.yml">
 name: rubik-dev
 
@@ -366,9 +238,49 @@ All rights reserved.
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--logos" width="31.88" height="32" preserveAspectRatio="xMidYMid meet" viewBox="0 0 256 257"><defs><linearGradient id="IconifyId1813088fe1fbc01fb466" x1="-.828%" x2="57.636%" y1="7.652%" y2="78.411%"><stop offset="0%" stop-color="#41D1FF"></stop><stop offset="100%" stop-color="#BD34FE"></stop></linearGradient><linearGradient id="IconifyId1813088fe1fbc01fb467" x1="43.376%" x2="50.316%" y1="2.242%" y2="89.03%"><stop offset="0%" stop-color="#FFEA83"></stop><stop offset="8.333%" stop-color="#FFDD35"></stop><stop offset="100%" stop-color="#FFA800"></stop></linearGradient></defs><path fill="url(#IconifyId1813088fe1fbc01fb466)" d="M255.153 37.938L134.897 252.976c-2.483 4.44-8.862 4.466-11.382.048L.875 37.958c-2.746-4.814 1.371-10.646 6.827-9.67l120.385 21.517a6.537 6.537 0 0 0 2.322-.004l117.867-21.483c5.438-.991 9.574 4.796 6.877 9.62Z"></path><path fill="url(#IconifyId1813088fe1fbc01fb467)" d="M185.432.063L96.44 17.501a3.268 3.268 0 0 0-2.634 3.014l-5.474 92.456a3.268 3.268 0 0 0 3.997 3.378l24.777-5.718c2.318-.535 4.413 1.507 3.936 3.838l-7.361 36.047c-.495 2.426 1.782 4.5 4.151 3.78l15.304-4.649c2.372-.72 4.652 1.36 4.15 3.788l-11.698 56.621c-.732 3.542 3.979 5.473 5.943 2.437l1.313-2.028l72.516-144.72c1.215-2.423-.88-5.186-3.54-4.672l-25.505 4.922c-2.396.462-4.435-1.77-3.759-4.114l16.646-57.705c.677-2.35-1.37-4.583-3.769-4.113Z"></path></svg>
 </file>
 
-<file path="README.md">
-# Rubiks Cube Assistant
-Diploma project
+<file path="src/css.d.ts">
+export {};
+
+declare module '*.css' {
+  interface IClassNames {
+    [className: string]: string;
+  }
+  const classNames: IClassNames;
+  export = classNames;
+}
+
+declare global {
+  interface CSSStyleDeclaration {
+    '--font-size-h1': string;
+    '--font-size-h2': string;
+    '--font-size-h3': string;
+    '--font-size-p': string;
+    '--font-size-small': string;
+    '--font-size-xsmall': string;
+    '--font-size-button': string;
+    '--font-size-button-small': string;
+    '--font-weight-bold': string;
+    '--font-weight-regular': string;
+    '--spacing-xs': string;
+    '--spacing-sm': string;
+    '--spacing-md': string;
+    '--spacing-lg': string;
+    '--spacing-xl': string;
+    '--color-background-light': string;
+    '--color-background-white': string;
+    '--color-border-default': string;
+    '--color-border-dark': string;
+    '--color-border-gray': string;
+    '--color-hover-light': string;
+    '--color-success-bg': string;
+    '--color-success-border': string;
+    '--color-active-bg': string;
+    '--color-active-border': string;
+    '--color-text-dark': string;
+    '--color-shadow-light': string;
+    '--color-shadow-dark': string;
+  }
+}
 </file>
 
 <file path="src/entities/cube/constants.ts">
@@ -819,130 +731,121 @@ export function validateCubeColors(cube: string[]): {
 }
 </file>
 
-<file path="src/styles.css">
-@import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
+<file path="src/styles/colors.css">
+:root {
+  /* Neutral colors */
+  --color-background-light: #f9f9f9; /* Background for solution moves, instructions */
+  --color-background-white: #fff;     /* White backgrounds */
+  --color-border-default: #ccc;       /* Default borders */
+  --color-border-dark: #000;          /* Black borders */
+  --color-border-gray: #808080;       /* Gray borders */
+  --color-hover-light: #dcdcdc;       /* Gainsboro for hover effects */
 
-* {
-  padding: 0;
-  margin: 0;
-  font-family: "Rubik", sans-serif;
-  font-optical-sizing: auto;
-  border: 0;
-  scroll-behavior: smooth;
+  /* Success colors */
+  --color-success-bg: #e8f5e9;       /* Soft green for completed moves */
+  --color-success-border: #4caf50;    /* Green border for completed moves */
+
+  /* Active colors */
+  --color-active-bg: #e7f1ff;        /* Light blue for active moves */
+  --color-active-border: #007bff;     /* Blue border for active moves */
+
+  /* Text and accents */
+  --color-text-dark: #000;           /* Primary text color */
+  --color-shadow-light: rgba(0, 0, 0, 0.1); /* Light shadow */
+  --color-shadow-dark: rgba(0, 0, 0, 0.6);  /* Darker shadow for hover */
+}
+</file>
+
+<file path="src/styles/global.css">
+@import './typography.css';
+@import './colors.css';
+
+h1 {
+  font-size: var(--font-size-h1);
+  font-weight: var(--font-weight-bold);
 }
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
+h2 {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-bold);
 }
 
-:focus,
-:active {
-  outline: none;
+h3 {
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-bold);
 }
 
-a,
-a:link,
-a:visited {
-  display: inline-block;
-  color: inherit;
-  text-decoration: none;
+h4 {
+  font-size: var(--font-size-p);
+  font-weight: var(--font-weight-bold);
 }
 
-a:focus,
-a:active {
-  outline: none;
+h5 {
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-bold);
 }
 
-a:hover {
-  color: inherit;
-  text-decoration: none;
+h6 {
+  font-size: var(--font-size-xsmall);
+  font-weight: var(--font-weight-bold);
 }
 
-aside,
-nav,
-footer,
-header,
-section,
-main {
-  display: block;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
 p {
-  font-size: inherit;
-  font-weight: inherit;
+  font-size: var(--font-size-p);
+  font-weight: var(--font-weight-regular);
+}
+</file>
+
+<file path="src/styles/typography.css">
+:root {
+  /* Base font sizes */
+  --font-size-h1: 2.5rem;
+  --font-size-h2: 2rem;
+  --font-size-h3: 1.5rem;
+  --font-size-p: 1rem;
+  --font-size-small: 0.9rem;
+  --font-size-xsmall: 0.8rem;
+  --font-size-button: 1rem;
+  --font-size-button-small: 0.9rem;
+
+  /* Font weights */
+  --font-weight-bold: 700;
+  --font-weight-regular: 400;
+
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 48px;
 }
 
-ul,
-ul li {
-  list-style: none;
-}
-
-img {
-  vertical-align: top;
-}
-
-img,
-svg {
-  max-width: 100%;
-  max-height: 100%;
-}
-
-address {
-  font-style: normal;
-}
-
-input,
-textarea,
-button,
-select {
-  font-family: inherit;
-  font-size: inherit;
-  color: inherit;
-  background-color: transparent;
-
-  ::-webkit-search-decoration,
-  ::-webkit-search-cancel-button,
-  ::-webkit-search-results-button,
-  ::-webkit-search-results-decoration,
-  ::-ms-clear {
-    display: none;
+/* Tablet (768px–992px) */
+@media screen and (max-width: 992px) {
+  :root {
+    --font-size-h1: 2.2rem;
+    --font-size-h2: 1.8rem;
+    --font-size-h3: 1.3rem;
+    --font-size-p: 0.95rem;
+    --font-size-small: 0.85rem;
+    --font-size-xsmall: 0.75rem;
+    --font-size-button: 0.95rem;
+    --font-size-button-small: 0.85rem;
   }
 }
 
-button {
-  display: inline-block;
-  cursor: pointer;
-  background: none;
-  background-color: transparent;
-  box-shadow: none;
-}
-
-input:focus,
-input:active,
-button:focus,
-button:active {
-  outline: none;
-}
-
-button::-moz-focus-inner {
-  padding: 0;
-  border: 0;
-}
-
-label {
-  cursor: pointer;
-}
-
-legend {
-  display: block;
+/* Mobile (<768px) */
+@media screen and (max-width: 768px) {
+  :root {
+    --font-size-h1: 2rem;
+    --font-size-h2: 1.6rem;
+    --font-size-h3: 1.2rem;
+    --font-size-p: 0.9rem;
+    --font-size-small: 0.8rem;
+    --font-size-xsmall: 0.7rem;
+    --font-size-button: 0.9rem;
+    --font-size-button-small: 0.8rem;
+  }
 }
 </file>
 
@@ -1105,6 +1008,18 @@ export default tseslint.config(
 </html>
 </file>
 
+<file path="README.md">
+# Rubiks Cube Assistant
+Diploma project
+
+## CSS Architecture
+- **Typography**: Defined in `src/styles/typography.css` with responsive font sizes (`--font-size-h1` to `--font-size-xsmall`), font weights, and spacing variables (`--spacing-xs` to `--spacing-xl`).
+- **Colors**: Defined in `src/styles/colors.css` with semantic variables (`--color-success-bg`, `--color-active-border`, etc.).
+- **Global Styles**: `src/styles/global.css` applies typography rules for `h1`–`h6` and `p`, and imports `typography.css` and `colors.css`. `src/styles.css` handles CSS resets and font imports.
+- **Type Safety**: `src/css.d.ts` declares CSS variables for TypeScript autocompletion and type checking.
+- **Maintenance**: Update `css.d.ts` when adding new variables to `typography.css` or `colors.css`.
+</file>
+
 <file path="src/features/cube3D/CubeScanner.tsx">
 import { useState, useEffect, useRef, useCallback } from 'react';
 
@@ -1214,7 +1129,7 @@ const CubeScanner = () => {
 
     setDetectedColors(colors);
     console.log('Detected colors:', colors);
-  }, []);
+  }, [rgbToClosestColor]);
 
   useEffect(() => {
     if (isScanning && !confirmationMode) {
@@ -1249,11 +1164,6 @@ const CubeScanner = () => {
   };
 
   const rgbToClosestColor = (r: number, g: number, b: number): string => {
-    const rgbToHex = (c: number) => {
-      const hex = Math.round(c).toString(16).padStart(2, '0');
-      return hex;
-    };
-
     let minDistance = Infinity;
     let closestColor = COLORS[0];
 
@@ -1657,6 +1567,108 @@ export {
 };
 </file>
 
+<file path="src/styles.css">
+@import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
+@import './styles/global.css';
+
+* {
+  padding: 0;
+  margin: 0;
+  font-family: "Rubik", sans-serif;
+  font-optical-sizing: auto;
+  border: 0;
+  scroll-behavior: smooth;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+:focus, :active {
+  outline: none;
+}
+
+a, a:link, a:visited {
+  display: inline-block;
+  color: inherit;
+  text-decoration: none;
+}
+
+a:focus, a:active {
+  outline: none;
+}
+
+a:hover {
+  color: inherit;
+  text-decoration: none;
+}
+
+aside, nav, footer, header, section, main {
+  display: block;
+}
+
+h1, h2, h3, h4, h5, h6, p {
+  font-weight: inherit;
+}
+
+ul, ul li {
+  list-style: none;
+}
+
+img {
+  vertical-align: top;
+}
+
+img, svg {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+address {
+  font-style: normal;
+}
+
+input, textarea, button, select {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  background-color: transparent;
+}
+
+input::-webkit-search-decoration,
+input::-webkit-search-cancel-button,
+input::-webkit-search-results-button,
+input::-webkit-search-results-decoration,
+input::-ms-clear {
+  display: none;
+}
+
+button {
+  display: inline-block;
+  cursor: pointer;
+  background: none;
+  background-color: transparent;
+  box-shadow: none;
+}
+
+input:focus, input:active, button:focus, button:active {
+  outline: none;
+}
+
+button::-moz-focus-inner {
+  padding: 0;
+  border: 0;
+}
+
+label {
+  cursor: pointer;
+}
+
+legend {
+  display: block;
+}
+</file>
+
 <file path="src/vite-env.d.ts">
 /// <reference types="vite/client" />
 
@@ -1688,16 +1700,6 @@ def solve():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
-</file>
-
-<file path="src/App.module.css">
-.app {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
 </file>
 
 <file path="src/App.tsx">
@@ -2254,6 +2256,19 @@ networks:
 }
 </file>
 
+<file path="src/App.module.css">
+.app {
+  min-height: 100dvh;
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-p);
+  background-color: var(--color-background-white, #fff);
+}
+</file>
+
 <file path="src/features/cube3D/ui/index.ts">
 export * from './CubeFace';
 export * from './ColorPicker';
@@ -2637,69 +2652,69 @@ export const Cube3D = () => {
 </file>
 
 <file path="src/features/cube3D/Cube3D.module.css">
-@import './typography.css';
-@import './colors.css';
-
 .container {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  min-height: 100dvh;
+  max-height: 100%;
+  gap: var(--spacing-lg, 24px);
   align-items: center;
-  padding: 16px;
+  justify-content: center;
+  padding: var(--spacing-md, 16px);
 }
 
 .controls {
   display: grid;
-  gap: 8px;
+  gap: var(--spacing-sm, 8px);
   grid-template-columns: repeat(3, 36px);
   grid-template-rows: repeat(2, 36px);
 }
 
 .colorButton {
-  border: 2px solid var(--color-border-dark);
+  border: 2px solid var(--color-border-dark, #000);
   cursor: pointer;
 }
 
 .colorButton:hover {
-  border: 2px solid var(--color-background-white);
+  border: 2px solid var(--color-background-white, #fff);
 }
 
 .movesColumn {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--spacing-sm, 8px);
 }
 
 .movesRow {
   display: flex;
   flex-direction: row;
-  gap: 8px;
+  gap: var(--spacing-sm, 8px);
 }
 
 .moveButton {
   aspect-ratio: 1 / 1;
   min-width: 32px;
-  border: solid 1px var(--color-border-gray);
+  border: solid 1px var(--color-border-gray, #808080);
   border-radius: 8px;
   cursor: pointer;
-  background-color: var(--color-background-white);
+  background-color: var(--color-background-white, #fff);
   transition: all 0.2s ease;
-  font-size: var(--font-size-small);
+  font-size: var(--font-size-button-small, 0.9rem);
 }
 
 .moveButton:hover {
-  background-color: var(--color-hover-light);
+  background-color: var(--color-hover-light, #dcdcdc);
 }
 
 .cubeWrapper {
-  padding: 48px;
+  padding: var(--spacing-xl, 48px);
 }
 
 .cubeContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 24px;
+  gap: var(--spacing-lg, 24px);
 }
 
 .cube {
@@ -2715,7 +2730,7 @@ export const Cube3D = () => {
   width: 156px;
   height: 156px;
   display: grid;
-  background: var(--color-text-dark);
+  background: var(--color-text-dark, #000);
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(3, 1fr);
 }
@@ -2735,8 +2750,8 @@ export const Cube3D = () => {
   height: 49px;
   margin: 1px;
   border-radius: 4px;
-  border: 1px solid var(--color-border-dark);
-  box-shadow: 0 0 5px var(--color-shadow-light);
+  border: 1px solid var(--color-border-dark, #000);
+  box-shadow: 0 0 5px var(--color-shadow-light, rgba(0, 0, 0, 0.1));
   cursor: pointer;
   transition: background-color 0.3s ease;
   position: relative;
@@ -2753,7 +2768,7 @@ export const Cube3D = () => {
 }
 
 .sticker:hover {
-  box-shadow: inset 0px 0px 10px var(--color-shadow-dark);
+  box-shadow: inset 0px 0px 10px var(--color-shadow-dark, rgba(0, 0, 0, 0.6));
 }
 
 .up {
@@ -2780,7 +2795,7 @@ export const Cube3D = () => {
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: 16px;
+  gap: var(--spacing-md, 16px);
 }
 
 .rotationButton {
@@ -2789,7 +2804,7 @@ export const Cube3D = () => {
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  background-color: var(--color-background-white);
+  background-color: var(--color-background-white, #fff);
 }
 
 .actionsRow {
@@ -2798,21 +2813,21 @@ export const Cube3D = () => {
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: var(--spacing-md, 12px);
 }
 
 .actionButton {
-  padding: 8px 16px;
-  border: solid 1px var(--color-border-gray);
+  padding: var(--spacing-sm, 8px) var(--spacing-md, 16px);
+  border: solid 1px var(--color-border-gray, #808080);
   border-radius: 8px;
   cursor: pointer;
-  background-color: var(--color-background-white);
+  background-color: var(--color-background-white, #fff);
   transition: all 0.2s ease;
-  font-size: var(--font-size-p);
+  font-size: var(--font-size-button, 1rem);
 }
 
 .actionButton:hover {
-  background-color: var(--color-hover-light);
+  background-color: var(--color-hover-light, #dcdcdc);
 }
 
 .displayContainer {
@@ -2824,9 +2839,9 @@ export const Cube3D = () => {
 .solution {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--spacing-sm, 8px);
   align-items: center;
-  padding: 12px;
+  padding: var(--spacing-md, 12px);
   border-radius: 8px;
   font-size: var(--font-size-h3);
   text-align: center;
@@ -2851,13 +2866,13 @@ export const Cube3D = () => {
 .solutionSlider {
   max-width: 450px;
   width: 100%;
-  margin: 16px 0;
+  margin: var(--spacing-md, 16px) 0;
 }
 
 .solutionMoves {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: var(--spacing-xs, 6px);
   justify-content: center;
   max-width: 450px;
 }
@@ -2866,10 +2881,10 @@ export const Cube3D = () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 4px 8px;
-  border: 1px solid var(--color-border-default);
+  padding: var(--spacing-xs, 4px) var(--spacing-sm, 8px);
+  border: 1px solid var(--color-border-default, #ccc);
   border-radius: 4px;
-  background-color: var(--color-background-light);
+  background-color: var(--color-background-light, #f9f9f9);
   font-size: var(--font-size-small);
   transition: all 0.2s ease;
   min-height: 36px;
@@ -2877,13 +2892,13 @@ export const Cube3D = () => {
 }
 
 .activeMove {
-  border: 1px solid var(--color-active-border);
-  background-color: var(--color-active-bg);
+  border: 1px solid var(--color-active-border, #007bff);
+  background-color: var(--color-active-bg, #e7f1ff);
 }
 
 .completedMove {
-  border: 1px solid var(--color-success-border);
-  background-color: var(--color-success-bg);
+  border: 1px solid var(--color-success-border, #4caf50);
+  background-color: var(--color-success-bg, #e8f5e9);
 }
 
 .pulse {
@@ -2899,10 +2914,10 @@ export const Cube3D = () => {
 .instructions {
   text-align: center;
   max-width: 90%;
-  padding: 12px;
-  border: 1px solid var(--color-border-default);
+  padding: var(--spacing-md, 12px);
+  border: 1px solid var(--color-border-default, #ccc);
   border-radius: 8px;
-  background-color: var(--color-background-light);
+  background-color: var(--color-background-light, #f9f9f9);
   font-size: var(--font-size-p);
   text-wrap: balance;
 }
@@ -2910,7 +2925,7 @@ export const Cube3D = () => {
 .scannerWrapper {
   display: flex;
   flex-direction: row;
-  gap: 24px;
+  gap: var(--spacing-lg, 24px);
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
@@ -2943,12 +2958,12 @@ export const Cube3D = () => {
   display: grid;
   grid-template-columns: repeat(3, 48px);
   grid-template-rows: repeat(3, 48px);
-  gap: 4px;
-  margin-top: 16px;
+  gap: var(--spacing-xs, 4px);
+  margin-top: var(--spacing-md, 16px);
 }
 
 .colorCell {
-  border: 1px solid var(--color-border-dark);
+  border: 1px solid var(--color-border-dark, #000);
   border-radius: 4px;
 }
 
@@ -2956,41 +2971,41 @@ export const Cube3D = () => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
-  margin-top: 16px;
+  gap: var(--spacing-md, 16px);
+  margin-top: var(--spacing-md, 16px);
 }
 
 .confirmationGrid {
   display: grid;
   grid-template-columns: repeat(3, 60px);
   grid-template-rows: repeat(3, 60px);
-  gap: 4px;
+  gap: var(--spacing-xs, 4px);
 }
 
 .confirmationCell {
-  border: 2px solid var(--color-border-dark);
+  border: 2px solid var(--color-border-dark, #000);
   border-radius: 4px;
   cursor: pointer;
   transition: border-color 0.2s ease;
 }
 
 .confirmationCell:hover {
-  border-color: var(--color-active-border);
+  border-color: var(--color-active-border, #007bff);
 }
 
 .confirmationButtons {
   display: flex;
-  gap: 12px;
+  gap: var(--spacing-md, 12px);
 }
 
 /* Tablet (768px–992px) */
 @media screen and (max-width: 992px) {
   .container {
-    padding: 12px;
+    padding: var(--spacing-md, 12px);
   }
 
   .cubeWrapper {
-    padding: 32px;
+    padding: var(--spacing-lg, 32px);
   }
 
   .cube {
@@ -3038,13 +3053,13 @@ export const Cube3D = () => {
   }
 
   .actionButton {
-    padding: 6px 12px;
-    font-size: var(--font-size-small);
+    padding: var(--spacing-xs, 6px) var(--spacing-md, 12px);
+    font-size: var(--font-size-button-small, 0.9rem);
   }
 
   .scannerWrapper {
     flex-direction: column;
-    gap: 16px;
+    gap: var(--spacing-md, 16px);
   }
 
   .videoContainer {
@@ -3070,12 +3085,12 @@ export const Cube3D = () => {
 /* Mobile (<768px) */
 @media screen and (max-width: 768px) {
   .container {
-    padding: 8px;
-    gap: 16px;
+    padding: var(--spacing-sm, 8px);
+    gap: var(--spacing-md, 16px);
   }
 
   .cubeWrapper {
-    padding: 24px;
+    padding: var(--spacing-lg, 24px);
   }
 
   .cube {
@@ -3126,7 +3141,7 @@ export const Cube3D = () => {
   .controls {
     grid-template-columns: repeat(3, 32px);
     grid-template-rows: repeat(2, 32px);
-    gap: 6px;
+    gap: var(--spacing-xs, 6px);
   }
 
   .moveButton {
@@ -3135,7 +3150,7 @@ export const Cube3D = () => {
   }
 
   .rotationButtons {
-    gap: 12px;
+    gap: var(--spacing-md, 12px);
   }
 
   .rotationButton {
@@ -3144,19 +3159,19 @@ export const Cube3D = () => {
 
   .actionsRow {
     flex-direction: column;
-    gap: 8px;
+    gap: var(--spacing-sm, 8px);
   }
 
   .actionButton {
     width: 100%;
     max-width: 200px;
-    padding: 6px;
-    font-size: var(--font-size-xsmall);
+    padding: var(--spacing-xs, 6px);
+    font-size: var(--font-size-button-small, 0.8rem);
   }
 
   .scannerWrapper {
     flex-direction: column;
-    gap: 12px;
+    gap: var(--spacing-md, 12px);
   }
 
   .videoContainer {
@@ -3174,18 +3189,18 @@ export const Cube3D = () => {
   }
 
   .confirmationContainer {
-    gap: 12px;
+    gap: var(--spacing-md, 12px);
   }
 
   .confirmationGrid {
     grid-template-columns: repeat(3, 40px);
     grid-template-rows: repeat(3, 40px);
-    gap: 3px;
+    gap: var(--spacing-xs, 3px);
   }
 
   .confirmationButtons {
     flex-direction: column;
-    gap: 8px;
+    gap: var(--spacing-sm, 8px);
     width: 100%;
   }
 
@@ -3196,19 +3211,19 @@ export const Cube3D = () => {
   .colorGrid {
     grid-template-columns: repeat(3, 32px);
     grid-template-rows: repeat(3, 32px);
-    gap: 3px;
-    margin-top: 12px;
+    gap: var(--spacing-xs, 3px);
+    margin-top: var(--spacing-md, 12px);
   }
 
   .instructions {
     font-size: var(--font-size-small);
-    padding: 8px;
+    padding: var(--spacing-sm, 8px);
   }
 
   .solution {
     font-size: var(--font-size-h3);
     max-width: 300px;
-    padding: 8px;
+    padding: var(--spacing-sm, 8px);
   }
 
   .solutionSlider {
@@ -3217,7 +3232,7 @@ export const Cube3D = () => {
 
   .solutionMoves {
     max-width: 280px;
-    gap: 4px;
+    gap: var(--spacing-xs, 4px);
   }
 
   .solutionMove {

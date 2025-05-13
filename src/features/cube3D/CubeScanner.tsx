@@ -18,7 +18,6 @@ const FACE_STARTS: Record<string, number> = {
   left: 36,
   back: 45,
 };
-
 const FACE_INSTRUCTIONS: Record<
   string,
   { front: string; up: string; right: string }
@@ -44,7 +43,7 @@ const CubeScanner = () => {
   const [rotation, setRotation] = useState<Rotation>({ x: -22, y: -38, z: 0 });
   const [isScanning, setIsScanning] = useState(false);
   const [confirmationMode, setConfirmationMode] = useState(false);
-  const [selectedColor, setSelectedColor] = useState<string>(COLORS[0]);
+  const [selectedColor, setSelectedColor] = useState(COLORS[0]);
   const [detectedColors, setDetectedColors] = useState<string[]>(
     new Array(9).fill('#808080')
   );
@@ -54,64 +53,77 @@ const CubeScanner = () => {
 
   useEffect(() => {
     startWebcam();
-    return () => stopWebcam();
+    return stopWebcam;
   }, []);
+
+  const hexToRgb = useCallback((hex: string) => {
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    return { r, g, b };
+  }, []);
+
+  const rgbToClosestColor = useCallback(
+    (r: number, g: number, b: number) => {
+      let min = Infinity;
+      let closest = COLORS[0];
+      for (const color of COLORS) {
+        const { r: cr, g: cg, b: cb } = hexToRgb(color);
+        const dist = (r - cr) ** 2 + (g - cg) ** 2 + (b - cb) ** 2;
+        if (dist < min) {
+          min = dist;
+          closest = color;
+        }
+      }
+      return closest;
+    },
+    [hexToRgb]
+  );
 
   const detectColors = useCallback(() => {
     if (!videoRef.current || !canvasRef.current) return;
-
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
-
     const video = videoRef.current;
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
-
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-    // Define 3x3 grid (assuming cube face occupies center 50% of video)
     const gridSize = Math.min(canvas.width, canvas.height) * 0.25;
     const startX = (canvas.width - gridSize * 3) / 2;
     const startY = (canvas.height - gridSize * 3) / 2;
-    const cellSize = gridSize;
-
     const colors: string[] = [];
     for (let row = 0; row < 3; row++) {
       for (let col = 0; col < 3; col++) {
-        const x = startX + col * cellSize + cellSize / 2;
-        const y = startY + row * cellSize + cellSize / 2;
+        const x = startX + col * gridSize + gridSize / 2;
+        const y = startY + row * gridSize + gridSize / 2;
         const pixel = ctx.getImageData(x, y, 1, 1).data;
         const color = rgbToClosestColor(pixel[0], pixel[1], pixel[2]);
         colors.push(color);
-
-        // Draw grid and color
         ctx.strokeStyle = '#000000';
         ctx.lineWidth = 2;
         ctx.strokeRect(
-          startX + col * cellSize,
-          startY + row * cellSize,
-          cellSize,
-          cellSize
+          startX + col * gridSize,
+          startY + row * gridSize,
+          gridSize,
+          gridSize
         );
         ctx.fillStyle = color;
         ctx.fillRect(
-          startX + col * cellSize + 10,
-          startY + row * cellSize + 10,
-          cellSize - 20,
-          cellSize - 20
+          startX + col * gridSize + 10,
+          startY + row * gridSize + 10,
+          gridSize - 20,
+          gridSize - 20
         );
       }
     }
-
     setDetectedColors(colors);
-    console.log('Detected colors:', colors);
-  }, []);
+  }, [rgbToClosestColor]);
 
   useEffect(() => {
     if (isScanning && !confirmationMode) {
-      const interval = setInterval(detectColors, 100);
-      return () => clearInterval(interval);
+      const id = setInterval(detectColors, 100);
+      return () => clearInterval(id);
     }
   }, [isScanning, confirmationMode, detectColors]);
 
@@ -125,71 +137,36 @@ const CubeScanner = () => {
         videoRef.current.play();
         setIsScanning(true);
       }
-    } catch (error) {
-      console.error('Error accessing webcam:', error);
-      alert('Не удалось получить доступ к веб-камере. Проверьте разрешения.');
+    } catch {
+      alert('Не удалось получить доступ к веб-камере.');
     }
   };
 
   const stopWebcam = () => {
-    if (videoRef.current && videoRef.current.srcObject) {
-      const stream = videoRef.current.srcObject as MediaStream;
-      stream.getTracks().forEach((track) => track.stop());
-      videoRef.current.srcObject = null;
-      setIsScanning(false);
-    }
-  };
-
-  const rgbToClosestColor = (r: number, g: number, b: number): string => {
-    const rgbToHex = (c: number) => {
-      const hex = Math.round(c).toString(16).padStart(2, '0');
-      return hex;
-    };
-
-    let minDistance = Infinity;
-    let closestColor = COLORS[0];
-
-    for (const color of COLORS) {
-      const colorRgb = hexToRgb(color);
-      const distance = Math.sqrt(
-        (r - colorRgb.r) ** 2 + (g - colorRgb.g) ** 2 + (b - colorRgb.b) ** 2
-      );
-      if (distance < minDistance) {
-        minDistance = distance;
-        closestColor = color;
-      }
-    }
-
-    return closestColor;
-  };
-
-  const hexToRgb = (hex: string): { r: number; g: number; b: number } => {
-    const r = parseInt(hex.slice(1, 3), 16);
-    const g = parseInt(hex.slice(3, 5), 16);
-    const b = parseInt(hex.slice(5, 7), 16);
-    return { r, g, b };
+    const stream = videoRef.current?.srcObject as MediaStream | null;
+    stream?.getTracks().forEach((t) => t.stop());
+    if (videoRef.current) videoRef.current.srcObject = null;
+    setIsScanning(false);
   };
 
   const handleStop = () => {
     setConfirmationMode(true);
-    setIsScanning(false); // Pause color detection
+    setIsScanning(false);
   };
 
   const handleConfirm = () => {
     const currentFace = FACE_ORDER[currentFaceIndex];
     const start = FACE_STARTS[currentFace];
     const newCube = [...cube];
-    const newPreviewCube = [...previewCube];
-    detectedColors.forEach((color, idx) => {
-      newCube[start + idx] = color;
-      newPreviewCube[start + idx] = color;
+    const newPreview = [...previewCube];
+    detectedColors.forEach((c, i) => {
+      newCube[start + i] = c;
+      newPreview[start + i] = c;
     });
     setCube(newCube);
-    setPreviewCube(newPreviewCube);
-    console.log(`Confirmed colors for ${currentFace}:`, detectedColors);
-
+    setPreviewCube(newPreview);
     if (currentFaceIndex < FACE_ORDER.length - 1) {
-      setCurrentFaceIndex(currentFaceIndex + 1);
+      setCurrentFaceIndex((i) => i + 1);
       setDetectedColors(new Array(9).fill('#808080'));
       setConfirmationMode(false);
       setIsScanning(true);
@@ -200,17 +177,7 @@ const CubeScanner = () => {
         navigate('/', { state: { scannedCube: newCube } });
       } else {
         alert(`Ошибка валидации куба: ${validation.error}`);
-        setCurrentFaceIndex(0);
-        setCube(new Array(54).fill('#808080'));
-        setPreviewCube(() => {
-          const initial = new Array(54).fill('#808080');
-          CENTER_INDICES.forEach((idx, i) => {
-            initial[idx] = COLORS[i];
-          });
-          return initial;
-        });
-        setConfirmationMode(false);
-        startWebcam();
+        window.location.reload();
       }
     }
   };
@@ -221,17 +188,16 @@ const CubeScanner = () => {
     setIsScanning(true);
   };
 
-  const handleColorClick = (index: number) => {
-    const newColors = [...detectedColors];
-    newColors[index] = selectedColor;
-    setDetectedColors(newColors);
+  const handleColorClick = (i: number) => {
+    setDetectedColors((prev) => {
+      const copy = [...prev];
+      copy[i] = selectedColor;
+      return copy;
+    });
   };
 
   const handleRotate = (axis: 'x' | 'y' | 'z', angle: number) => {
-    setRotation((prev) => ({
-      ...prev,
-      [axis]: prev[axis] + angle,
-    }));
+    setRotation((p) => ({ ...p, [axis]: p[axis] + angle }));
   };
 
   const handleBack = () => {
