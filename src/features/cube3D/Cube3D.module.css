@@ -1,63 +1,66 @@
 .container {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  min-height: 100dvh;
+  max-height: 100%;
+  gap: var(--spacing-lg, 24px);
   align-items: center;
-  padding: 16px;
+  justify-content: center;
+  padding: var(--spacing-md, 16px);
 }
 
 .controls {
   display: grid;
-  gap: 8px;
+  gap: var(--spacing-sm, 8px);
   grid-template-columns: repeat(3, 36px);
   grid-template-rows: repeat(2, 36px);
 }
 
 .colorButton {
-  border: 2px solid black;
+  border: 2px solid var(--color-border-dark, #000);
   cursor: pointer;
 }
 
 .colorButton:hover {
-  border: 2px solid #fff;
+  border: 2px solid var(--color-background-white, #fff);
 }
 
 .movesColumn {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--spacing-sm, 8px);
 }
 
 .movesRow {
   display: flex;
   flex-direction: row;
-  gap: 8px;
+  gap: var(--spacing-sm, 8px);
 }
 
 .moveButton {
   aspect-ratio: 1 / 1;
   min-width: 32px;
-  border: solid 1px gray;
+  border: solid 1px var(--color-border-gray, #808080);
   border-radius: 8px;
   cursor: pointer;
-  background-color: #fff;
+  background-color: var(--color-background-white, #fff);
   transition: all 0.2s ease;
-  font-size: 0.9rem;
+  font-size: var(--font-size-button-small, 0.9rem);
 }
 
 .moveButton:hover {
-  background-color: gainsboro;
+  background-color: var(--color-hover-light, #dcdcdc);
 }
 
 .cubeWrapper {
-  padding: 48px;
+  padding: var(--spacing-xl, 48px);
 }
 
 .cubeContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 24px;
+  gap: var(--spacing-lg, 24px);
 }
 
 .cube {
@@ -73,7 +76,7 @@
   width: 156px;
   height: 156px;
   display: grid;
-  background: black;
+  background: var(--color-text-dark, #000);
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(3, 1fr);
 }
@@ -93,8 +96,8 @@
   height: 49px;
   margin: 1px;
   border-radius: 4px;
-  border: 1px solid black;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--color-border-dark, #000);
+  box-shadow: 0 0 5px var(--color-shadow-light, rgba(0, 0, 0, 0.1));
   cursor: pointer;
   transition: background-color 0.3s ease;
   position: relative;
@@ -111,7 +114,7 @@
 }
 
 .sticker:hover {
-  box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.6);
+  box-shadow: inset 0px 0px 10px var(--color-shadow-dark, rgba(0, 0, 0, 0.6));
 }
 
 .up {
@@ -138,7 +141,7 @@
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: 16px;
+  gap: var(--spacing-md, 16px);
 }
 
 .rotationButton {
@@ -147,7 +150,7 @@
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  background-color: #fff;
+  background-color: var(--color-background-white, #fff);
 }
 
 .actionsRow {
@@ -156,21 +159,21 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: var(--spacing-md, 12px);
 }
 
 .actionButton {
-  padding: 8px 16px;
-  border: solid 1px gray;
+  padding: var(--spacing-sm, 8px) var(--spacing-md, 16px);
+  border: solid 1px var(--color-border-gray, #808080);
   border-radius: 8px;
   cursor: pointer;
-  background-color: #fff;
+  background-color: var(--color-background-white, #fff);
   transition: all 0.2s ease;
-  font-size: 1rem;
+  font-size: var(--font-size-button, 1rem);
 }
 
 .actionButton:hover {
-  background-color: gainsboro;
+  background-color: var(--color-hover-light, #dcdcdc);
 }
 
 .displayContainer {
@@ -182,11 +185,11 @@
 .solution {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--spacing-sm, 8px);
   align-items: center;
-  padding: 12px;
+  padding: var(--spacing-md, 12px);
   border-radius: 8px;
-  font-size: 1.5rem;
+  font-size: var(--font-size-h3);
   text-align: center;
   max-width: 500px;
   width: 100%;
@@ -209,13 +212,13 @@
 .solutionSlider {
   max-width: 450px;
   width: 100%;
-  margin: 16px 0;
+  margin: var(--spacing-md, 16px) 0;
 }
 
 .solutionMoves {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: var(--spacing-xs, 6px);
   justify-content: center;
   max-width: 450px;
 }
@@ -224,24 +227,24 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 4px 8px;
-  border: 1px solid #ccc;
+  padding: var(--spacing-xs, 4px) var(--spacing-sm, 8px);
+  border: 1px solid var(--color-border-default, #ccc);
   border-radius: 4px;
-  background-color: #f9f9f9;
-  font-size: 0.9rem;
+  background-color: var(--color-background-light, #f9f9f9);
+  font-size: var(--font-size-small);
   transition: all 0.2s ease;
   min-height: 36px;
   min-width: 36px;
 }
 
 .activeMove {
-  border: 1px solid #007bff;
-  background-color: #e7f1ff;
+  border: 1px solid var(--color-active-border, #007bff);
+  background-color: var(--color-active-bg, #e7f1ff);
 }
 
 .completedMove {
-  border: 1px solid #4caf50;
-  background-color: #e8f5e9;
+  border: 1px solid var(--color-success-border, #4caf50);
+  background-color: var(--color-success-bg, #e8f5e9);
 }
 
 .pulse {
@@ -257,18 +260,18 @@
 .instructions {
   text-align: center;
   max-width: 90%;
-  padding: 12px;
-  border: 1px solid #ccc;
+  padding: var(--spacing-md, 12px);
+  border: 1px solid var(--color-border-default, #ccc);
   border-radius: 8px;
-  background-color: #f9f9f9;
-  font-size: 1rem;
+  background-color: var(--color-background-light, #f9f9f9);
+  font-size: var(--font-size-p);
   text-wrap: balance;
 }
 
 .scannerWrapper {
   display: flex;
   flex-direction: row;
-  gap: 24px;
+  gap: var(--spacing-lg, 24px);
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
@@ -301,12 +304,12 @@
   display: grid;
   grid-template-columns: repeat(3, 48px);
   grid-template-rows: repeat(3, 48px);
-  gap: 4px;
-  margin-top: 16px;
+  gap: var(--spacing-xs, 4px);
+  margin-top: var(--spacing-md, 16px);
 }
 
 .colorCell {
-  border: 1px solid black;
+  border: 1px solid var(--color-border-dark, #000);
   border-radius: 4px;
 }
 
@@ -314,41 +317,41 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
-  margin-top: 16px;
+  gap: var(--spacing-md, 16px);
+  margin-top: var(--spacing-md, 16px);
 }
 
 .confirmationGrid {
   display: grid;
   grid-template-columns: repeat(3, 60px);
   grid-template-rows: repeat(3, 60px);
-  gap: 4px;
+  gap: var(--spacing-xs, 4px);
 }
 
 .confirmationCell {
-  border: 2px solid black;
+  border: 2px solid var(--color-border-dark, #000);
   border-radius: 4px;
   cursor: pointer;
   transition: border-color 0.2s ease;
 }
 
 .confirmationCell:hover {
-  border-color: #007bff;
+  border-color: var(--color-active-border, #007bff);
 }
 
 .confirmationButtons {
   display: flex;
-  gap: 12px;
+  gap: var(--spacing-md, 12px);
 }
 
 /* Tablet (768px–992px) */
 @media screen and (max-width: 992px) {
   .container {
-    padding: 12px;
+    padding: var(--spacing-md, 12px);
   }
 
   .cubeWrapper {
-    padding: 32px;
+    padding: var(--spacing-lg, 32px);
   }
 
   .cube {
@@ -396,13 +399,13 @@
   }
 
   .actionButton {
-    padding: 6px 12px;
-    font-size: 0.9rem;
+    padding: var(--spacing-xs, 6px) var(--spacing-md, 12px);
+    font-size: var(--font-size-button-small, 0.9rem);
   }
 
   .scannerWrapper {
     flex-direction: column;
-    gap: 16px;
+    gap: var(--spacing-md, 16px);
   }
 
   .videoContainer {
@@ -420,7 +423,7 @@
   }
 
   .solution {
-    font-size: 1.3rem;
+    font-size: var(--font-size-h3);
     max-width: 400px;
   }
 }
@@ -428,12 +431,12 @@
 /* Mobile (<768px) */
 @media screen and (max-width: 768px) {
   .container {
-    padding: 8px;
-    gap: 16px;
+    padding: var(--spacing-sm, 8px);
+    gap: var(--spacing-md, 16px);
   }
 
   .cubeWrapper {
-    padding: 24px;
+    padding: var(--spacing-lg, 24px);
   }
 
   .cube {
@@ -484,16 +487,16 @@
   .controls {
     grid-template-columns: repeat(3, 32px);
     grid-template-rows: repeat(2, 32px);
-    gap: 6px;
+    gap: var(--spacing-xs, 6px);
   }
 
   .moveButton {
     min-width: 28px;
-    font-size: 0.8rem;
+    font-size: var(--font-size-xsmall);
   }
 
   .rotationButtons {
-    gap: 12px;
+    gap: var(--spacing-md, 12px);
   }
 
   .rotationButton {
@@ -502,19 +505,19 @@
 
   .actionsRow {
     flex-direction: column;
-    gap: 8px;
+    gap: var(--spacing-sm, 8px);
   }
 
   .actionButton {
     width: 100%;
     max-width: 200px;
-    padding: 6px;
-    font-size: 0.85rem;
+    padding: var(--spacing-xs, 6px);
+    font-size: var(--font-size-button-small, 0.8rem);
   }
 
   .scannerWrapper {
     flex-direction: column;
-    gap: 12px;
+    gap: var(--spacing-md, 12px);
   }
 
   .videoContainer {
@@ -532,18 +535,18 @@
   }
 
   .confirmationContainer {
-    gap: 12px;
+    gap: var(--spacing-md, 12px);
   }
 
   .confirmationGrid {
     grid-template-columns: repeat(3, 40px);
     grid-template-rows: repeat(3, 40px);
-    gap: 3px;
+    gap: var(--spacing-xs, 3px);
   }
 
   .confirmationButtons {
     flex-direction: column;
-    gap: 8px;
+    gap: var(--spacing-sm, 8px);
     width: 100%;
   }
 
@@ -554,19 +557,19 @@
   .colorGrid {
     grid-template-columns: repeat(3, 32px);
     grid-template-rows: repeat(3, 32px);
-    gap: 3px;
-    margin-top: 12px;
+    gap: var(--spacing-xs, 3px);
+    margin-top: var(--spacing-md, 12px);
   }
 
   .instructions {
-    font-size: 0.9rem;
-    padding: 8px;
+    font-size: var(--font-size-small);
+    padding: var(--spacing-sm, 8px);
   }
 
   .solution {
-    font-size: 1.2rem;
+    font-size: var(--font-size-h3);
     max-width: 300px;
-    padding: 8px;
+    padding: var(--spacing-sm, 8px);
   }
 
   .solutionSlider {
@@ -575,11 +578,11 @@
 
   .solutionMoves {
     max-width: 280px;
-    gap: 4px;
+    gap: var(--spacing-xs, 4px);
   }
 
   .solutionMove {
-    font-size: 0.8rem;
+    font-size: var(--font-size-xsmall);
     min-height: 32px;
     min-width: 32px;
   }
