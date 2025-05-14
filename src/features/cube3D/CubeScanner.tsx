@@ -93,6 +93,7 @@ const CubeScanner = () => {
     const startX = (canvas.width - gridSize * 3) / 2;
     const startY = (canvas.height - gridSize * 3) / 2;
     const colors: string[] = [];
+
     for (let row = 0; row < 3; row++) {
       for (let col = 0; col < 3; col++) {
         const x = startX + col * gridSize + gridSize / 2;
@@ -100,24 +101,24 @@ const CubeScanner = () => {
         const pixel = ctx.getImageData(x, y, 1, 1).data;
         const color = rgbToClosestColor(pixel[0], pixel[1], pixel[2]);
         colors.push(color);
-        ctx.strokeStyle = '#000000';
-        ctx.lineWidth = 2;
-        ctx.strokeRect(
-          startX + col * gridSize,
-          startY + row * gridSize,
-          gridSize,
-          gridSize
-        );
-        ctx.fillStyle = color;
-        ctx.fillRect(
-          startX + col * gridSize + 10,
-          startY + row * gridSize + 10,
-          gridSize - 20,
-          gridSize - 20
-        );
       }
     }
     setDetectedColors(colors);
+
+    ctx.save();
+    ctx.globalAlpha = 0.7;
+    for (let row = 0; row < 3; row++) {
+      for (let col = 0; col < 3; col++) {
+        const x = startX + col * gridSize;
+        const y = startY + row * gridSize;
+        ctx.strokeStyle = '#000000';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(x, y, gridSize, gridSize);
+        ctx.fillStyle = colors[row * 3 + col];
+        ctx.fillRect(x + 10, y + 10, gridSize - 20, gridSize - 20);
+      }
+    }
+    ctx.restore();
   }, [rgbToClosestColor]);
 
   useEffect(() => {
@@ -209,7 +210,7 @@ const CubeScanner = () => {
 
   return (
     <div className={styles.container}>
-      <h2>Сканирование кубика Рубика</h2>
+      <h2 style={{ textAlign: 'center' }}>Сканирование кубика Рубика</h2>
       <button className={styles.actionButton} onClick={handleBack}>
         Вернуться
       </button>

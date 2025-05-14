@@ -17,7 +17,7 @@ export const SolutionDisplay = ({ solution }: SolutionDisplayProps) => {
           exit={{ opacity: 0, height: 0 }}
           transition={{ duration: 0.4 }}
         >
-          <h2>Решение:</h2>
+          <h3>Решение:</h3>
           <p>{solution}</p>
         </motion.div>
       )}
