@@ -17,7 +17,7 @@ export const ScrambleDisplay = ({ scramble }: ScrambleDisplayProps) => {
           exit={{ opacity: 0, height: 0 }}
           transition={{ duration: 0.4 }}
         >
-          <h2>Сгенерированный скрамбл:</h2>
+          <h3>Сгенерированный скрамбл:</h3>
           <p>{scramble}</p>
         </motion.div>
       )}

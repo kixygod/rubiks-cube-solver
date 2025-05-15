@@ -1,0 +1,22 @@
+:root {
+  /* Neutral colors */
+  --color-background-light: #f9f9f9; /* Background for solution moves, instructions */
+  --color-background-white: #fff;     /* White backgrounds */
+  --color-border-default: #ccc;       /* Default borders */
+  --color-border-dark: #000;          /* Black borders */
+  --color-border-gray: #808080;       /* Gray borders */
+  --color-hover-light: #dcdcdc;       /* Gainsboro for hover effects */
+
+  /* Success colors */
+  --color-success-bg: #e8f5e9;       /* Soft green for completed moves */
+  --color-success-border: #4caf50;    /* Green border for completed moves */
+
+  /* Active colors */
+  --color-active-bg: #e7f1ff;        /* Light blue for active moves */
+  --color-active-border: #007bff;     /* Blue border for active moves */
+
+  /* Text and accents */
+  --color-text-dark: #000;           /* Primary text color */
+  --color-shadow-light: rgba(0, 0, 0, 0.1); /* Light shadow */
+  --color-shadow-dark: rgba(0, 0, 0, 0.6);  /* Darker shadow for hover */
+}

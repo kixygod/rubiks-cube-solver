@@ -1,55 +1,66 @@
 .container {
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  min-height: 100dvh;
+  max-height: 100%;
+  gap: var(--spacing-lg, 24px);
   align-items: center;
-  padding: 20px;
+  justify-content: center;
+  padding: var(--spacing-md, 16px);
 }
 
 .controls {
   display: grid;
-  gap: 10px;
-  grid-template-columns: repeat(3, 40px);
-  grid-template-rows: repeat(2, 40px);
+  gap: var(--spacing-sm, 8px);
+  grid-template-columns: repeat(3, 36px);
+  grid-template-rows: repeat(2, 36px);
 }
 
 .colorButton {
-  border: 2px solid black;
+  border: 2px solid var(--color-border-dark, #000);
   cursor: pointer;
 }
 
 .colorButton:hover {
-  border: 2px solid #fff;
+  border: 2px solid var(--color-background-white, #fff);
 }
 
 .movesColumn {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--spacing-sm, 8px);
 }
 
 .movesRow {
   display: flex;
   flex-direction: row;
-  gap: 8px;
+  gap: var(--spacing-sm, 8px);
 }
 
 .moveButton {
   aspect-ratio: 1 / 1;
-  min-width: 36px;
-  border: solid 1px gray;
+  min-width: 32px;
+  border: solid 1px var(--color-border-gray, #808080);
   border-radius: 8px;
   cursor: pointer;
-  background-color: #fff;
+  background-color: var(--color-background-white, #fff);
   transition: all 0.2s ease;
+  font-size: var(--font-size-button-small, 0.9rem);
 }
 
 .moveButton:hover {
-  background-color: gainsboro;
+  background-color: var(--color-hover-light, #dcdcdc);
 }
 
 .cubeWrapper {
-  padding: 64px;
+  padding: var(--spacing-xl, 48px);
+}
+
+.cubeContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-lg, 24px);
 }
 
 .cube {
@@ -65,9 +76,19 @@
   width: 156px;
   height: 156px;
   display: grid;
-  background: black;
+  background: var(--color-text-dark, #000);
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(3, 1fr);
+}
+
+.faceArrow {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  opacity: 0.8;
+  pointer-events: none;
+  z-index: 20;
+  transform-origin: center;
 }
 
 .sticker {
@@ -75,8 +96,8 @@
   height: 49px;
   margin: 1px;
   border-radius: 4px;
-  border: 1px solid black;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--color-border-dark, #000);
+  box-shadow: 0 0 5px var(--color-shadow-light, rgba(0, 0, 0, 0.1));
   cursor: pointer;
   transition: background-color 0.3s ease;
   position: relative;
@@ -86,15 +107,14 @@
   position: absolute;
   bottom: 10%;
   right: 10%;
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   background-color: transparent;
   border-top-left-radius: 100%;
 }
 
-
 .sticker:hover {
-  box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.6);
+  box-shadow: inset 0px 0px 10px var(--color-shadow-dark, rgba(0, 0, 0, 0.6));
 }
 
 .up {
@@ -121,16 +141,16 @@
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: 20px;
+  gap: var(--spacing-md, 16px);
 }
 
 .rotationButton {
   aspect-ratio: 1 / 1;
-  min-width: 36px;
+  min-width: 32px;
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  background-color: #fff;
+  background-color: var(--color-background-white, #fff);
 }
 
 .actionsRow {
@@ -139,49 +159,44 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 16px;
+  gap: var(--spacing-md, 12px);
 }
 
 .actionButton {
-  padding: 8px;
-  border: solid 1px gray;
+  padding: var(--spacing-sm, 8px) var(--spacing-md, 16px);
+  border: solid 1px var(--color-border-gray, #808080);
   border-radius: 8px;
   cursor: pointer;
-  background-color: #fff;
+  background-color: var(--color-background-white, #fff);
   transition: all 0.2s ease;
+  font-size: var(--font-size-button, 1rem);
 }
 
 .actionButton:hover {
-  background-color: gainsboro;
+  background-color: var(--color-hover-light, #dcdcdc);
 }
 
-@media screen and (max-width: 992px) {
-  .actionButton {
-    width: 256px;
-  }
-
-  .actionsRow {
-    flex-direction: column;
-  }
-
-  .cubeWrapper {
-    padding-top: 128px;
-  }
+.displayContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .solution {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: var(--spacing-sm, 8px);
   align-items: center;
-  padding: 16px;
+  padding: var(--spacing-md, 12px);
   border-radius: 8px;
-  font-size: 1.7rem;
+  font-size: var(--font-size-h3);
   text-align: center;
+  max-width: 500px;
+  width: 100%;
 }
 
 .solutionContainer {
-  min-height: 100px;
+  min-height: 80px;
   transition: opacity 0.4s ease;
   opacity: 1;
   display: flex;
@@ -192,4 +207,399 @@
 
 .hidden {
   opacity: 0;
+}
+
+.solutionSlider {
+  max-width: 450px;
+  width: 100%;
+  margin: var(--spacing-md, 16px) 0;
+}
+
+.solutionMoves {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs, 6px);
+  justify-content: center;
+  max-width: 450px;
+}
+
+.solutionMove {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xs, 4px) var(--spacing-sm, 8px);
+  border: 1px solid var(--color-border-default, #ccc);
+  border-radius: 4px;
+  background-color: var(--color-background-light, #f9f9f9);
+  font-size: var(--font-size-small);
+  transition: all 0.2s ease;
+  min-height: 36px;
+  min-width: 36px;
+}
+
+.activeMove {
+  border: 1px solid var(--color-active-border, #007bff);
+  background-color: var(--color-active-bg, #e7f1ff);
+}
+
+.completedMove {
+  border: 1px solid var(--color-success-border, #4caf50);
+  background-color: var(--color-success-bg, #e8f5e9);
+}
+
+.pulse {
+  animation: pulse 1s ease-in-out;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.instructions {
+  text-align: center;
+  max-width: 50%;
+  padding: var(--spacing-md, 12px);
+  border: 1px solid var(--color-border-default, #ccc);
+  border-radius: 8px;
+  background-color: var(--color-background-light, #f9f9f9);
+  font-size: var(--font-size-p);
+  text-wrap: balance;
+}
+
+.scannerWrapper {
+  display: flex;
+  flex-direction: row;
+  gap: var(--spacing-lg, 24px);
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.videoContainer {
+  position: relative;
+  max-width: 640px;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+}
+
+.videoBox {
+  position: relative;
+  width: 100%;
+  padding-top: 75%;          /* 4:3  ⇒  3 / 4 = 0.75 */
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.surface {                   /* и <video>, и <canvas> */
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.colorGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 48px);
+  grid-template-rows: repeat(3, 48px);
+  gap: var(--spacing-xs, 4px);
+  margin-top: var(--spacing-md, 16px);
+}
+
+.colorCell {
+  border: 1px solid var(--color-border-dark, #000);
+  border-radius: 4px;
+}
+
+.confirmationContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-md, 16px);
+  margin-top: var(--spacing-md, 16px);
+}
+
+.confirmationGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 60px);
+  grid-template-rows: repeat(3, 60px);
+  gap: var(--spacing-xs, 4px);
+}
+
+.confirmationCell {
+  border: 2px solid var(--color-border-dark, #000);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.confirmationCell:hover {
+  border-color: var(--color-active-border, #007bff);
+}
+
+.confirmationButtons {
+  display: flex;
+  gap: var(--spacing-md, 12px);
+}
+
+/* Tablet (768px–992px) */
+@media screen and (max-width: 992px) {
+  .container {
+    padding: var(--spacing-md, 12px);
+    width: 100dvw;
+  }
+
+  .cubeWrapper {
+    padding: var(--spacing-lg, 32px);
+  }
+
+  .cube {
+    width: 120px;
+    height: 120px;
+  }
+
+  .face {
+    width: 120px;
+    height: 120px;
+  }
+
+  .sticker {
+    width: 37px;
+    height: 37px;
+  }
+
+  .faceArrow {
+    width: 90px;
+    height: 90px;
+  }
+
+  .colorIndicator {
+    width: 14px;
+    height: 14px;
+  }
+
+  .up {
+    transform: rotateX(90deg) translateZ(60px);
+  }
+  .left {
+    transform: rotateY(-90deg) translateZ(60px);
+  }
+  .front {
+    transform: translateZ(60px);
+  }
+  .right {
+    transform: rotateY(90deg) translateZ(60px);
+  }
+  .back {
+    transform: rotateY(180deg) translateZ(60px);
+  }
+  .down {
+    transform: rotateX(-90deg) translateZ(60px);
+  }
+
+  .actionButton {
+    padding: var(--spacing-xs, 6px) var(--spacing-md, 12px);
+    font-size: var(--font-size-button-small, 0.9rem);
+  }
+
+  .scannerWrapper {
+    flex-direction: column;
+    gap: var(--spacing-md, 16px);
+  }
+
+  .videoContainer {
+    max-width: 480px;
+  }
+
+  .confirmationGrid {
+    grid-template-columns: repeat(3, 50px);
+    grid-template-rows: repeat(3, 50px);
+  }
+
+  .colorGrid {
+    grid-template-columns: repeat(3, 40px);
+    grid-template-rows: repeat(3, 40px);
+  }
+
+  .solution {
+    font-size: var(--font-size-h3);
+    max-width: 400px;
+  }
+}
+
+/* Mobile (<768px) */
+@media screen and (max-width: 768px) {
+  .container {
+    padding: var(--spacing-lg);
+    gap: var(--spacing-md, 16px);
+  }
+
+  .cubeWrapper {
+    padding: var(--spacing-lg, 24px);
+  }
+
+  .cube {
+    width: 100px;
+    height: 100px;
+  }
+
+  .face {
+    width: 100px;
+    height: 100px;
+  }
+
+  .sticker {
+    width: 31px;
+    height: 31px;
+    margin: 0.5px;
+  }
+
+  .faceArrow {
+    width: 80px;
+    height: 80px;
+  }
+
+  .colorIndicator {
+    width: 12px;
+    height: 12px;
+  }
+
+  .up {
+    transform: rotateX(90deg) translateZ(50px);
+  }
+  .left {
+    transform: rotateY(-90deg) translateZ(50px);
+  }
+  .front {
+    transform: translateZ(50px);
+  }
+  .right {
+    transform: rotateY(90deg) translateZ(50px);
+  }
+  .back {
+    transform: rotateY(180deg) translateZ(50px);
+  }
+  .down {
+    transform: rotateX(-90deg) translateZ(50px);
+  }
+
+  .controls {
+    grid-template-columns: repeat(3, 32px);
+    grid-template-rows: repeat(2, 32px);
+    gap: var(--spacing-xs, 6px);
+  }
+
+  .moveButton {
+    min-width: 28px;
+    font-size: var(--font-size-xsmall);
+  }
+
+  .rotationButtons {
+    gap: var(--spacing-md, 12px);
+  }
+
+  .rotationButton {
+    min-width: 28px;
+  }
+
+  .actionsRow {
+    flex-direction: column;
+    gap: var(--spacing-sm, 8px);
+  }
+
+  .actionButton {
+    width: 100%;
+    max-width: 208px;
+    font-size: var(--font-size-button-small, 0.8rem);
+  }
+
+  .scannerWrapper {
+    flex-direction: column;
+    gap: var(--spacing-md, 12px);
+  }
+
+  .videoContainer {
+    max-width: 100%;
+  }
+
+  .video {
+    width: 100%;
+    height: auto;
+  }
+
+  .canvas {
+    width: 100%;
+    height: 100%;
+  }
+
+  .confirmationContainer {
+    gap: var(--spacing-md, 12px);
+  }
+
+  .confirmationGrid {
+    grid-template-columns: repeat(3, 40px);
+    grid-template-rows: repeat(3, 40px);
+    gap: var(--spacing-xs, 3px);
+  }
+
+  .confirmationButtons {
+    flex-direction: column;
+    gap: var(--spacing-sm, 8px);
+    width: 100%;
+  }
+
+  .confirmationButtons .actionButton {
+    width: 100%;
+  }
+
+  .colorGrid {
+    grid-template-columns: repeat(3, 32px);
+    grid-template-rows: repeat(3, 32px);
+    gap: var(--spacing-xs, 3px);
+    margin-top: var(--spacing-md, 12px);
+  }
+
+  .instructions {
+    font-size: var(--font-size-small);
+    padding: var(--spacing-sm, 8px);
+  }
+
+  .solution {
+    font-size: var(--font-size-h3);
+    max-width: 300px;
+    padding: var(--spacing-sm, 8px);
+  }
+
+  .solutionSlider {
+    max-width: 280px;
+  }
+
+  .solutionMoves {
+    max-width: 280px;
+    gap: var(--spacing-xs, 4px);
+  }
+
+  .solutionMove {
+    font-size: var(--font-size-xsmall);
+    min-height: 32px;
+    min-width: 32px;
+  }
 }

@@ -1,7 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import { initCube, isCubeSolved } from '@entities/cube/model';
 import { CubeState, Rotation } from '@entities/cube/types';
+import { ClockwiseIcon, CounterclockwiseIcon } from '@shared/assets/icons';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import {
   applyMove,
@@ -21,16 +23,61 @@ import { ScrambleDisplay } from './ui/ScrambleDisplay';
 
 import styles from './Cube3D.module.css';
 
+interface ArrowProps {
+  face: string;
+  isVisible: boolean;
+  isCounterclockwise: boolean;
+}
+
+const Arrow = ({ face, isVisible, isCounterclockwise }: ArrowProps) => {
+  if (!isVisible) return null;
+
+  const faceTransforms: Record<string, string> = {
+    up: 'rotateX(90deg) translateZ(130px) translateX(20px)',
+    right: 'rotateY(90deg) translateZ(130px)',
+    front: 'translateZ(130px)',
+    down: 'rotateX(-90deg) translateZ(130px) translateX(15px) translateY(-15px)',
+    left: 'rotateY(-90deg) translateZ(130px)',
+    back: 'rotateY(180deg) translateZ(130px)',
+  };
+
+  return (
+    <div
+      className={styles.faceArrow}
+      style={{
+        transform: faceTransforms[face],
+      }}
+    >
+      {isCounterclockwise ? (
+        <CounterclockwiseIcon width={120} height={120} fill="#ffffff" />
+      ) : (
+        <ClockwiseIcon width={120} height={120} fill="#ffffff" />
+      )}
+    </div>
+  );
+};
+
 export const Cube3D = () => {
-  const [cube, setCube] = useState<CubeState>(initCube);
+  const location = useLocation();
+  const scannedCube = location.state?.scannedCube;
+  const [cube, setCube] = useState<CubeState>(scannedCube || initCube());
   const [selectedColor, setSelectedColor] = useState<string>('#B90000');
   const [rotation, setRotation] = useState<Rotation>({ x: -22, y: -38, z: 0 });
   const [solution, setSolution] = useState<string | null>(null);
   const [scramble, setScramble] = useState<string | null>(null);
-  const [isSolved, setIsSolved] = useState<boolean>(true);
+  const [isSolved, setIsSolved] = useState<boolean>(!scannedCube);
   const [hoveredStickerIndex, setHoveredStickerIndex] = useState<number | null>(
     null
   );
+  const [hoveredMove, setHoveredMove] = useState<string | null>(null);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (scannedCube) {
+      setIsSolved(isCubeSolved(scannedCube));
+    }
+  }, [scannedCube]);
 
   const handleMove = (move: string) => {
     setCube(applyMove(cube, move));
@@ -84,11 +131,34 @@ export const Cube3D = () => {
     if (loadedCube) {
       setCube(loadedCube);
       setSolution(null);
-      // TODO: add new method for saving/loading scramble string
       setScramble(null);
       setIsSolved(false);
     }
   };
+
+  const handleShowSolution = () => {
+    console.log('handleShowSolution:', { solution, scramble });
+    if (solution) {
+      navigate('/solution-playback', {
+        state: { initialCube: cube, solution },
+      });
+    }
+  };
+
+  const handleScan = () => {
+    navigate('/scan');
+  };
+
+  const faceToMove: Record<string, string> = {
+    up: 'U',
+    right: 'R',
+    front: 'F',
+    down: 'D',
+    left: 'L',
+    back: 'B',
+  };
+
+  const faces = ['up', 'right', 'front', 'down', 'left', 'back'];
 
   return (
     <div className={styles.container}>
@@ -107,6 +177,7 @@ export const Cube3D = () => {
             hoveredStickerIndex={hoveredStickerIndex}
             onStickerClick={handleStickerClick}
             setHoveredStickerIndex={setHoveredStickerIndex}
+            hoveredMove={hoveredMove}
           />
           <CubeFace
             start={9}
@@ -116,6 +187,7 @@ export const Cube3D = () => {
             hoveredStickerIndex={hoveredStickerIndex}
             onStickerClick={handleStickerClick}
             setHoveredStickerIndex={setHoveredStickerIndex}
+            hoveredMove={hoveredMove}
           />
           <CubeFace
             start={18}
@@ -125,6 +197,7 @@ export const Cube3D = () => {
             hoveredStickerIndex={hoveredStickerIndex}
             onStickerClick={handleStickerClick}
             setHoveredStickerIndex={setHoveredStickerIndex}
+            hoveredMove={hoveredMove}
           />
           <CubeFace
             start={27}
@@ -134,6 +207,7 @@ export const Cube3D = () => {
             hoveredStickerIndex={hoveredStickerIndex}
             onStickerClick={handleStickerClick}
             setHoveredStickerIndex={setHoveredStickerIndex}
+            hoveredMove={hoveredMove}
           />
           <CubeFace
             start={36}
@@ -143,6 +217,7 @@ export const Cube3D = () => {
             hoveredStickerIndex={hoveredStickerIndex}
             onStickerClick={handleStickerClick}
             setHoveredStickerIndex={setHoveredStickerIndex}
+            hoveredMove={hoveredMove}
           />
           <CubeFace
             start={45}
@@ -152,7 +227,21 @@ export const Cube3D = () => {
             hoveredStickerIndex={hoveredStickerIndex}
             onStickerClick={handleStickerClick}
             setHoveredStickerIndex={setHoveredStickerIndex}
+            hoveredMove={hoveredMove}
           />
+          {faces.map((face) => {
+            const moveLetter = faceToMove[face];
+            const isVisible = hoveredMove && hoveredMove.startsWith(moveLetter);
+            const isCounterclockwise = isVisible && hoveredMove?.includes("'");
+            return (
+              <Arrow
+                key={face}
+                face={face}
+                isVisible={!!isVisible}
+                isCounterclockwise={!!isCounterclockwise}
+              />
+            );
+          })}
         </div>
       </div>
       <RotationButtons onRotate={handleRotate} />
@@ -164,13 +253,23 @@ export const Cube3D = () => {
         onScramble={handleScramble}
         onSolve={handleSolve}
         onMove={handleMove}
+        onHoverMove={setHoveredMove}
       />
+      <div className={styles.actionsRow}>
+        <button className={styles.actionButton} onClick={handleScan}>
+          Сканировать кубик
+        </button>
+      </div>
       <div className={styles.displayContainer}>
         <ScrambleDisplay scramble={scramble} />
       </div>
-
       <div className={styles.displayContainer}>
         <SolutionDisplay solution={solution} />
+        {solution && (
+          <button className={styles.actionButton} onClick={handleShowSolution}>
+            Показать решение
+          </button>
+        )}
       </div>
     </div>
   );

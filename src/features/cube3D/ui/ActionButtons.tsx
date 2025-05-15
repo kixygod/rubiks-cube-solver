@@ -7,6 +7,7 @@ interface ActionButtonsProps {
   onScramble: () => void;
   onSolve: () => void;
   onMove: (move: string) => void;
+  onHoverMove: (move: string | null) => void;
 }
 
 export const ActionButtons = ({
@@ -16,6 +17,7 @@ export const ActionButtons = ({
   onScramble,
   onSolve,
   onMove,
+  onHoverMove,
 }: ActionButtonsProps) => {
   const moves = [
     ['F', 'R', 'U', 'B', 'L', 'D'],
@@ -32,6 +34,8 @@ export const ActionButtons = ({
                 key={move}
                 className={styles.moveButton}
                 onClick={() => onMove(move)}
+                onMouseEnter={() => onHoverMove(move)}
+                onMouseLeave={() => onHoverMove(null)}
               >
                 {move}
               </button>
